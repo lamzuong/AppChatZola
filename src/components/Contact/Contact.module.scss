@@ -1,0 +1,18 @@
+@use '../../scss/' as *;
+
+.wrapper {
+    width: 300px;
+    height: 100%;
+    @include flex(unset, flex-start);
+    flex-direction: column;
+}
+
+.content {
+    margin-top: 10px;
+    width: 100%;
+    min-height: 50px;
+    max-height: calc(100vh - 40px);
+    height: calc(100vh - 47px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}

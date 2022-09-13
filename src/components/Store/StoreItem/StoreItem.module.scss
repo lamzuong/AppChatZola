@@ -1,0 +1,21 @@
+@use '../../../scss' as *;
+.wrapper {
+    width: 100%;
+}
+
+.wrapper::after {
+    content: '';
+    display: block;
+    height: 8px;
+    width: 100%;
+    background-color: #eeeff5;
+}
+.store-item-header {
+    padding: 0 16px;
+    height: 40px;
+    @include flex(center, left);
+    span {
+        font-weight: 600;
+        font-size: 16px;
+    }
+}

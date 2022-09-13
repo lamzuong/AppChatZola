@@ -1,0 +1,41 @@
+@use '../../../../scss/' as *;
+
+.wrapper {
+    position: relative;
+    @include flex(center, space-between);
+    width: 100%;
+    height: 68px;
+    z-index: 1;
+
+    &::before {
+        content: '';
+        position: absolute;
+        height: 100%;
+        border-right: 1px solid #ccc;
+        right: 0px;
+        bottom: 0px;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+        left: 0px;
+        bottom: 0px;
+    }
+}
+
+.info {
+    margin-left: 1%;
+}
+
+.nav {
+    @include flex(center, space-between);
+    margin-right: 1.5%;
+    * ~ * {
+        margin-left: 15px;
+    }
+    color: $main-color;
+    font-size: 2rem;
+}

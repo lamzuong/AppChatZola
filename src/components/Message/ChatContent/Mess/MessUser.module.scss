@@ -1,0 +1,52 @@
+@use '../../../../scss/' as *;
+
+.message {
+    display: flex;
+    flex-direction: column;
+    margin: 20px 15px;
+}
+
+.messTop {
+    display: flex;
+}
+
+.messImg {
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 10px;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+}
+
+.messText {
+    padding: 10px;
+    border-radius: 20px;
+    background-color: rgb(245, 241, 241);
+    color: black;
+    max-width: 600px;
+}
+
+.messBot {
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.message.own {
+    align-items: flex-end;
+}
+
+.message.own .messText {
+    background-color: $main-color;
+    color: #fff;
+}
+
+.message.own .messImg {
+    display: none;
+}

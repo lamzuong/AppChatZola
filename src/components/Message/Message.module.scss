@@ -1,0 +1,7 @@
+@use '../../scss/' as *;
+
+.wrapper {
+    margin-left: 100px;
+    height: 100%;
+    @include flex-1(space-between);
+}

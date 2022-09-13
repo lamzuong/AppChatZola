@@ -1,0 +1,10 @@
+@use '../../../scss/' as *;
+
+.wrapper {
+    width: 100%;
+}
+
+.chatBox {
+    max-height: calc(100vh - 134px);
+    overflow: auto;
+}

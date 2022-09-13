@@ -1,0 +1,46 @@
+@use '../../../../scss/' as *;
+
+.wrapper {
+    @include flex(unset, center);
+    flex-direction: column;
+    background-color: rgb(245, 241, 241);
+
+    h2 {
+        margin-left: 9px;
+        margin-bottom: -10px;
+    }
+}
+
+.container {
+    height: 43px;
+    @include flex(center, space-around);
+}
+
+.search {
+    position: relative;
+    border-radius: 10px;
+    border: 1.5px solid;
+    margin-left: 5px;
+
+    input {
+        flex: 1;
+        height: 100%;
+        margin-left: 9px;
+        margin-top: 4px;
+        border: none;
+        font-size: 1.2rem;
+        caret-color: $main-color;
+        background-color: transparent;
+    }
+
+    .btnSearch {
+        position: absolute;
+        right: 5px;
+        top: 4px;
+    }
+}
+
+.group {
+    font-size: 1.8rem;
+    margin-top: 5px;
+}

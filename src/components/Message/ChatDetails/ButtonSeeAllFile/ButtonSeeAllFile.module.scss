@@ -1,0 +1,99 @@
+@use '../../../../scss' as *;
+
+.btn-see-all {
+    margin: 16px 0;
+    padding: 0 16px;
+    height: 32px;
+    width: 100%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.wrapper {
+    width: 450px;
+    color: #000;
+}
+
+.header {
+    padding: 8px 16px 0;
+    border-bottom: 1px solid #ccc;
+    li {
+        font-size: 18px;
+        display: inline-block;
+        margin-right: 12px;
+        cursor: pointer;
+    }
+    li::after {
+        content: '';
+        display: block;
+        height: 2px;
+        width: 0%;
+        position: relative;
+        left: 0;
+        bottom: -3px;
+        background-color: #0068ff;
+        transition: 0.6s ease;
+    }
+    li:hover {
+        color: #0068ff;
+    }
+    li:hover::after {
+        width: 100%;
+    }
+}
+
+.content-w {
+    min-height: 320px;
+    margin-top: 16px;
+}
+
+.active {
+    color: #0068ff;
+    border-bottom: 2px solid #0068ff;
+}
+
+// list img
+
+.content {
+    display: grid;
+    padding: 0 16px;
+}
+
+.gridv2 {
+    gap: 8px;
+    grid-template-columns: calc(25% - 6px) calc(25% - 6px) calc(25% - 6px) calc(25% - 6px);
+}
+
+.wrapper-media {
+    width: 72px;
+    height: 72px;
+    border-radius: 4px;
+    contain: strict;
+    cursor: pointer;
+    position: relative;
+    background-color: #f4f5f7;
+    @include flex(center, center);
+}
+
+.wrapper-media:hover::before {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.wrapper-media::before {
+    position: absolute;
+    content: ' ';
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border-radius: 3px;
+    z-index: 1;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+}

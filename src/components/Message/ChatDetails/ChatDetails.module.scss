@@ -1,0 +1,121 @@
+@use '../../../scss' as *;
+
+.wrapper {
+    width: 344px;
+    background-color: #eeeff2;
+}
+
+.customHeader {
+    height: 68px;
+    padding: 0 15px;
+    border-bottom: 1px solid #ccc;
+    background-color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+    @include flex(center, center);
+}
+
+.wrapper-info {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 68px);
+    overflow: auto;
+}
+
+.edit {
+    @include flex(center, center);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-left: 13px;
+    background-color: #e5e7eb;
+    cursor: pointer;
+}
+
+// modal
+
+//general
+
+.general {
+    margin-top: 8px;
+    background-color: #fff;
+}
+
+// store
+.store {
+    margin-top: 8px;
+    background-color: #fff;
+    padding: 0 16px;
+}
+
+.content {
+    display: grid;
+    padding: 0 16px;
+}
+
+.gridv2 {
+    gap: 8px;
+    grid-template-columns: calc(25% - 6px) calc(25% - 6px) calc(25% - 6px) calc(25% - 6px);
+}
+
+.wrapper-media {
+    width: 72px;
+    height: 72px;
+    border-radius: 4px;
+    contain: strict;
+    cursor: pointer;
+    position: relative;
+    background-color: #f4f5f7;
+    @include flex(center, center);
+}
+
+.wrapper-media:hover::before {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.wrapper-media::before {
+    position: absolute;
+    content: ' ';
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    border-radius: 3px;
+    z-index: 1;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    object-position: center;
+}
+
+// Modal img show
+
+.header-detail-img {
+    font-weight: 400;
+    font-size: 16px;
+    padding-left: 14px;
+    padding-right: 4px;
+    height: 24px;
+    background-color: #545454;
+    color: #fff;
+
+    @include flex(center, right);
+}
+
+.btn-close {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.show-img {
+    height: calc(100vh - 26px);
+    background-color: #3e4041;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+        width: auto;
+        height: 100%;
+    }
+}

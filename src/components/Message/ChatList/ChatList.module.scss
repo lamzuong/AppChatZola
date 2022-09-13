@@ -1,0 +1,28 @@
+@use '../../../scss/' as *;
+
+.wrapper {
+    width: 300px;
+    height: 100%;
+    @include flex(unset, flex-start);
+    flex-direction: column;
+}
+
+.header {
+    width: 100%;
+}
+
+.userOnl {
+    height: 115%;
+    margin: 10px 2px;
+    width: 100%;
+    @include flex(center, space-between);
+    overflow-x: scroll;
+}
+
+.chatList {
+    width: 100%;
+    min-height: 50px;
+    height: calc(100vh - 142px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}

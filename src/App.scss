@@ -1,0 +1,63 @@
+@use './scss/' as *;
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 100%;
+
+    @include mobile {
+        font-size: 60%;
+    }
+}
+
+body {
+    font-weight: 400;
+    line-height: 1.5;
+
+    @include mobile {
+        @include mobile {
+            margin-bottom: 3rem;
+        }
+    }
+}
+
+a {
+    text-decoration: none;
+    color: none;
+}
+
+button {
+    outline: 0;
+    border-radius: none;
+}
+
+input {
+    outline: none;
+}
+
+ul {
+    list-style-type: none;
+}
+
+img {
+    min-width: 100%;
+}
+
+div::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.4em;
+    position: absolute;
+    right: 0;
+}
+
+div::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background: #e1e4ea;
+}
+div::-webkit-scrollbar-track {
+    background: none;
+}

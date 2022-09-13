@@ -1,0 +1,136 @@
+@use '../../scss' as *;
+
+.wrapper {
+    max-width: 600px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 24px 20px 0;
+    @include flex(center, center);
+    flex-direction: column;
+}
+
+.header h1 a {
+    display: block;
+    background: url('https://stc-zaloid.zdn.vn/zaloid/client/images/zlogo.png') 0 0 no-repeat;
+    background-size: cover;
+    width: 114px;
+    height: 41px;
+    margin: 0 auto 18px;
+    text-align: center;
+}
+.header h2 {
+    text-align: center;
+    font-weight: 400;
+    margin-bottom: 18px;
+    font-size: 18px;
+}
+
+.body {
+    background-color: #fff;
+    min-width: 400px;
+    border-radius: 2px;
+    box-shadow: 0 8px 24px rgb(21 48 142 /14%);
+}
+
+.tab {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    ul {
+        display: flex;
+        @include flex(center, center);
+    }
+    li {
+        display: inline-block;
+        flex: 1;
+        padding: 0 20px;
+        height: 50px;
+        line-height: 50px;
+        color: #6f6f6f;
+        font-size: 0.875em;
+        font-weight: 500;
+        text-transform: uppercase;
+        position: relative;
+        text-align: center;
+        cursor: pointer;
+    }
+    li::before {
+        position: absolute;
+        top: 14px;
+        right: 0;
+        content: '';
+        background-color: rgba(0, 0, 0, 0.1);
+        width: 1px;
+        height: 18px;
+    }
+}
+
+.content {
+    min-height: 252px;
+}
+
+.form-signin {
+    padding: 30px 45px;
+}
+
+.ipt {
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    outline: none;
+}
+
+.form-control {
+    @include flex(center, center);
+    border-bottom: 1px solid #ecedf0;
+    padding: 5px 0;
+    margin-bottom: 16px;
+}
+
+.btn-login {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: #0190f3;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+        background-color: #0184e0;
+    }
+}
+
+.more {
+    @include flex(center, center);
+    margin-top: 12px;
+}
+
+.forget-passwword {
+    font-size: 12px;
+    color: #000;
+    &:hover {
+        color: #0184e0;
+        text-decoration: underline;
+    }
+}
+
+.no-account {
+    margin-top: 18px;
+    span {
+        color: #888;
+    }
+    a {
+        color: #0190f3;
+        text-decoration: underline;
+        &:hover {
+            color: #0184e0;
+        }
+    }
+}
+
+.active {
+    font-weight: bold !important;
+    color: #000 !important;
+}

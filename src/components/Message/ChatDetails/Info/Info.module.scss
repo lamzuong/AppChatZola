@@ -1,0 +1,122 @@
+@use '../../../../scss' as *;
+
+.wrapper {
+    padding: 12px 16px;
+    background-color: #fff;
+    flex: 1;
+}
+.info {
+    @include flex(center, center);
+    flex-direction: column;
+    background-color: #fff;
+}
+
+.avatar {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 12px;
+
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.info-name {
+    @include flex(center, center);
+
+    height: 26px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.edit {
+    @include flex(center, center);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-left: 13px;
+    background-color: #e5e7eb;
+    cursor: pointer;
+}
+
+.wrapper-modal {
+    width: 360px;
+}
+
+.header-modal {
+    @include flex(center, left);
+    height: 48px;
+    padding: 0 8px 0 16px;
+    border-bottom: 1px solid #e5e7eb;
+
+    span {
+        font-weight: 500;
+        font-size: 16px;
+    }
+}
+
+.body-modal {
+    padding: 14px 16px 0;
+    @include flex(center, center);
+    flex-direction: column;
+}
+
+.edit-description {
+    text-align: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    cursor: default;
+    margin: 0 auto 12px;
+}
+
+.name-edit {
+    font-weight: bold;
+}
+
+.input-wrapper {
+    width: 100%;
+    height: 38px;
+    line-height: 38px;
+}
+
+.input-edit-name {
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+    padding: 0 12px;
+    border: 1px solid #e5e7eb;
+    outline: none;
+    &:focus-within {
+        border: 1px solid #3989ff;
+    }
+}
+
+.footer-modal {
+    padding: 14px 16px;
+    @include flex(center, right);
+}
+
+.btn-cancel,
+.btn-conf {
+    border: none;
+    outline: none;
+    height: 40px;
+    min-width: 40px;
+    padding: 0 16px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-conf {
+    background-color: #0068ff;
+    color: #fff;
+}
+
+.btn-cancel {
+    margin-right: 15px;
+}
