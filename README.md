@@ -4,5 +4,7 @@ thì clone về rồi mở AppChatZola bằng VSCode rồi mở terminal ghi l�
 # $ git checkout web <br>
 hoặc <br>
 # $ git checkout app <br>
-Sau đó, tiếp tục ở terminal ghi lệnh: $ npm i <br>
-Cuối cùng: $ npm start
+Sau đó, tiếp tục ở terminal ghi lệnh:
+# $ npm i <br>
+Cuối cùng: 
+# $ npm start
