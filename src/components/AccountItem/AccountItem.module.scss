@@ -9,6 +9,12 @@
     }
 }
 
+.none {
+    &:hover {
+        background-color: transparent;
+    }
+}
+
 .avatar {
     position: relative;
     width: 40px;

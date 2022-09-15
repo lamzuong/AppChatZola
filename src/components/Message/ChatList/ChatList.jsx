@@ -108,7 +108,7 @@ const ChatList = (props) => {
             </div>
             <div className={cx('userOnl')}>
                 {mess.map((e, i) => (
-                    <AccountItem key={i} id={e.id} ava={e.ava} />
+                    <AccountItem key={i} none={true} id={e.id} ava={e.ava} />
                 ))}
             </div>
             <div className={cx('chatList')}>

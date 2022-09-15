@@ -12,6 +12,7 @@ const HeaderMess = (props) => {
                 <AccountItem
                     ava={'https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg'}
                     name={'Hoang Phuc'}
+                    none={true}
                 />
             </div>
             <div className={cx('nav')}>

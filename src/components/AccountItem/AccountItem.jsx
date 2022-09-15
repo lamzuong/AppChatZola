@@ -11,7 +11,7 @@ const AccountItem = (props) => {
     const path = pathname.substring(pathname.length - 1);
     const active = path === props.id;
     return (
-        <Link to={`/t/${props.id}`} className={cx('wrapper', active ? 'active' : '')}>
+        <Link to={`/t/${props.id}`} className={cx('wrapper', props.none ? 'none' : active ? 'active' : '')}>
             <div className={cx('avatar')}>
                 <img src={props.ava} alt="phuc" />
                 <div className={cx('onl')}></div>
