@@ -9,11 +9,7 @@ const HeaderMess = (props) => {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('info')}>
-                <AccountItem
-                    ava={'https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg'}
-                    name={'Hoang Phuc'}
-                    none={true}
-                />
+                <AccountItem ava={props.ava} name={props.name} none={true} />
             </div>
             <div className={cx('nav')}>
                 <i className="bx bxs-phone"></i>

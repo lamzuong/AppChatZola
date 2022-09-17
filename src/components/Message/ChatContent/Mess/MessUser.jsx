@@ -10,7 +10,7 @@ const MessUser = (props) => {
         <div className={cx('message', props.own ? 'own' : '')}>
             <div className={cx('messTop')}>
                 <div className={cx('messImg')}>
-                    <img src="https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg" alt="" />
+                    <img src={props.ava} alt="" />
                 </div>
                 <div className={cx('messText')}>
                     SPY×FAMILY (スパイファミリー Supai Famirī?, đọc như Spy-Family)[a] là một bộ manga Nhật Bản được

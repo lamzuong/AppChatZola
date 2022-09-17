@@ -37,7 +37,6 @@ const items = [
 const ButtonSeeAllFile = () => {
     const [showModal, setShowModal] = useState(false);
     const [choose, setChoose] = useState('1');
-    console.log(choose);
     Modal.setAppElement('#root');
 
     const handleShowModal = () => {

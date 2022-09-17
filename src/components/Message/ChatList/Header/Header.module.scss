@@ -3,11 +3,13 @@
 .wrapper {
     @include flex(unset, center);
     flex-direction: column;
+    border-bottom: 1px solid #ccc;
     background-color: rgb(245, 241, 241);
+    z-index: 1;
 
     h2 {
         margin-left: 9px;
-        margin-bottom: -10px;
+        margin-bottom: -12px;
     }
 }
 
