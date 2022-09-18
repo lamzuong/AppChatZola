@@ -459,6 +459,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: "row",
     backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "white",
   },
   imageAva: {
     height: 50,
