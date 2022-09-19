@@ -86,355 +86,86 @@ export default function Directory() {
       name: "Vuong Quoc",
     },
   ];
-  var listA = [];
-  var listB = [];
-  var listC = [];
-  var listD = [];
-  var listE = [];
-  var listF = [];
-  var listG = [];
-  var listH = [];
-  var listI = [];
-  var listJ = [];
-  var listK = [];
-  var listL = [];
-  var listM = [];
-  var listN = [];
-  var listO = [];
-  var listP = [];
-  var listQ = [];
-  var listR = [];
-  var listS = [];
-  var listT = [];
-  var listU = [];
-  var listV = [];
-  var listW = [];
-  var listX = [];
-  var listY = [];
-  var listZ = [];
-  var listAW = [];
-  var listAA = [];
-  var listDD = [];
-  var listEE = [];
-  var listOO = [];
-  var listOW = [];
-  var listUW = [];
-  listFriends.forEach((element) => {
-    if (element.name.startsWith("A")) {
-      listA.push(element);
-    } else if (element.name.startsWith("Ă")) {
-      listAW.push(element);
-    } else if (element.name.startsWith("Â")) {
-      listAA.push(element);
-    } else if (element.name.startsWith("B")) {
-      listB.push(element);
-    } else if (element.name.startsWith("C")) {
-      listC.push(element);
-    } else if (element.name.startsWith("D")) {
-      listD.push(element);
-    } else if (element.name.startsWith("Đ")) {
-      listDD.push(element);
-    } else if (element.name.startsWith("E")) {
-      listE.push(element);
-    } else if (element.name.startsWith("Ê")) {
-      listEE.push(element);
-    } else if (element.name.startsWith("F")) {
-      listF.push(element);
-    } else if (element.name.startsWith("G")) {
-      listG.push(element);
-    } else if (element.name.startsWith("H")) {
-      listH.push(element);
-    } else if (element.name.startsWith("I")) {
-      listI.push(element);
-    } else if (element.name.startsWith("J")) {
-      listJ.push(element);
-    } else if (element.name.startsWith("K")) {
-      listK.push(element);
-    } else if (element.name.startsWith("L")) {
-      listL.push(element);
-    } else if (element.name.startsWith("M")) {
-      listM.push(element);
-    } else if (element.name.startsWith("N")) {
-      listN.push(element);
-    } else if (element.name.startsWith("O")) {
-      listO.push(element);
-    } else if (element.name.startsWith("Ô")) {
-      listOO.push(element);
-    } else if (element.name.startsWith("Ơ")) {
-      listOW.push(element);
-    } else if (element.name.startsWith("P")) {
-      listP.push(element);
-    } else if (element.name.startsWith("Q")) {
-      listQ.push(element);
-    } else if (element.name.startsWith("R")) {
-      listR.push(element);
-    } else if (element.name.startsWith("S")) {
-      listS.push(element);
-    } else if (element.name.startsWith("T")) {
-      listT.push(element);
-    } else if (element.name.startsWith("U")) {
-      listU.push(element);
-    } else if (element.name.startsWith("Ư")) {
-      listUW.push(element);
-    } else if (element.name.startsWith("V")) {
-      listV.push(element);
-    } else if (element.name.startsWith("W")) {
-      listW.push(element);
-    } else if (element.name.startsWith("X")) {
-      listX.push(element);
-    } else if (element.name.startsWith("Y")) {
-      listY.push(element);
-    } else if (element.name.startsWith("Z")) {
-      listZ.push(element);
-    }
-  });
-  const listAll = [
-    listA,
-    listAW,
-    listAA,
-    listB,
-    listC,
-    listD,
-    listDD,
-    listE,
-    listEE,
-    listF,
-    listG,
-    listH,
-    listI,
-    listJ,
-    listK,
-    listL,
-    listM,
-    listN,
-    listO,
-    listOO,
-    listOW,
-    listP,
-    listQ,
-    listR,
-    listS,
-    listT,
-    listU,
-    listUW,
-    listV,
-    listW,
-    listX,
-    listY,
-    listZ,
+  const listTitle = [
+    "A",
+    "Ă",
+    "Â",
+    "B",
+    "C",
+    "D",
+    "Đ",
+    "E",
+    "Ê",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "Ô",
+    "Ơ",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "Ư",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
   ];
-  const setShow = [];
-  for (let i = 0; i < 32; i++) {
-    if (listAll[i].length == 0) setShow[i] = false;
+  var list = [];
+  var setShow = [];
+  for (let i = 0; i < listTitle.length; i++) {
+    list[i] = [];
+    listFriends.forEach((element) => {
+      // lọc theo chữ cái
+      if (element.name.startsWith(listTitle[i])) {
+        list[i].push(element);
+      }
+    });
+    // ẩn đi nếu không có phần tử nào thuộc chữ cái đó
+    if (list[i].length == 0) setShow[i] = false;
     else setShow[i] = true;
   }
-  console.log(listM);
+  var listAll = [];
+  for (let i = 0; i < listTitle.length; i++) {
+    listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
+  }
+
   return (
     <View>
       <ScrollView>
-        <View>
-          {setShow[0] ? <Text style={styles.title}>A</Text> : null}
-          {listA.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[1] ? <Text style={styles.title}>Ă</Text> : null}
-          {listAW.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[2] ? <Text style={styles.title}>Â</Text> : null}
-          {listAA.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[3] ? <Text style={styles.title}>B</Text> : null}
-          {listB.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[4] ? <Text style={styles.title}>C</Text> : null}
-          {listC.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[5] ? <Text style={styles.title}>D</Text> : null}
-          {listD.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[6] ? <Text style={styles.title}>Đ</Text> : null}
-          {listDD.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[7] ? <Text style={styles.title}>E</Text> : null}
-          {listE.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[8] ? <Text style={styles.title}>Ê</Text> : null}
-          {listEE.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[9] ? <Text style={styles.title}>F</Text> : null}
-          {listF.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[10] ? <Text style={styles.title}>G</Text> : null}
-          {listG.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[11] ? <Text style={styles.title}>H</Text> : null}
-          {listH.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[12] ? <Text style={styles.title}>I</Text> : null}
-          {listI.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[13] ? <Text style={styles.title}>J</Text> : null}
-          {listJ.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[14] ? <Text style={styles.title}>K</Text> : null}
-          {listK.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[15] ? <Text style={styles.title}>L</Text> : null}
-          {listL.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[16] ? <Text style={styles.title}>M</Text> : null}
-          {listM.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[17] ? <Text style={styles.title}>N</Text> : null}
-          {listN.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[18] ? <Text style={styles.title}>O</Text> : null}
-          {listO.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[19] ? <Text style={styles.title}>Ô</Text> : null}
-          {listOO.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[20] ? <Text style={styles.title}>Ơ</Text> : null}
-          {listOW.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[21] ? <Text style={styles.title}>P</Text> : null}
-          {listP.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[22] ? <Text style={styles.title}>Q</Text> : null}
-          {listQ.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[23] ? <Text style={styles.title}>R</Text> : null}
-          {listR.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[24] ? <Text style={styles.title}>S</Text> : null}
-          {listS.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[25] ? <Text style={styles.title}>T</Text> : null}
-          {listT.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[26] ? <Text style={styles.title}>U</Text> : null}
-          {listU.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[27] ? <Text style={styles.title}>Ư</Text> : null}
-          {listUW.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[28] ? <Text style={styles.title}>V</Text> : null}
-          {listV.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[29] ? <Text style={styles.title}>W</Text> : null}
-          {listW.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[30] ? <Text style={styles.title}>X</Text> : null}
-          {listX.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[31] ? <Text style={styles.title}>Y</Text> : null}
-          {listY.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
-        <View>
-          {setShow[32] ? <Text style={styles.title}>Z</Text> : null}
-          {listZ.map((e, i) => (
-            <ListFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-          ))}
-        </View>
+        {listAll.map((e, i) => (
+          <ViewListFriend
+            key={i}
+            title={e.title}
+            show={e.show}
+            list={e.listFr}
+          />
+        ))}
       </ScrollView>
     </View>
   );
 }
-const ListFriend = (props) => {
+const ViewListFriend = (props) => {
+  return (
+    <View>
+      {props.show ? <Text style={styles.title}>{props.title}</Text> : null}
+      {props.list.map((e, i) => (
+        <ItemFriend key={i} id={e.id} ava={e.ava} name={e.name} />
+      ))}
+    </View>
+  );
+};
+const ItemFriend = (props) => {
   return (
     <TouchableOpacity>
       <View style={styles.items}>
