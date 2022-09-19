@@ -114,10 +114,10 @@ export default function Rooms({ navigation }) {
   const closeMenu = () => setVisible(false);
 
   return (
-    <View style={{ marginTop: 25 }}>
+    <View style={{ flex: 1, marginTop: 33}}>
       <View style={styles.header}>
         <SearchBar addFr="false" />
-        <Menu
+        <Menu style={{ flex: 1, marginTop: 40}}
           visible={visible}
           anchor={
             <TouchableOpacity onPress={openMenu}>

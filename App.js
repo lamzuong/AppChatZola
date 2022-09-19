@@ -12,6 +12,9 @@ import ChatRoom from "./screens/chat/ChatRoom";
 import AddFriend from "./screens/friend/AddFriend";
 import Directory from "./screens/friend/Directory";
 import GroupFriends from "./screens/friend/GroupFriends";
+import Profile from "./screens/profile/Profile";
+import ResetPassword from "./screens/profile/ResetPassword";
+import UpdateProfile from "./screens/profile/UpdateProfile";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +37,7 @@ export default function App() {
             title: "Đăng nhập",
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
           }}
         ></Stack.Screen>
         <Stack.Screen
@@ -48,6 +52,7 @@ export default function App() {
             title: "Tạo tài khoản",
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
           }}
         ></Stack.Screen>
         <Stack.Screen
@@ -57,11 +62,42 @@ export default function App() {
             title: "Nhập mã kích hoạt",
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            title: "Thông tin cá nhân",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
           }}
         ></Stack.Screen>
         <Stack.Screen name="Rooms" component={Rooms} />
         <Stack.Screen name="ChatRoom" component={ChatRoom} />
         <Stack.Screen name="AddFriend" component={AddFriend} />
+        <Stack.Screen
+          name="ResetPassword"
+          component={ResetPassword}
+          options={{
+            title: "Đổi mật khẩu",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="UpdateProfile"
+          component={UpdateProfile}
+          options={{
+            title: "Cập nhật thông tin",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
+          }}
+        ></Stack.Screen>
         {/* <Stack.Screen name="Danh bạ" component={TopNavigator} /> */}
       </Stack.Navigator>
     </NavigationContainer>

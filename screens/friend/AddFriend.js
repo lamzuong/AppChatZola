@@ -9,7 +9,7 @@ import SearchBar from "../chat/SearchBar";
 export default function AddFriend({ navigation }, props) {
   const [appearX, setAppearX] = React.useState("");
   return (
-    <View style={{ marginTop: 25 }}>
+    <View style={{ marginTop: 33 }}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconBack}

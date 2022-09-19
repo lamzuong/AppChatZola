@@ -95,10 +95,12 @@ export default function Home() {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="Thông tin cá nhân"
         component={Profile}
         options={{
-          headerShown: false,
+          headerTintColor : 'white',
+          headerShown: true,
+          headerStyle: { backgroundColor: '#0091ff'},
           tabBarLabel: ({ focused }) => {
             return (
               <View>
@@ -129,7 +131,25 @@ export default function Home() {
 }
 const TopNavigator = () => {
   return (
-    <TopTab.Navigator style={styles.topTab}>
+    <TopTab.Navigator style={styles.topTab}
+      
+
+      screenOptions={{
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
+        tabBarLabelStyle: {fontWeight: "bold", fontSize: 16}, 
+        tabBarActiveBackgroundColor: "white",
+        tabBarInactiveBackgroundColor: "white",
+        tabBarStyle: [
+          {
+            display: "flex",
+            backgroundColor: "#0091ff",
+            height: 60,
+            paddingTop: 7,
+          },
+          null,
+        ],
+      }}>
       <TopTab.Screen name="Bạn bè" component={Directory} />
       <TopTab.Screen name="Nhóm" component={GroupFriends} />
     </TopTab.Navigator>
@@ -144,6 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   topTab: {
-    marginTop: 25,
+    marginTop: 33,
   },
 });

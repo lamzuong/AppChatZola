@@ -19,7 +19,7 @@ import MessageChat from "./MessageChat";
 export default function ChatRoom({ route, navigation }) {
   const { nickname, avatar, message } = route.params;
   return (
-    <View style={{ flex: 1, backgroundColor: "white", marginTop: 25 }}>
+    <View style={{ flex: 1, backgroundColor: "white", marginTop: 33 }}>
       <View style={styles.header}>
         <View style={{ width: "10%" }}>
           <TouchableOpacity
