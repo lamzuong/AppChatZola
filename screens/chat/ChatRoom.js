@@ -56,15 +56,15 @@ export default function ChatRoom({ route, navigation }) {
 
       <ScrollView>
         <View style={styles.body}>
-          <MessageChat />
+          <MessageChat ava={avatar} />
           <MessageChat owner="true" />
-          <MessageChat />
-          <MessageChat />
+          <MessageChat ava={avatar} />
+          <MessageChat ava={avatar} />
           <MessageChat owner="true" />
           <MessageChat owner="true" />
-          <MessageChat />
-          <MessageChat />
-          <MessageChat />
+          <MessageChat ava={avatar} />
+          <MessageChat ava={avatar} />
+          <MessageChat ava={avatar} />
         </View>
       </ScrollView>
 

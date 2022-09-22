@@ -98,9 +98,9 @@ export default function Home() {
         name="Thông tin cá nhân"
         component={Profile}
         options={{
-          headerTintColor : 'white',
+          headerTintColor: "white",
           headerShown: true,
-          headerStyle: { backgroundColor: '#0091ff'},
+          headerStyle: { backgroundColor: "#0091ff" },
           tabBarLabel: ({ focused }) => {
             return (
               <View>
@@ -131,15 +131,14 @@ export default function Home() {
 }
 const TopNavigator = () => {
   return (
-    <TopTab.Navigator style={styles.topTab}
-      
-
+    <TopTab.Navigator
+      style={styles.topTab}
       screenOptions={{
-        tabBarActiveTintColor: "white",
-        tabBarInactiveTintColor: "white",
-        tabBarLabelStyle: {fontWeight: "bold", fontSize: 16}, 
-        tabBarActiveBackgroundColor: "white",
-        tabBarInactiveBackgroundColor: "white",
+        // tabBarActiveTintColor: "white",
+        // tabBarInactiveTintColor: "white",
+        // tabBarLabelStyle: { fontWeight: "bold", fontSize: 16 },
+        // tabBarActiveBackgroundColor: "white",
+        // tabBarInactiveBackgroundColor: "white",
         tabBarStyle: [
           {
             display: "flex",
@@ -149,7 +148,8 @@ const TopNavigator = () => {
           },
           null,
         ],
-      }}>
+      }}
+    >
       <TopTab.Screen name="Bạn bè" component={Directory} />
       <TopTab.Screen name="Nhóm" component={GroupFriends} />
     </TopTab.Navigator>

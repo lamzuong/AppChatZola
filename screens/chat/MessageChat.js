@@ -3,6 +3,7 @@ import React from "react";
 
 export default function MessageChat(props) {
   const owner = props.owner;
+  const ava = props.ava;
   return (
     <View
       style={
@@ -18,7 +19,7 @@ export default function MessageChat(props) {
     >
       <Image
         source={{
-          uri: "https://i.pinimg.com/736x/f3/cb/59/f3cb596a2f7fa0535aa9654b538de30a.jpg",
+          uri: ava,
         }}
         style={owner ? null : styles.imageAva}
       />
