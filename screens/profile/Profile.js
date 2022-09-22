@@ -9,9 +9,9 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { Ionicons } from "@expo/vector-icons";
 export default function Profile({ navigation }) {
-  const [userName, setuserName] = useState("User Name");
+  const [userName, setuserName] = useState("Anya");
   const [avatar, setavatar] = useState(
     "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
   );
@@ -27,6 +27,10 @@ export default function Profile({ navigation }) {
     navigation.navigate("UpdateProfile");
   }
 
+  async function logout() {
+    navigation.navigate("Welcome");
+  }
+
   return (
     <SafeAreaView>
       <View style={styles.header}>
@@ -38,7 +42,17 @@ export default function Profile({ navigation }) {
         <View style={styles.container}>
           <View style={styles.containerUser}>
             <View style={styles.infoUser}>
-              <Image source={{ uri: avatar }} style={styles.AvatarURL}></Image>
+              <TouchableOpacity>
+                <Image source={{ uri: avatar }} style={styles.AvatarURL}></Image>
+                
+                <Ionicons
+                  name="camera-reverse-outline"
+                  size={28}
+                  color="black"
+                  style={styles.cam}
+                />
+              </TouchableOpacity>
+              
               <TextInput
                 editable={false}
                 style={styles.inputUser}
@@ -92,6 +106,14 @@ export default function Profile({ navigation }) {
                 Đổi mật khẩu
               </Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonOut} onPress = {logout}>
+              <Text
+                style={{ fontSize: 20, color: "red", fontWeight: "bold" }}
+              >
+                Đăng xuất
+              </Text>
+            </TouchableOpacity>
+
           </View>
         </View>
       </ScrollView>
@@ -135,10 +157,24 @@ const styles = StyleSheet.create({
     borderRadius: 85,
     aspectRatio: 1,
     padding: 1,
+    alignSelf: "center",
+  },
+  cam: {
+    borderColor: "grey",
+    borderWidth: 1,
+    width: 30,
+    height: 30,
+    borderRadius: 85,
+    aspectRatio: 1,
+    padding: 1,
+    backgroundColor: "white",
+    position: "absolute",
+    alignSelf: "center",
+    bottom: -12
   },
 
   inputUser: {
-    marginTop: 5,
+    marginTop: 15,
     color: "black",
     fontSize: 22,
     fontWeight: "bold",
@@ -165,6 +201,20 @@ const styles = StyleSheet.create({
     fontSize: 25,
     borderColor: "#f3f4f9",
     borderRadius: 10,
+    alignSelf: "center",
+    margin: 15,
+  },
+  buttonOut: {
+    paddingTop: 15,
+    color: "white",
+    alignItems: "center",
+    backgroundColor: "#f3f4f9",
+    height: 60,
+    width: 350,
+    fontSize: 25,
+    borderColor: "red",
+    borderRadius: 10,
+    borderWidth: 1,
     alignSelf: "center",
     margin: 15,
   },

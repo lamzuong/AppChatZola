@@ -4,7 +4,7 @@ import { RadioButton } from 'react-native-paper';
 
 
 export default function SignUp({navigation}) {
-    const [phoneNumber, setphoneNumber] = useState('');
+    const [email, setemail] = useState('');
     const [name, setname] = useState('');
     const [password, setpassword] = useState('');
     const [repassword, setrepassword] = useState('');
@@ -15,21 +15,21 @@ export default function SignUp({navigation}) {
 
     function conFirm(){
         Alert.alert(
-          "Xác nhận số điện thoại",
-          "Chúng tôi sẽ gửi mã xác nhận đến số điện thoại trên. Vui lòng xác nhập số điện thoại này là đúng.",
+          "Xác nhận Email",
+          "Chúng tôi sẽ gửi mã kích hoạt đến Email trên. Vui lòng xác nhận Email này là đúng.",
           [
             {
               text: "Thay đổi",
               style: "cancel"
             },
-            { text: "Xác nhận", onPress:() => navigation.navigate("ConfirmPhone")}
+            { text: "Xác nhận", onPress:() => navigation.navigate("ConfirmEmail")}
           ]
         );
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.signup}>Vui lòng nhập đầy đủ tên, số điện thoại và mật khẩu để đăng ký</Text>
+            <Text style={styles.signup}>Vui lòng nhập đầy đủ tên, Email và mật khẩu để đăng ký.</Text>
             <TextInput 
                 style={styles.input}
                 value={name}
@@ -38,10 +38,10 @@ export default function SignUp({navigation}) {
             />
             <TextInput 
                 style={styles.input}
-                value={phoneNumber}
-                placeholder="Nhập số điện thoại"
-                onChangeText={(text) => {setphoneNumber(text)}}
-                keyboardType="phone-pad"
+                value={email}
+                placeholder="Nhập Email"
+                onChangeText={(text) => {setemail(text)}}
+                keyboardType="email-address"
             />
             <TextInput 
                 style={styles.input}
@@ -60,7 +60,7 @@ export default function SignUp({navigation}) {
                 
             />
             
-            <View style={styles.gender}>
+            {/* <View style={styles.gender}>
                 <RadioButton
                     value="true"
                     status={ checked === true ? 'checked' : 'unchecked' }
@@ -73,7 +73,7 @@ export default function SignUp({navigation}) {
                     onPress={() => setChecked(false)}
                     color="#0091ff"
                 /><Text style={styles.text}>Nữ</Text>
-            </View>
+            </View> */}
 
             <TouchableOpacity style={styles.button} onPress={conFirm}>
                 <Image source={require('../assets/next.png')} style={styles.image}></Image>

@@ -6,7 +6,6 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import SignUp from "./screens/SignUp";
 import Welcome from "./screens/Welcome";
-import ConfirmPhone from "./screens/ConfirmPhone";
 import Rooms from "./screens/chat/Rooms";
 import ChatRoom from "./screens/chat/ChatRoom";
 import AddFriend from "./screens/friend/AddFriend";
@@ -15,7 +14,10 @@ import GroupFriends from "./screens/friend/GroupFriends";
 import Profile from "./screens/profile/Profile";
 import ResetPassword from "./screens/profile/ResetPassword";
 import UpdateProfile from "./screens/profile/UpdateProfile";
-
+import ConfirmEmail from "./screens/ConfirmEmail";
+import ConfirmEmailForget from "./screens/ConfirmEmailForget";
+import ForgetPassword from "./screens/ForgetPassword";
+import RecoverPassword from "./screens/RecoverPassword";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -56,10 +58,20 @@ export default function App() {
           }}
         ></Stack.Screen>
         <Stack.Screen
-          name="ConfirmPhone"
-          component={ConfirmPhone}
+          name="ConfirmEmail"
+          component={ConfirmEmail}
           options={{
             title: "Nhập mã kích hoạt",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="ConfirmEmailForget"
+          component={ConfirmEmailForget}
+          options={{
+            title: "Nhập mã xác thực",
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#0091ff" },
             headerShown: true,
@@ -93,6 +105,26 @@ export default function App() {
           component={UpdateProfile}
           options={{
             title: "Cập nhật thông tin",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="ForgetPassword"
+          component={ForgetPassword}
+          options={{
+            title: "Lấy lại mật khẩu",
+            headerTintColor: "white",
+            headerStyle: { backgroundColor: "#0091ff" },
+            headerShown: true,
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
+          name="RecoverPassword"
+          component={RecoverPassword}
+          options={{
+            title: "Lấy lại mật khẩu",
             headerTintColor: "white",
             headerStyle: { backgroundColor: "#0091ff" },
             headerShown: true,

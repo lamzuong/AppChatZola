@@ -3,27 +3,36 @@ import {Text, View, StyleSheet, TouchableOpacity,TextInput, Image, Alert} from '
 import { RadioButton } from 'react-native-paper';
 
 
-export default function ConfirmPhone({navigation}) {
+export default function ForgetPassword({navigation}) {
+    const [email, setemail] = useState('');
     
-    const [num, setNum] = useState('');
-    
-    function toHome(){
-        navigation.navigate("Home");
+    function conFirm(){
+        Alert.alert(
+          "Xác nhận Email",
+          "Chúng tôi sẽ gửi mã xác thực đến Email trên. Vui lòng xác nhận Email này là đúng.",
+          [
+            {
+              text: "Thay đổi",
+              style: "cancel"
+            },
+            { text: "Xác nhận", onPress:() => navigation.navigate("ConfirmEmailForget")}
+          ]
+        );
     }
-    
 
     return (
         <View style={styles.container}>
-            <Text style={styles.signup}>Vui lòng không chia sẽ mã xác thực để tránh mất tài khoản</Text>
+            <Text style={styles.signup}>Vui lòng nhập Email để lấy lại mật khẩu.</Text>
+            
             <TextInput 
                 style={styles.input}
-                value={num}
-                placeholder="Nhập mã xác thực"
-                onChangeText={(text) => {setNum(text)}}
+                value={email}
+                placeholder="Nhập Email"
+                onChangeText={(text) => {setemail(text)}}
+                keyboardType="email-address"
             />
             
-
-            <TouchableOpacity style={styles.button} onPress={toHome}>
+            <TouchableOpacity style={styles.button} onPress={conFirm}>
                 <Image source={require('../assets/next.png')} style={styles.image}></Image>
             </TouchableOpacity>
         </View>
