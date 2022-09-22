@@ -99,7 +99,7 @@ export default function Home() {
         component={Profile}
         options={{
           headerTintColor: "white",
-          headerShown: true,
+          headerShown: false,
           headerStyle: { backgroundColor: "#0091ff" },
           tabBarLabel: ({ focused }) => {
             return (
@@ -134,11 +134,11 @@ const TopNavigator = () => {
     <TopTab.Navigator
       style={styles.topTab}
       screenOptions={{
-        // tabBarActiveTintColor: "white",
-        // tabBarInactiveTintColor: "white",
-        // tabBarLabelStyle: { fontWeight: "bold", fontSize: 16 },
-        // tabBarActiveBackgroundColor: "white",
-        // tabBarInactiveBackgroundColor: "white",
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
+        tabBarLabelStyle: { fontSize: 15, fontWeight: "bold" },
+        tabBarActiveBackgroundColor: "white",
+        tabBarInactiveBackgroundColor: "white",
         tabBarStyle: [
           {
             display: "flex",
@@ -164,6 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   topTab: {
-    marginTop: 33,
+    marginTop: 25,
   },
 });

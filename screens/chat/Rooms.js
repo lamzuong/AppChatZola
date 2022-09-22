@@ -14,6 +14,7 @@ import { Menu, MenuItem } from "react-native-material-menu";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import SearchBar from "./SearchBar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const mess = [
   {
@@ -114,10 +115,11 @@ export default function Rooms({ navigation }) {
   const closeMenu = () => setVisible(false);
 
   return (
-    <View style={{ flex: 1, marginTop: 33}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
         <SearchBar addFr="false" />
-        <Menu style={{ flex: 1, marginTop: 40}}
+        <Menu
+          style={{ flex: 1, marginTop: 40 }}
           visible={visible}
           anchor={
             <TouchableOpacity onPress={openMenu}>
@@ -176,6 +178,6 @@ export default function Rooms({ navigation }) {
           ></ChatList>
         ))}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }

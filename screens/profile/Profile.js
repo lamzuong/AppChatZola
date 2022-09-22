@@ -8,6 +8,7 @@ import {
   TextInput,
   ScrollView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile({ navigation }) {
   const [userName, setuserName] = useState("User Name");
@@ -27,69 +28,81 @@ export default function Profile({ navigation }) {
   }
 
   return (
-    <ScrollView>
-      <View style={style.container}>
-        <View style={style.containerUser}>
-          <View style={style.infoUser}>
-            <Image source={{ uri: avatar }} style={style.AvatarURL}></Image>
+    <SafeAreaView>
+      <View style={styles.header}>
+        <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+          Thông tin cá nhân
+        </Text>
+      </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.containerUser}>
+            <View style={styles.infoUser}>
+              <Image source={{ uri: avatar }} style={styles.AvatarURL}></Image>
+              <TextInput
+                editable={false}
+                style={styles.inputUser}
+                value={userName}
+                onChangeText={(text) => {
+                  setuserName(text);
+                }}
+              />
+            </View>
+          </View>
+          <View style={styles.info}>
+            <Text style={styles.text}>Điện thoại:</Text>
             <TextInput
+              style={styles.input}
+              value={phoneNumber}
               editable={false}
-              style={style.inputUser}
-              value={userName}
               onChangeText={(text) => {
-                setuserName(text);
+                setphoneNumber(text);
               }}
             />
+            <Text style={styles.text}>Giới tính:</Text>
+            <TextInput
+              style={styles.input}
+              value={gender}
+              editable={false}
+              onChangeText={(text) => {
+                setgender(text);
+              }}
+            />
+
+            <Text style={styles.text}>Ngày sinh:</Text>
+            <TextInput
+              style={styles.input}
+              value={birthday}
+              editable={false}
+              onChangeText={(text) => {
+                setBirthday(text);
+              }}
+            />
+            <TouchableOpacity style={styles.button} onPress={updateProfile}>
+              <Text
+                style={{ fontSize: 20, color: "black", fontWeight: "bold" }}
+              >
+                Cập nhật thông tin
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={resetpass}>
+              <Text
+                style={{ fontSize: 20, color: "black", fontWeight: "bold" }}
+              >
+                Đổi mật khẩu
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-        <View style={style.info}>
-          <Text style={style.text}>Điện thoại:</Text>
-          <TextInput
-            style={style.input}
-            value={phoneNumber}
-            editable={false}
-            onChangeText={(text) => {
-              setphoneNumber(text);
-            }}
-          />
-          <Text style={style.text}>Giới tính:</Text>
-          <TextInput
-            style={style.input}
-            value={gender}
-            editable={false}
-            onChangeText={(text) => {
-              setgender(text);
-            }}
-          />
-
-          <Text style={style.text}>Ngày sinh:</Text>
-          <TextInput
-            style={style.input}
-            value={birthday}
-            editable={false}
-            onChangeText={(text) => {
-              setBirthday(text);
-            }}
-          />
-          <TouchableOpacity style={style.button} onPress={updateProfile}>
-            <Text style={{ fontSize: 20, color: "black", fontWeight: "bold" }}>
-              Cập nhật thông tin
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={style.button} onPress={resetpass}>
-            <Text style={{ fontSize: 20, color: "black", fontWeight: "bold" }}>
-              Đổi mật khẩu
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     marginTop: 5,
+    marginBottom: 80,
   },
   containerUser: {
     borderRadius: 10,
@@ -154,5 +167,14 @@ const style = StyleSheet.create({
     borderRadius: 10,
     alignSelf: "center",
     margin: 15,
+  },
+  header: {
+    width: "100%",
+    padding: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "rgb(0,145,255)",
+    flexDirection: "row",
+    height: 60,
+    alignItems: "center",
   },
 });
