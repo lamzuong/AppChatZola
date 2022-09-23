@@ -46,8 +46,5 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  body: {
-    // height: "50%",
-  },
 });
 export default styles;

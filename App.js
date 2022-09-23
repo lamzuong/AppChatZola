@@ -8,6 +8,7 @@ import SignUp from "./screens/SignUp";
 import Welcome from "./screens/Welcome";
 import Rooms from "./screens/chat/Rooms";
 import ChatRoom from "./screens/chat/ChatRoom";
+import ChatInfo from "./screens/chat/ChatInfo";
 import AddFriend from "./screens/friend/AddFriend";
 import Directory from "./screens/friend/Directory";
 import GroupFriends from "./screens/friend/GroupFriends";
@@ -89,6 +90,7 @@ export default function App() {
         ></Stack.Screen>
         <Stack.Screen name="Rooms" component={Rooms} />
         <Stack.Screen name="ChatRoom" component={ChatRoom} />
+        <Stack.Screen name="ChatInfo" component={ChatInfo} />
         <Stack.Screen name="AddFriend" component={AddFriend} />
         <Stack.Screen
           name="ResetPassword"

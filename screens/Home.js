@@ -164,6 +164,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   topTab: {
-    marginTop: 33,
+    marginTop: 25,
   },
 });

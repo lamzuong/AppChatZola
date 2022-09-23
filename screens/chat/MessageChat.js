@@ -26,7 +26,7 @@ export default function MessageChat(props) {
       <View>
         <View style={owner ? styles.txtContentOwner : styles.txtContent}>
           <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
-            Boa Hancock nhìn nứng quá ae ơi
+            Chao toan the anh em giang ho nha
           </Text>
         </View>
         <View style={styles.time}>

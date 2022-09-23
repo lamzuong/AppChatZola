@@ -16,10 +16,11 @@ import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import MessageChat from "./MessageChat";
 
-export default function ChatRoom({ route, navigation }) {
+export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
+  const navigation = useNavigation();
   return (
-    <View style={{ flex: 1, backgroundColor: "white", marginTop: 33 }}>
+    <View style={{ flex: 1, backgroundColor: "white", marginTop: 25 }}>
       <View style={styles.header}>
         <View style={{ width: "10%" }}>
           <TouchableOpacity
@@ -48,7 +49,12 @@ export default function ChatRoom({ route, navigation }) {
           <TouchableOpacity style={[styles.iconTop]}>
             <MaterialIcons name="video-call" size={35} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.iconTop]}>
+          <TouchableOpacity
+            style={[styles.iconTop]}
+            onPress={() => {
+              navigation.navigate("ChatInfo", { name: nickname, ava: avatar });
+            }}
+          >
             <Ionicons name="options" size={35} color="white" />
           </TouchableOpacity>
         </View>
