@@ -139,19 +139,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-const HeaderAddGroup = () => {
-  const navigation = useNavigation();
-  return (
-    <View style={[styles.headerAddGroup]}>
-      <TouchableOpacity
-        style={styles.iconBackAddGroup}
-        onPress={() => {
-          navigation.navigate("Home");
-        }}
-      >
-        <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
-      </TouchableOpacity>
-      <SearchBar title="Nhập tên cần tìm..." />
-    </View>
-  );
-};
