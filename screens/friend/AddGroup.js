@@ -159,7 +159,7 @@ export default function AddGroup({ navigation }, props) {
     listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
   }
   return (
-    <View>
+    <View style={{ justifyContent: "flex-end" }}>
       <FlatList
         // ListHeaderComponent={Header}
         data={listAll}
@@ -171,8 +171,8 @@ export default function AddGroup({ navigation }, props) {
           />
         )}
         keyExtractor={(item, index) => index}
-        ListFooterComponent={Footer}
       />
+      <Footer />
     </View>
   );
 }
