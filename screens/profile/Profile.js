@@ -17,7 +17,7 @@ export default function Profile({ navigation }) {
   );
   const [birthday, setBirthday] = useState("10/10/2000");
   const [gender, setgender] = useState("Nam");
-  const [phoneNumber, setphoneNumber] = useState("0987654321");
+  const [email, setemail] = useState("bui.fngyn@gmail.com");
 
   async function resetpass() {
     navigation.navigate("ResetPassword");
@@ -64,13 +64,13 @@ export default function Profile({ navigation }) {
             </View>
           </View>
           <View style={styles.info}>
-            <Text style={styles.text}>Điện thoại:</Text>
+            <Text style={styles.text}>Email:</Text>
             <TextInput
               style={styles.input}
-              value={phoneNumber}
+              value={email}
               editable={false}
               onChangeText={(text) => {
-                setphoneNumber(text);
+                setemail(text);
               }}
             />
             <Text style={styles.text}>Giới tính:</Text>

@@ -5,13 +5,11 @@ import { RadioButton } from 'react-native-paper';
 
 export default function SignUp({navigation}) {
     const [email, setemail] = useState('');
+    const [username, setusername] = useState('');
     const [name, setname] = useState('');
     const [password, setpassword] = useState('');
     const [repassword, setrepassword] = useState('');
     const [checked, setChecked] = useState(true);
-
-   
-    
 
     function conFirm(){
         Alert.alert(
@@ -32,9 +30,10 @@ export default function SignUp({navigation}) {
             <Text style={styles.signup}>Vui lòng nhập đầy đủ tên, Email và mật khẩu để đăng ký.</Text>
             <TextInput 
                 style={styles.input}
-                value={name}
-                placeholder="Nhập tên đầy đủ"
-                onChangeText={(text) => {setname(text)}}
+                value={username}
+                placeholder="Nhập Username"
+                onChangeText={(text) => {setusername(text)}}
+                keyboardType="email-address"
             />
             <TextInput 
                 style={styles.input}
@@ -42,6 +41,12 @@ export default function SignUp({navigation}) {
                 placeholder="Nhập Email"
                 onChangeText={(text) => {setemail(text)}}
                 keyboardType="email-address"
+            />
+            <TextInput 
+                style={styles.input}
+                value={name}
+                placeholder="Nhập tên đầy đủ"
+                onChangeText={(text) => {setname(text)}}
             />
             <TextInput 
                 style={styles.input}

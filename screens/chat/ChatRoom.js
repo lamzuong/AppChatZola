@@ -32,7 +32,7 @@ export default function ChatRoom({ route }) {
             <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
           </TouchableOpacity>
         </View>
-        <View style={{ width: "50%" }}>
+        <View style={{ width: "50%", marginTop:5 }}>
           <Text style={styles.nickname}>{nickname}</Text>
           <Text style={styles.statusUser}>Đang hoạt động</Text>
         </View>

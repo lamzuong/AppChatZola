@@ -195,6 +195,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f5f5f0",
   },
   imageAva: {
     height: 50,

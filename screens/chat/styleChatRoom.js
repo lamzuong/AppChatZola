@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
+    marginTop:10,
   },
   nickname: {
     marginLeft: 20,
@@ -32,6 +33,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "flex-end",
     justifyContent: "flex-end",
+    marginTop:10,
   },
   footer: {
     flexDirection: "row",
