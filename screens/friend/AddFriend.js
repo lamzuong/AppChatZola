@@ -1,15 +1,17 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import React from "react";
-import styles from "./styleAddFriend";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
 import SearchBar from "../chat/SearchBar";
 
 export default function AddFriend({ navigation }, props) {
-  const [appearX, setAppearX] = React.useState("");
   return (
-    <View style={{ marginTop: 33 }}>
+    <View style={{ marginTop: 25 }}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconBack}
@@ -19,8 +21,26 @@ export default function AddFriend({ navigation }, props) {
         >
           <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
         </TouchableOpacity>
-        <SearchBar addFr="true" />
+        <SearchBar title="Nhập email cần tìm..." />
       </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  header: {
+    width: "100%",
+    padding: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "rgb(0,145,255)",
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  iconBack: {
+    width: 40,
+    height: 40,
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+});

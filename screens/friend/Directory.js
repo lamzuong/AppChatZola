@@ -121,11 +121,14 @@ export default function Directory() {
     "Y",
     "Z",
   ];
+  const sort_ListFriends = [...listFriends].sort((a, b) =>
+    a.name > b.name ? 1 : -1
+  );
   var list = [];
   var setShow = [];
   for (let i = 0; i < listTitle.length; i++) {
     list[i] = [];
-    listFriends.forEach((element) => {
+    sort_ListFriends.forEach((element) => {
       // lọc theo chữ cái
       if (element.name.startsWith(listTitle[i])) {
         list[i].push(element);

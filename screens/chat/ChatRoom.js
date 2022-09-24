@@ -20,7 +20,7 @@ export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
   const navigation = useNavigation();
   return (
-    <View style={{ flex: 1, backgroundColor: "white", marginTop: 25 }}>
+    <View style={styles.container}>
       <View style={styles.header}>
         <View style={{ width: "10%" }}>
           <TouchableOpacity

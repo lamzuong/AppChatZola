@@ -117,7 +117,7 @@ export default function Rooms({ navigation }) {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
-        <SearchBar addFr="false" />
+        <SearchBar title="Nhập tên cần tìm..." />
         <Menu
           style={{ flex: 1, marginTop: 40 }}
           visible={visible}
@@ -147,7 +147,12 @@ export default function Rooms({ navigation }) {
             />
             <Text style={styles.iconMenu}>Thêm bạn</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuFunction} onPress={closeMenu}>
+          <TouchableOpacity
+            style={styles.menuFunction}
+            onPress={() => {
+              navigation.navigate("AddGroup");
+            }}
+          >
             <AntDesign
               name="addusergroup"
               size={24}

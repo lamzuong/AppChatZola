@@ -154,7 +154,7 @@ function ChooseTab(tab) {
       <FlatList
         data={listImg}
         renderItem={({ item }) => <GridView name={item.img} />}
-        keyExtractor={(item, index) => index}
+        // keyExtractor={(item, index) => index}
         numColumns={3}
         style={{ marginTop: 20 }}
       />

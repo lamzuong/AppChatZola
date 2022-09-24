@@ -10,7 +10,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function SearchBar(props) {
-  const addFr = props.addFr;
+  const placeholderTitle = props.title;
   const [appearX, setAppearX] = React.useState("");
   return (
     <View style={styles.txtSearch}>
@@ -21,11 +21,7 @@ export default function SearchBar(props) {
         style={{ paddingRight: 5 }}
       />
       <TextInput
-        placeholder={
-          addFr == "true"
-            ? "Nhập số điện thoại cần tìm..."
-            : "Nhập tên bạn cần tìm..."
-        }
+        placeholder={placeholderTitle}
         style={{ fontSize: 18, color: "white", width: "80%" }}
         placeholderTextColor="rgb(124,189,255)"
         value={appearX}
