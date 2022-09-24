@@ -1,21 +1,6 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-  FlatList,
-  Alert,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Checkbox } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import SearchBar from "./screens/chat/SearchBar";
 import { useWindowDimensions } from "react-native";
 
 import Home from "./screens/Home";
@@ -109,15 +94,7 @@ export default function App() {
         <Stack.Screen name="ChatRoom" component={ChatRoom} />
         <Stack.Screen name="ChatInfo" component={ChatInfo} />
         <Stack.Screen name="AddFriend" component={AddFriend} />
-        <Stack.Screen
-          name="AddGroup"
-          component={AddGroup}
-          options={{
-            headerLeft: HeaderAddGroup,
-            headerShown: true,
-            headerStyle: {},
-          }}
-        />
+        <Stack.Screen name="AddGroup" component={AddGroup} />
         <Stack.Screen
           name="ResetPassword"
           component={ResetPassword}
@@ -178,21 +155,3 @@ const HeaderAddGroup = () => {
     </View>
   );
 };
-const styles = StyleSheet.create({
-  headerAddGroup: {
-    width: "88%",
-    padding: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "rgb(0,145,255)",
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  iconBackAddGroup: {
-    width: 40,
-    height: 40,
-    borderRadius: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    marginRight: 10,
-  },
-});
