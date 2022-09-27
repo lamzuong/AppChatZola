@@ -7,10 +7,13 @@ import {
   ScrollView,
   FlatList,
   Dimensions,
+  Modal,
+  Pressable,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const listImg = [
   {
@@ -91,6 +94,7 @@ const listFile = [
 export default function ChatInfo({ navigation, route }) {
   const { name, ava } = route.params;
   const [select, setSelected] = useState("image");
+
   return (
     <View style={{ flex: 1, backgroundColor: "white", marginTop: 25 }}>
       <View style={styles.header}>
@@ -171,18 +175,51 @@ function ChooseTab(tab) {
     );
   }
 }
-const GridView = ({ name }) => (
-  <View>
-    <TouchableOpacity>
-      <Image
-        source={{
-          uri: name,
+const GridView = ({ name }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  return (
+    <View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
         }}
-        style={styles.imageItem}
-      />
-    </TouchableOpacity>
-  </View>
-);
+      >
+        <View style={styles.modalView}>
+          <Pressable
+            style={{
+              alignItems: "flex-end",
+              paddingRight: 10,
+              paddingTop: 10,
+              zIndex: 4,
+            }}
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <MaterialIcons name="clear" size={30} color="white" />
+          </Pressable>
+          <Image
+            source={{
+              uri: name,
+            }}
+            style={styles.imageShow}
+          />
+        </View>
+      </Modal>
+      <Pressable onPress={() => setModalVisible(!modalVisible)}>
+        <Image
+          source={{
+            uri: name,
+          }}
+          style={styles.imageItem}
+        />
+      </Pressable>
+    </View>
+  );
+};
 const Files = (props) => {
   return (
     <View>
@@ -242,5 +279,30 @@ const styles = StyleSheet.create({
   fileName: {
     fontSize: 17,
     marginLeft: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    backgroundColor: "black",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  imageShow: {
+    height: "100%",
+    width: "100%",
+    resizeMode: "contain",
+    marginTop: -50,
   },
 });
