@@ -1,5 +1,6 @@
 {
   "expo": {
+    "userInterfaceStyle": "automatic",
     "name": "zola",
     "slug": "zola",
     "version": "1.0.0",

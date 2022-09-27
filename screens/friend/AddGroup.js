@@ -159,7 +159,7 @@ export default function AddGroup({ navigation }, props) {
     listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
   }
   return (
-    <View style={{ justifyContent: "flex-end", marginTop: 25 }}>
+    <View style={{ justifyContent: "flex-end", marginTop: 33 }}>
       <Header />
       <FlatList
         data={listAll}

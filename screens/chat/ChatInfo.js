@@ -96,7 +96,7 @@ export default function ChatInfo({ navigation, route }) {
   const [select, setSelected] = useState("image");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", marginTop: 25 }}>
+    <View style={{ flex: 1, backgroundColor: "white", marginTop: 33 }}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconBack}
@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: "rgb(0,145,255)",
     flexDirection: "row",
+    
   },
   imgAva: {
     height: 120,

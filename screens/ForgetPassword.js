@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity,TextInput, Image, Alert} from 'react-native';
 import { RadioButton } from 'react-native-paper';
-
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ForgetPassword({navigation}) {
     const [email, setemail] = useState('');
@@ -9,7 +9,7 @@ export default function ForgetPassword({navigation}) {
     function conFirm(){
         Alert.alert(
           "Xác nhận Email",
-          "Chúng tôi sẽ gửi mã xác thực đến Email trên. Vui lòng xác nhận Email này là đúng.",
+          `Chúng tôi sẽ gửi mã xác thực đến Email: \n \t\t${email.toString()} \n Vui lòng xác nhận Email này là đúng.`,
           [
             {
               text: "Thay đổi",
@@ -24,13 +24,26 @@ export default function ForgetPassword({navigation}) {
         <View style={styles.container}>
             <Text style={styles.signup}>Vui lòng nhập Email để lấy lại mật khẩu.</Text>
             
-            <TextInput 
-                style={styles.input}
-                value={email}
-                placeholder="Nhập Email"
-                onChangeText={(text) => {setemail(text)}}
-                keyboardType="email-address"
-            />
+            <View  style={styles.input}>
+                <TextInput 
+                    style={{ fontSize: 18, color: "black", width: "90%" }}
+                    value={email}
+                    placeholder="Nhập Email"
+                    placeholderTextColor='gray'
+                    onChangeText={(text) => {setemail(text)}}
+                    keyboardType="email-address"
+                />
+                {email && (
+                    <TouchableOpacity
+                    style={{marginTop:15}}
+                    onPress={() => {
+                        setemail("");
+                    }}
+                    >
+                    <MaterialIcons name="clear" size={24} color="black" />
+                    </TouchableOpacity>
+                )}
+            </View>
             
             <TouchableOpacity style={styles.button} onPress={conFirm}>
                 <Image source={require('../assets/next.png')} style={styles.image}></Image>
@@ -76,6 +89,7 @@ const styles = StyleSheet.create({
         borderRadius:10,
         paddingStart:15,
         backgroundColor: "white",
+        flexDirection: "row",
     },
     button: {
         backgroundColor: '#0091ff',
