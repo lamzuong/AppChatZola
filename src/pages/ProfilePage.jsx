@@ -4,7 +4,7 @@ import Profile from '../components/Profile/Profile';
 
 const Profilepage = (props) => {
     return (
-        <div style={{ marginLeft: '100px' }}>
+        <div>
             <Profile />
         </div>
     );

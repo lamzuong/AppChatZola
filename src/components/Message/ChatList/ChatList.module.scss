@@ -1,9 +1,9 @@
 @use '../../../scss/' as *;
 
 .wrapper {
-    width: 300px;
+    width: 16.2%;
     height: 100%;
-    @include flex(unset, flex-start);
+    @include flex(center, space-between);
     flex-direction: column;
 }
 
@@ -22,7 +22,7 @@
 .chatList {
     width: 100%;
     min-height: 50px;
-    height: calc(100vh - 152px);
+    height: calc(100vh - 164px);
     overflow-y: auto;
     overscroll-behavior: contain;
 }
