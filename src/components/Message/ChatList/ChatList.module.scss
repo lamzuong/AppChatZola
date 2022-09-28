@@ -1,7 +1,7 @@
 @use '../../../scss/' as *;
 
 .wrapper {
-    width: 16.2%;
+    width: 300px;
     height: 100%;
     @include flex(center, space-between);
     flex-direction: column;
