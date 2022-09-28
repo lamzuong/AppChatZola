@@ -55,10 +55,8 @@ router.post('/register' ,(req, res) => {
             Item: {
                 id: result.userSub,
                 fullName: '',
-                phoneNumber: '',
                 email: email,
                 birthdate: '',
-                address: '',
                 img: '',
                 gender: '',
                 fiends: []
