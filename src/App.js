@@ -16,17 +16,20 @@ function App() {
                                 key={i}
                                 path={route.path}
                                 element={
-                                    <>
+                                    <div className="wrapper">
                                         {route.path !== '/login' &&
                                             route.path !== '/register' &&
                                             route.path !== '/forgot-password' &&
                                             route.path !== '/forgot-password/confirm' && <Navigation />}
-                                        <Page />
-                                    </>
+                                        <div className="page">
+                                            <Page />
+                                        </div>
+                                    </div>
                                 }
                             />
                         );
                     })}
+                    {/* kjkjk */}
                 </Routes>
             </Router>
         </div>
