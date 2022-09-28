@@ -7,6 +7,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import Constants from "expo-constants";
 
 import Rooms from "./chat/Rooms";
 import Friends from "./friend/Friends";
@@ -164,6 +165,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   topTab: {
-    marginTop: 33,
+    marginTop: Constants.statusBarHeight,
   },
 });

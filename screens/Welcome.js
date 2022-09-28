@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  StatusBar,
+  ScrollView,
 } from "react-native";
+import Constants from "expo-constants";
 
 export default function Welcome({ navigation }) {
   function logIn() {
@@ -23,7 +26,7 @@ export default function Welcome({ navigation }) {
 
       <Image
         source={require("../assets/icon.png")}
-        style={{ width: "100%", height: 300, marginBottom: 45 }}
+        style={{ width: "100%", height: 300, marginBottom: 30 }}
       ></Image>
 
       <TouchableOpacity style={styles.buttonSignIn} onPress={logIn}>
@@ -44,6 +47,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
+    marginTop: Constants.statusBarHeight,
   },
   zola: {
     color: "#0091ff",
@@ -51,7 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     textAlign: "center",
     paddingTop: 45,
-    paddingBottom: 45,
+    paddingBottom: 30,
   },
 
   buttonSignIn: {

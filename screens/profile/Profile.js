@@ -7,9 +7,11 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Button
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+
 export default function Profile({ navigation }) {
   const [userName, setuserName] = useState("Anya");
   const [avatar, setavatar] = useState(
@@ -18,6 +20,9 @@ export default function Profile({ navigation }) {
   const [birthday, setBirthday] = useState("10/10/2000");
   const [gender, setgender] = useState("Nam");
   const [email, setemail] = useState("bui.fngyn@gmail.com");
+  
+  const [date, setDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
 
   async function resetpass() {
     navigation.navigate("ResetPassword");
@@ -92,6 +97,7 @@ export default function Profile({ navigation }) {
                 setBirthday(text);
               }}
             />
+
             <TouchableOpacity style={styles.button} onPress={updateProfile}>
               <Text
                 style={{ fontSize: 20, color: "black", fontWeight: "bold" }}
@@ -227,4 +233,5 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
   },
+  
 });

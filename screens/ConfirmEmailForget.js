@@ -1,7 +1,7 @@
 import React, { useEffect,useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity,TextInput, Image, Alert} from 'react-native';
 import { RadioButton } from 'react-native-paper';
-
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ConfirmEmailForget({navigation}) {
     
@@ -15,12 +15,26 @@ export default function ConfirmEmailForget({navigation}) {
     return (
         <View style={styles.container}>
             <Text style={styles.signup}>Vui lòng không chia sẽ mã xác thực để tránh mất tài khoản.</Text>
-            <TextInput 
-                style={styles.input}
-                value={num}
-                placeholder="Nhập mã xác thực"
-                onChangeText={(text) => {setNum(text)}}
-            />
+            <View  style={styles.input}>
+                <TextInput 
+                    style={{ fontSize: 18, color: "black", width: "90%" }}
+                    value={num}
+                    placeholder="Nhập mã xác thực"
+                    placeholderTextColor='gray'
+                    onChangeText={(text) => {setNum(text)}}
+                    
+                />
+                {num && (
+                    <TouchableOpacity
+                    style={{marginTop:15}}
+                    onPress={() => {
+                        setNum("");
+                    }}
+                    >
+                    <MaterialIcons name="clear" size={24} color="black" />
+                    </TouchableOpacity>
+                )}
+            </View>
             
 
             <TouchableOpacity style={styles.button} onPress = {toRecover}>
@@ -67,6 +81,7 @@ const styles = StyleSheet.create({
         borderRadius:10,
         paddingStart:15,
         backgroundColor: "white",
+        flexDirection: "row",
     },
     button: {
         backgroundColor: '#0091ff',

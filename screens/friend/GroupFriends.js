@@ -66,17 +66,12 @@ export default function GroupFriends() {
       name: "Nhóm Tinder",
     },
   ];
-  
+
   return (
     <View>
       <ScrollView>
         {listGroups.map((e, i) => (
-          <ItemFriend
-            key={i}
-            id={e.id}
-            ava={e.ava}
-            name={e.name}
-          />
+          <ItemFriend key={i} id={e.id} ava={e.ava} name={e.name} />
         ))}
       </ScrollView>
     </View>
@@ -110,8 +105,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderWidth: 1,
     borderColor: "white",
-    borderBottomWidth: 1,
-    borderBottomColor: "#f5f5f0",
   },
   imageAva: {
     height: 50,
