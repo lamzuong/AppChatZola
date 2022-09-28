@@ -64,7 +64,9 @@ export default function UpdateProfile() {
                     </TouchableOpacity>
                 )}
             </View>
-            <View  style={styles.input}>
+            <TouchableOpacity  style={styles.input}
+                onPress={() => {showDatePicker()}}
+            >
                 <TextInput 
                     style={{ fontSize: 18, color: "black", width: "90%" }}
                     value={birthday}
@@ -90,7 +92,7 @@ export default function UpdateProfile() {
                         color="black"
                         />
                 </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
             
             <View style={styles.gender}>
                 <RadioButton
