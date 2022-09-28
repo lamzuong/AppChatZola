@@ -59,7 +59,7 @@
     margin-bottom: 16px;
 }
 
-.btn-login {
+.btn-register {
     height: 44px;
     line-height: 44px;
     padding: 0 20px;
@@ -74,37 +74,4 @@
     &:hover {
         background-color: #0184e0;
     }
-}
-
-.more {
-    @include flex(center, center);
-    margin-top: 12px;
-}
-
-.forget-passwword {
-    font-size: 12px;
-    color: #000;
-    &:hover {
-        color: #0184e0;
-        text-decoration: underline;
-    }
-}
-
-.no-account {
-    margin-top: 18px;
-    span {
-        color: #888;
-    }
-    a {
-        color: #0190f3;
-        text-decoration: underline;
-        &:hover {
-            color: #0184e0;
-        }
-    }
-}
-
-.active {
-    font-weight: bold !important;
-    color: #000 !important;
 }

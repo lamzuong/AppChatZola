@@ -111,16 +111,14 @@ const ChatDetails = (props) => {
                             icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
                             title="nhom5.doc"
                         />
-                        <ButtonSeeAllFile />
-                    </StoreItem>
-                    <StoreItem title="Link">
                         <ListViewItem
-                            icon={<i className="bx bx-link-alt" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                            title="iuh.edu.vn"
+                            icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
+                            title="nhom5.doc"
                         />
+
                         <ListViewItem
-                            icon={<i className="bx bx-link-alt" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                            title="iuh.edu.vn"
+                            icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
+                            title="nhom5.doc"
                         />
                         <ButtonSeeAllFile />
                     </StoreItem>

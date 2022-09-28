@@ -17,7 +17,10 @@ function App() {
                                 path={route.path}
                                 element={
                                     <>
-                                        {route.path !== '/login' && <Navigation />}
+                                        {route.path !== '/login' &&
+                                            route.path !== '/register' &&
+                                            route.path !== '/forgot-password' &&
+                                            route.path !== '/forgot-password/confirm' && <Navigation />}
                                         <Page />
                                     </>
                                 }

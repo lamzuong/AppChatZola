@@ -28,10 +28,6 @@ const items = [
         id: 2,
         name: 'Files',
     },
-    {
-        id: 3,
-        name: 'Links',
-    },
 ];
 
 const ButtonSeeAllFile = () => {

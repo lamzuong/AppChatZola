@@ -1,3 +1,5 @@
+import MessUser from '../components/Message/ChatContent/Mess/MessUser';
+
 const imgStore = [
     {
         id: 1,
@@ -5,7 +7,7 @@ const imgStore = [
     },
     {
         id: 2,
-        img: 'https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg',
+        img: 'https://hinhnen123.com/wp-content/uploads/2021/06/hinh-nen-dien-thoai-4.jpg',
     },
     {
         id: 3,

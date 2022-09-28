@@ -38,7 +38,7 @@ const Input = (props) => {
                     placeholder="Message"
                 />
             </form>
-            <div className={cx('button')}>
+            <div className={cx('button')} onClick={() => alert('khkhk')}>
                 <i className="bx bxl-telegram" style={{ color: '#0091ff' }}></i>
             </div>
         </div>

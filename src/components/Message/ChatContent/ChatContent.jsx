@@ -29,6 +29,8 @@ const ChatContent = (props) => {
                         <MessUser ava={messContent.ava} />
                         <MessUser own={true} />
                         <MessUser own={true} />
+                        <MessUser ava={messContent.ava} />
+                        <MessUser ava={messContent.ava} />
                     </div>
                     <Input />
                 </>
