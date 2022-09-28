@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import style from './Contact.module.scss';
 import AccountItem from '../AccountItem/AccountItem';
+import { useState } from 'react';
 
 const cx = classNames.bind(style);
 
@@ -69,14 +70,80 @@ const user = [
     },
 ];
 
+const group = [
+    {
+        id: 'a',
+        ava: 'https://itviec.com/blog/wp-content/uploads/2015/07/javascript.png',
+        name: 'JavaScript',
+    },
+    {
+        id: 'b',
+        ava: 'https://itviec.com/blog/wp-content/uploads/2015/07/python.jpg',
+        name: 'Python',
+    },
+    {
+        id: 'c',
+        ava: 'https://ghouse.com.vn/wp-content/uploads/2019/07/ghouse-huongdan-c.jpg',
+        name: 'C++',
+    },
+    {
+        id: 'd',
+        ava: 'https://itviec.com/blog/wp-content/uploads/2015/07/java.jpg',
+        name: 'Java',
+    },
+    {
+        id: 'e',
+        ava: 'https://itviec.com/blog/wp-content/uploads/2015/07/php.png',
+        name: 'PHP',
+    },
+];
+
+const category = [
+    {
+        id: 1,
+        display: <i className="bx bxs-user-plus" style={{ color: 'rgba(255,255,255)' }}></i>,
+        content: 'Danh sách bạn bè',
+    },
+    {
+        id: 2,
+        display: <i className="bx bxs-group" style={{ color: 'rgba(255,255,255)' }}></i>,
+        content: 'Danh sách nhóm',
+    },
+];
+
 const Contact = (props) => {
+    const [activeId, setActiveId] = useState(1);
     return (
         <div className={cx('wrapper')}>
-            <h2 style={{ marginLeft: '10px' }}>Friends</h2>
+            <div className={cx('sidebar')}>
+                <h2 style={{ marginLeft: '30px', marginTop: '10px' }}>Liên lạc</h2>
+                <ul className={cx('category')}>
+                    {category.map((e, i) => (
+                        <li key={i} className={cx(activeId === e.id ? 'active' : '')} onClick={() => setActiveId(e.id)}>
+                            <div className={cx('icon')}>{e.display}</div>
+                            <h4>{e.content}</h4>
+                        </li>
+                    ))}
+                </ul>
+            </div>
             <div className={cx('content')}>
-                {user.map((u, i) => (
-                    <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />
-                ))}
+                <ul className={cx('header')}>
+                    {category.map((e, i) =>
+                        activeId === e.id ? (
+                            <li key={i}>
+                                <div className={cx('icon')}>{e.display}</div>
+                                <h4>{e.content}</h4>
+                            </li>
+                        ) : (
+                            ''
+                        ),
+                    )}
+                </ul>
+                <div className={cx('list')}>
+                    {activeId === 1
+                        ? user.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)
+                        : group.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)}
+                </div>
             </div>
         </div>
     );

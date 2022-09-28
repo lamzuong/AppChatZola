@@ -2,10 +2,22 @@
 
 .wrapper {
     @include flex(center, space-between);
+    // position: relative;
     width: 100%;
     background-color: #fff;
     padding: 5px;
     z-index: 1;
+
+    // &::before {
+    //     position: absolute;
+    //     content: '';
+    //     top: -30px;
+    //     left: 50px;
+    //     width: 60px;
+    //     height: 30px;
+    //     border-radius: 15px;
+    //     background-color: rgb(245, 241, 241);
+    // }
 }
 
 .container {

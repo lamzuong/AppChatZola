@@ -4,7 +4,7 @@ import Contact from '../components/Contact/Contact';
 
 const Friends = (props) => {
     return (
-        <div style={{ marginLeft: '100px' }}>
+        <div>
             <Contact />
         </div>
     );

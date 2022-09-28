@@ -1,7 +1,7 @@
 @use '../../../scss' as *;
 
 .wrapper {
-    width: 344px;
+    width: 18.66%;
     background-color: #eeeff2;
 }
 
@@ -18,7 +18,7 @@
 .wrapper-info {
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 68px);
+    max-height: calc(100vh - 80px);
     overflow: auto;
 }
 

@@ -4,31 +4,31 @@
     @include flex(unset, center);
     flex-direction: column;
     border-bottom: 1px solid #ccc;
-    background-color: rgb(245, 241, 241);
+    border-right: 1px solid #ccc;
+    background-color: transparent;
     z-index: 1;
 
     h2 {
-        margin-left: 9px;
-        margin-bottom: -12px;
+        margin-left: 30px;
     }
 }
 
 .container {
     height: 43px;
     @include flex(center, space-around);
+    margin: 0 2px;
 }
 
 .search {
-    position: relative;
+    @include flex(center, flex-start);
+    width: 85%;
     border-radius: 10px;
     border: 1.5px solid;
     margin-left: 5px;
 
     input {
-        flex: 1;
-        height: 100%;
-        margin-left: 9px;
-        margin-top: 4px;
+        width: 100%;
+        margin: 4px 0 4px 9px;
         border: none;
         font-size: 1.2rem;
         caret-color: $main-color;
@@ -36,9 +36,7 @@
     }
 
     .btnSearch {
-        position: absolute;
-        right: 5px;
-        top: 4px;
+        margin: 2px 5px 0 2px;
     }
 }
 
