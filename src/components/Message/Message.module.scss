@@ -1,6 +1,5 @@
 @use '../../scss/' as *;
 
 .wrapper {
-    height: 100;
     @include flex-1(space-between);
 }
