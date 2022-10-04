@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   },
   chatInput: {
     height: 40,
-    width: "85%",
     fontSize: 16,
     borderWidth: 1,
     borderColor: "rgb(0,145,255)",

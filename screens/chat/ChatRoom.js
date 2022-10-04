@@ -20,6 +20,11 @@ export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
   const navigation = useNavigation();
   const [valueInput, setValueInput] = React.useState("");
+  const [nameInChat, setNameInChat] = React.useState(nickname);
+  const strName = new String(nameInChat);
+  if (strName.length > 15) {
+    setNameInChat(strName.slice(0, 12) + "...");
+  }
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -34,7 +39,7 @@ export default function ChatRoom({ route }) {
           </TouchableOpacity>
         </View>
         <View style={{ width: "50%", marginTop: 5 }}>
-          <Text style={styles.nickname}>{nickname}</Text>
+          <Text style={styles.nickname}>{nameInChat}</Text>
           <Text style={styles.statusUser}>Đang hoạt động</Text>
         </View>
         <View
@@ -97,10 +102,11 @@ export default function ChatRoom({ route }) {
             underlineColorAndroid="transparent"
             placeholder="Nhập tin nhắn..."
             multiline
-            numberOfLines={4}
+            numberOfLines={99}
             onChangeText={(valueInput) => setValueInput(valueInput)}
             value={valueInput}
-          ></TextInput>
+          />
+
           <TouchableOpacity style={[styles.iconBottom, { marginTop: 3 }]}>
             <Ionicons name="send" size={30} color="rgb(0,145,255)" />
           </TouchableOpacity>
