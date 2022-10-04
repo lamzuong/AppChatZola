@@ -73,7 +73,7 @@ export default function Directory() {
     {
       id: "11",
       ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-      name: "Nam Quoc Son Ha Nam De Cu",
+      name: "Nam Quốc Sơn Hà Nam Đế Cư Tuyệt Nhiên Định Phận Tại Thiên Thư",
       message: "dcm",
     },
     {
@@ -184,6 +184,11 @@ const ViewListFriend = (props) => {
   );
 };
 const ItemFriend = (props) => {
+  const [showName, setShowName] = React.useState(props.name);
+  const strName = new String(showName);
+  if (strName.length > 25) {
+    setShowName(strName.slice(0, 22) + "...");
+  }
   return (
     <TouchableOpacity>
       <View style={styles.items}>
@@ -193,7 +198,7 @@ const ItemFriend = (props) => {
           }}
           style={styles.imageAva}
         />
-        <Text style={styles.nickname}>{props.name}</Text>
+        <Text style={styles.nickname}>{showName}</Text>
       </View>
     </TouchableOpacity>
   );

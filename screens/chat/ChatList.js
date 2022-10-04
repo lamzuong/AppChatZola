@@ -5,6 +5,11 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function ChatList(props) {
   const navigation = useNavigation();
+  const [nameInChat, setNameInChat] = React.useState(props.name);
+  const strName = new String(nameInChat);
+  if (strName.length > 25) {
+    setNameInChat(strName.slice(0, 22) + "...");
+  }
   return (
     <View style={{ backgroundColor: "white" }}>
       <TouchableOpacity
@@ -24,7 +29,7 @@ export default function ChatList(props) {
             style={styles.imageAva}
           />
           <View style={styles.user}>
-            <Text style={styles.nickname}>{props.name}</Text>
+            <Text style={styles.nickname}>{nameInChat}</Text>
             <Text style={styles.chatLastTime}>{props.mess}</Text>
           </View>
         </View>

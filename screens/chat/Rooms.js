@@ -80,7 +80,7 @@ const mess = [
   {
     id: "11",
     ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-    name: "Nam Quoc Son Ha Nam De Cu",
+    name: "Nam Quốc Sơn Hà Nam Đế Cư Tuyệt Nhiên Định Phận Tại Thiên Thư",
     message: "dcm",
   },
   {
