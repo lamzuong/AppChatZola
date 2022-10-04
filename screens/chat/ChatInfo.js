@@ -9,6 +9,7 @@ import {
   Dimensions,
   Modal,
   Pressable,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -96,7 +97,13 @@ export default function ChatInfo({ navigation, route }) {
   const [select, setSelected] = useState("image");
 
   return (
-    <View style={{ flex: 1, backgroundColor: "white", marginTop: 33 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "white",
+        marginTop: StatusBar.currentHeight,
+      }}
+    >
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconBack}
@@ -237,7 +244,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     backgroundColor: "rgb(0,145,255)",
     flexDirection: "row",
-    
   },
   imgAva: {
     height: 120,
@@ -299,7 +305,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-
   imageShow: {
     height: "100%",
     width: "100%",

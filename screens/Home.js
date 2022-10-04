@@ -136,18 +136,15 @@ const TopNavigator = () => {
       style={styles.topTab}
       screenOptions={{
         tabBarActiveTintColor: "white",
-        tabBarInactiveTintColor: "white",
-        tabBarLabelStyle: { fontSize: 15, fontWeight: "bold" },
-        tabBarActiveBackgroundColor: "white",
-        tabBarInactiveBackgroundColor: "white",
+        tabBarLabelStyle: { fontSize: 16, fontWeight: "bold" },
+        tabBarPressColor: "#000033",
+
         tabBarStyle: [
           {
-            display: "flex",
+            justifyContent: "center",
             backgroundColor: "#0091ff",
             height: 60,
-            paddingTop: 7,
           },
-          null,
         ],
       }}
     >
@@ -158,7 +155,6 @@ const TopNavigator = () => {
 };
 
 const styles = StyleSheet.create({
-  icon: {},
   label: {
     color: "white",
     fontSize: 13,

@@ -19,6 +19,7 @@ import MessageChat from "./MessageChat";
 export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
   const navigation = useNavigation();
+  const [valueInput, setValueInput] = React.useState("");
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -32,7 +33,7 @@ export default function ChatRoom({ route }) {
             <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
           </TouchableOpacity>
         </View>
-        <View style={{ width: "50%", marginTop:5 }}>
+        <View style={{ width: "50%", marginTop: 5 }}>
           <Text style={styles.nickname}>{nickname}</Text>
           <Text style={styles.statusUser}>Đang hoạt động</Text>
         </View>
@@ -95,6 +96,10 @@ export default function ChatRoom({ route }) {
             style={styles.chatInput}
             underlineColorAndroid="transparent"
             placeholder="Nhập tin nhắn..."
+            multiline
+            numberOfLines={4}
+            onChangeText={(valueInput) => setValueInput(valueInput)}
+            value={valueInput}
           ></TextInput>
           <TouchableOpacity style={[styles.iconBottom, { marginTop: 3 }]}>
             <Ionicons name="send" size={30} color="rgb(0,145,255)" />

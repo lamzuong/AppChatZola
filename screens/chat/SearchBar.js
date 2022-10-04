@@ -27,6 +27,7 @@ export default function SearchBar(props) {
         value={appearX}
         onChangeText={(appearX) => setAppearX(appearX)}
       />
+
       {appearX && (
         <TouchableOpacity
           onPress={() => {

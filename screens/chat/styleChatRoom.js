@@ -1,13 +1,14 @@
-import { StyleSheet } from "react-native";
+import { StatusBar, StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    marginTop: 25,
+    marginTop: StatusBar.currentHeight,
   },
   header: {
     width: "100%",
-    padding: 10,
+    paddingTop: 2,
+    paddingBottom: 10,
     paddingHorizontal: 15,
     backgroundColor: "rgb(0,145,255)",
     flexDirection: "row",
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
     justifyContent: "center",
-    marginTop:10,
+    marginTop: 7,
   },
   nickname: {
     marginLeft: 20,
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: "flex-end",
     justifyContent: "flex-end",
-    marginTop:10,
+    marginTop: 7,
   },
   footer: {
     flexDirection: "row",
