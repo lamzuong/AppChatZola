@@ -21,26 +21,28 @@ export default function Welcome({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
-      <StatusBar animated={true} backgroundColor="rgb(220,220,220)" />
-      <Text style={styles.zola}>Zola</Text>
-      <Image
-        source={require("../assets/icon.png")}
-        style={{ width: "100%", height: 300, marginBottom: 30 }}
-      ></Image>
+    <ScrollView style={styles.container}>
+      <View>
+        <StatusBar animated={true} backgroundColor="rgb(220,220,220)" />
+        <Text style={styles.zola}>Chào mừng bạn đã đến với Zola !!</Text>
+        <Image
+          source={require("../assets/Zola.png")}
+          style={{ width: "100%", height: 300, marginBottom: 30 }}
+        ></Image>
 
-      <TouchableOpacity style={styles.buttonSignIn} onPress={logIn}>
-        <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
-          ĐĂNG NHẬP
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonSignIn} onPress={logIn}>
+          <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
+            ĐĂNG NHẬP
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.buttonSignUp} onPress={signUp}>
-        <Text style={{ fontSize: 20, color: "black", fontWeight: "bold" }}>
-          ĐĂNG KÝ
-        </Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.buttonSignUp} onPress={signUp}>
+          <Text style={{ fontSize: 20, color: "black", fontWeight: "bold" }}>
+            ĐĂNG KÝ
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
@@ -50,11 +52,11 @@ const styles = StyleSheet.create({
     // marginTop: Constants.statusBarHeight,
   },
   zola: {
-    color: "#0091ff",
-    fontWeight: "bold",
-    fontSize: 50,
+    // color: "#0091ff",
+    // fontWeight: "bold",
+    fontSize: 30,
     textAlign: "center",
-    paddingTop: 45,
+    paddingTop: 20,
     paddingBottom: 30,
   },
 
@@ -82,5 +84,6 @@ const styles = StyleSheet.create({
     borderColor: "#f3f4f9",
     borderRadius: 100,
     alignSelf: "center",
+    marginBottom: 20,
   },
 });
