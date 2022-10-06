@@ -92,7 +92,11 @@ export default function App() {
         ></Stack.Screen>
         <Stack.Screen name="Rooms" component={Rooms} />
         <Stack.Screen name="ChatRoom" component={ChatRoom} />
-        <Stack.Screen name="ChatInfo" component={ChatInfo} />
+        <Stack.Screen
+          name="ChatInfo"
+          component={ChatInfo}
+          options={{ animation: "slide_from_right" }}
+        />
         <Stack.Screen name="AddFriend" component={AddFriend} />
         <Stack.Screen name="AddGroup" component={AddGroup} />
         <Stack.Screen

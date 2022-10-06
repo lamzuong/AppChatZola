@@ -22,8 +22,8 @@ export default function Welcome({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar animated={true} backgroundColor="rgb(220,220,220)" />
       <Text style={styles.zola}>Zola</Text>
-
       <Image
         source={require("../assets/icon.png")}
         style={{ width: "100%", height: 300, marginBottom: 30 }}
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
-    marginTop: Constants.statusBarHeight,
+    // marginTop: Constants.statusBarHeight,
   },
   zola: {
     color: "#0091ff",

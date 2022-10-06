@@ -133,7 +133,6 @@ export default function Home() {
 const TopNavigator = () => {
   return (
     <TopTab.Navigator
-      style={styles.topTab}
       screenOptions={{
         tabBarActiveTintColor: "white",
         tabBarLabelStyle: { fontSize: 16, fontWeight: "bold" },

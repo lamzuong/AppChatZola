@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  StatusBar,
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import { EvilIcons } from "@expo/vector-icons";
@@ -27,6 +28,7 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.login}>
         Vui lòng nhập Email và mật khẩu để đăng nhập.
       </Text>

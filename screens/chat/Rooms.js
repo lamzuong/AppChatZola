@@ -5,6 +5,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import ChatList from "./ChatList";
 import styles from "./styleRooms";
@@ -116,6 +117,7 @@ export default function Rooms({ navigation }) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <View style={styles.header}>
         <SearchBar title="Nhập tên cần tìm..." />
         <Menu
