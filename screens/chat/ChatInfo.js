@@ -101,7 +101,6 @@ export default function ChatInfo({ navigation, route }) {
       style={{
         flex: 1,
         backgroundColor: "white",
-        marginTop: StatusBar.currentHeight,
       }}
     >
       <View style={styles.header}>
