@@ -7,7 +7,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styleChatRoom";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,6 +25,21 @@ export default function ChatRoom({ route }) {
   if (strName.length > 15) {
     setNameInChat(strName.slice(0, 12) + "...");
   }
+
+  const [widthInput, setWidthInput] = useState("80%");
+  const [hiddenIcon, setHiddenIcon] = useState(false);
+  const [hiddenNext, setHiddenNext] = useState(true);
+  useEffect(() => {
+    if (valueInput === "") {
+      setWidthInput("73%");
+      setHiddenIcon(false);
+      setHiddenNext(true);
+    } else if (valueInput != "") {
+      setWidthInput("92%");
+      setHiddenIcon(true);
+      setHiddenNext(false);
+    }
+  }, [valueInput]);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -81,22 +96,39 @@ export default function ChatRoom({ route }) {
       </ScrollView>
 
       <View style={styles.footer}>
-        <View style={{ width: "27%", flexDirection: "row", marginTop: 5 }}>
-          <TouchableOpacity>
-            <MaterialIcons name="image" size={30} color="rgb(0,145,255)" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBottom}>
-            <AntDesign name="camera" size={30} color="rgb(0,145,255)" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBottom}>
+        {hiddenIcon ? null : (
+          <View style={{ width: "27%", flexDirection: "row", marginTop: 5 }}>
+            <TouchableOpacity>
+              <MaterialIcons name="image" size={30} color="rgb(0,145,255)" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconBottom}>
+              <AntDesign name="camera" size={30} color="rgb(0,145,255)" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconBottom}>
+              <MaterialIcons
+                name="keyboard-voice"
+                size={30}
+                color="rgb(0,145,255)"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+        {hiddenNext ? null : (
+          <TouchableOpacity
+            onPress={() => {
+              setWidthInput("73%");
+              setHiddenIcon(false);
+              setHiddenNext(true);
+            }}
+          >
             <MaterialIcons
-              name="keyboard-voice"
-              size={30}
+              name="navigate-next"
+              size={40}
               color="rgb(0,145,255)"
             />
           </TouchableOpacity>
-        </View>
-        <View style={{ width: "73%", flexDirection: "row" }}>
+        )}
+        <View style={{ width: widthInput, flexDirection: "row" }}>
           <TextInput
             style={styles.chatInput}
             underlineColorAndroid="transparent"
@@ -105,6 +137,11 @@ export default function ChatRoom({ route }) {
             numberOfLines={99}
             onChangeText={(valueInput) => setValueInput(valueInput)}
             value={valueInput}
+            onPressIn={() => {
+              setWidthInput("92%");
+              setHiddenIcon(true);
+              setHiddenNext(false);
+            }}
           />
 
           <TouchableOpacity style={[styles.iconBottom, { marginTop: 3 }]}>

@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     padding: 10,
+    justifyContent: "flex-end",
   },
   iconBottom: {
     marginLeft: 5,
