@@ -3,16 +3,22 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
 import styles from './Login.module.scss';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Input from '../../components/Input/Input';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
 const Login = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    console.log(email, password);
+    const handleLogin = async (e, userCredential, dispatch) => {
+        e.preventDefault();
+        try {
+            const res = await axios.post('/');
+        } catch (error) {}
+    };
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -35,17 +41,19 @@ const Login = (props) => {
                             <Input
                                 type="text"
                                 placeholder="Email hoặc username"
-                                icon={<i class="bx bxs-envelope"></i>}
+                                icon={<i className="bx bxs-envelope"></i>}
                                 data={setEmail}
                             />
                             <Input
                                 type="password"
                                 placeholder="Mật khẩu"
-                                icon={<i class="bx bxs-lock"></i>}
+                                icon={<i className="bx bxs-lock"></i>}
                                 data={setPassword}
                             />
                             <div style={{ padding: '4px' }}></div>
-                            <button className={cx('btn-login')}>Đăng nhập với mật khẩu</button>
+                            <button className={cx('btn-login')} onClick={handleLogin}>
+                                Đăng nhập với mật khẩu
+                            </button>
                             <div className={cx('more')}>
                                 <Link to="/forgot-password" className={cx('forget-passwword')}>
                                     Quên mật khẩu?
