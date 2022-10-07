@@ -19,46 +19,50 @@ const listFriends = [
     id: "1",
     ava: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
     name: "Phúc Du",
+    message: "hello",
   },
   {
     id: "2",
     ava: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
     name: "Phuc Nguyen",
+    message: "hello",
   },
   {
     id: "3",
     ava: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
     name: "Minh Vuong M4U",
+    message: "hello",
   },
   {
     id: "4",
     ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
     name: "Nam Zuong",
+    message: "hello",
   },
   {
     id: "5",
     ava: "https://i.pinimg.com/280x280_RS/43/cd/7c/43cd7c65d590d2f41c05a23f3dfe82d4.jpg",
-    name: "Ban Nuoc",
+    name: "Trung Quoc",
   },
   {
     id: "6",
     ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-    name: "Ân Nguyễn",
+    name: "Abalatrap",
   },
   {
     id: "7",
     ava: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-    name: "Phuc Lon",
+    name: "Watson Dr.",
   },
   {
     id: "8",
     ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-    name: "Nguyễn Lữ",
+    name: "Nguyen",
   },
   {
     id: "9",
     ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-    name: "Quoc",
+    name: "Quất",
   },
   {
     id: "10",
@@ -68,37 +72,27 @@ const listFriends = [
   {
     id: "11",
     ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-    name: "Nam",
+    name: "Nam Quốc",
   },
   {
     id: "12",
     ava: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-    name: "Phuc Cat",
+    name: "Phuc",
   },
   {
     id: "13",
     ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-    name: "Nguyen Hue",
+    name: "Ân Nguyen",
   },
   {
     id: "14",
     ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-    name: "Quoc Te",
+    name: "Lam Quoc",
   },
   {
     id: "15",
     ava: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-    name: "Vuong Quoc",
-  },
-  {
-    id: "16",
-    ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-    name: "Nguyen Trai",
-  },
-  {
-    id: "17",
-    ava: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
-    name: "Zennd",
+    name: "Chinh Vuong",
   },
 ];
 const listTitle = [
@@ -159,7 +153,7 @@ export default function AddGroup({ navigation }, props) {
     listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
   }
   return (
-    <View style={{ justifyContent: "flex-end", marginTop: 33 }}>
+    <View style={{ justifyContent: "flex-end"}}>
       <Header />
       <FlatList
         data={listAll}

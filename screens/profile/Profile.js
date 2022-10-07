@@ -19,7 +19,7 @@ export default function Profile({ navigation }) {
   );
   const [birthday, setBirthday] = useState("10/10/2000");
   const [gender, setgender] = useState("Nam");
-  const [email, setemail] = useState("bui.fngyn@gmail.com");
+  const [email, setemail] = useState("abc123@gmail.com");
   
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)

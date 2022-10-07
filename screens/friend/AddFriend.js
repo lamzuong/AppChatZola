@@ -11,7 +11,7 @@ import SearchBar from "../chat/SearchBar";
 
 export default function AddFriend({ navigation }, props) {
   return (
-    <View style={{ marginTop: 33 }}>
+    <View>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconBack}
