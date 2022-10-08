@@ -17,7 +17,7 @@ const customStyles = {
     },
 };
 
-const gender = [
+const genders = [
     {
         id: 1,
         name: 'Nam',
@@ -27,6 +27,12 @@ const gender = [
         name: 'Nữ',
     },
 ];
+const userInfo = {
+    email: 'minhvuong06082001@gamil.com',
+    name: 'Minh Vuong',
+    gender: false,
+    birthday: '06/08/2001',
+};
 
 const Profile = (props) => {
     Modal.setAppElement('#root');
@@ -39,8 +45,18 @@ const Profile = (props) => {
         setModalIsOpen(false);
     };
 
-    const [checkGender, setCheckGender] = useState();
-    console.log(checkGender);
+    const [email, setEmail] = useState(userInfo.email);
+    const [nameDisplay, setNameDisplay] = useState(userInfo.name);
+    const [gender, setGender] = useState(userInfo.gender);
+    const [birthday, setBirthday] = useState(userInfo.birthday);
+    const [checkGender, setCheckGender] = useState(gender);
+
+    const handleUpdate = () => {
+        userInfo.name = nameDisplay;
+        userInfo.gender = checkGender ? 'Nam' : 'Nu';
+        userInfo.birthday = birthday;
+    };
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('infor')}>
@@ -48,21 +64,21 @@ const Profile = (props) => {
                     <div className={cx('ava')}>
                         <img src="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg" alt="phuc" />
                     </div>
-                    <h3>Minh Vương</h3>
+                    <h3>{nameDisplay}</h3>
                 </div>
                 <div className={cx('detail')}>
                     <h2>Thông tin tài khoản</h2>
                     <div>
                         <span className={cx('label')}>Email:</span>
-                        <span className={cx('text-info')}>minhvuong06082001@gamil.com</span>
+                        <span className={cx('text-info')}>{email}</span>
                     </div>
                     <div>
                         <span className={cx('label')}>Giới tính:</span>
-                        <span className={cx('text-info')}>Nam</span>
+                        <span className={cx('text-info')}>{checkGender === true ? 'Nam' : 'Nữ'}</span>
                     </div>
                     <div>
                         <span className={cx('label')}>Ngày sinh:</span>
-                        <span className={cx('text-info')}>06/08/2001</span>
+                        <span className={cx('text-info')}>{birthday}</span>
                     </div>
 
                     <button className={cx('btn-update-info')} onClick={openModal}>
@@ -94,13 +110,18 @@ const Profile = (props) => {
                                             alt="phuc"
                                         />
                                     </div>
-                                    <h3>Minh Vương</h3>
+                                    <h3>{nameDisplay}</h3>
                                 </div>
                                 <div className={cx('name-display')}>
                                     <span className={cx('label')} style={{ marginBottom: 5 }}>
                                         Tên hiển thị
                                     </span>
-                                    <input type="text" className={cx('ipt-name-change')} />
+                                    <input
+                                        type="text"
+                                        className={cx('ipt-name-change')}
+                                        value={nameDisplay}
+                                        onChange={(e) => setNameDisplay(e.target.value)}
+                                    />
                                     <span className={cx('desc-ipt-chang-name')}>
                                         Sử dụng tên thật để bạn bè dễ dàng nhận diện hơn
                                     </span>
@@ -111,7 +132,7 @@ const Profile = (props) => {
                                     <div className={cx('change-detail')}>
                                         <div className={cx('label')}>Giới tính</div>
                                         <div>
-                                            {gender.map((g) => {
+                                            {genders.map((g) => {
                                                 return (
                                                     <div
                                                         style={{ display: 'inline-block', marginRight: 20 }}
@@ -119,8 +140,8 @@ const Profile = (props) => {
                                                     >
                                                         <input
                                                             type="radio"
-                                                            onChange={() => setCheckGender(g.name)}
-                                                            checked={checkGender === g.name}
+                                                            onChange={() => setCheckGender(g.id === 1 ? true : false)}
+                                                            checked={checkGender === (g.id === 1 ? true : false)} //checkGender === g.name
                                                         />
                                                         <span style={{ marginLeft: 10 }}>{g.name}</span>
                                                     </div>
@@ -130,27 +151,23 @@ const Profile = (props) => {
                                     </div>
                                     <div className={cx('change-detail')}>
                                         <div className={cx('label')}>Ngày sinh</div>
-                                        <input type="text" className={cx('ipt-name-change')} />
+                                        <input
+                                            type="text"
+                                            className={cx('ipt-name-change')}
+                                            value={birthday}
+                                            onChange={(e) => setBirthday(e.target.value)}
+                                        />
                                     </div>
                                     <div className={cx('footer-body')}>
                                         <div style={{ marginBottom: 10 }}>
                                             <button className={cx('btn-cancel')}>Hủy</button>
-                                            <button className={cx('btn-confirm')}>Cập nhật</button>
+                                            <button className={cx('btn-confirm')} onClick={handleUpdate}>
+                                                Cập nhật
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className={cx('infor')} style={{ backgroundColor: '#fff' }}>
-                                <div className={cx('avatar')}>
-                                    <div className={cx('ava')}>
-                                        <img
-                                            src="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                            alt="phuc"
-                                        />
-                                    </div>
-                                    <h3>Minh Vương</h3>
-                                </div>
-                            </div> */}
                         </div>
                     </Modal>
                 </div>

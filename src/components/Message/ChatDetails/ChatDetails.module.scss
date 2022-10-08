@@ -1,7 +1,7 @@
 @use '../../../scss' as *;
 
 .wrapper {
-    width: 300px;
+    min-width: 300px;
     background-color: #eeeff2;
 }
 
@@ -59,8 +59,8 @@
 }
 
 .wrapper-media {
-    width: 72px;
-    height: 72px;
+    width: 62px;
+    height: 62px;
     border-radius: 4px;
     contain: strict;
     cursor: pointer;

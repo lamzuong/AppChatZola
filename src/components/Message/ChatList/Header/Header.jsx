@@ -29,9 +29,6 @@ const Header = (props) => {
                         </div>
                     )}
                 </div>
-                <div className={cx('group')}>
-                    <i className="bx bx-group"></i>
-                </div>
             </div>
         </div>
     );

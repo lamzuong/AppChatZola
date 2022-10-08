@@ -44,7 +44,7 @@ const Info = ({ img, nameInfo }) => {
                 </div>
                 <div className={cx('info-name')}>
                     <div style={{ width: '32px' }}></div>
-                    <span>{name}</span>
+                    <span style={{ fontSize: 16 }}>{name}</span>
                     <div className={cx('edit')} onClick={openModal}>
                         <i className="bx bx-edit-alt"></i>
                     </div>

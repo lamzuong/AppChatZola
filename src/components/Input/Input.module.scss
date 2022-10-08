@@ -11,8 +11,13 @@
 
 .form-control {
     @include flex(center, center);
-    border-bottom: 1px solid #ecedf0;
+
     padding: 5px 0;
+    border-bottom: 1px solid #ecedf0;
+
+    &:focus-within {
+        border-bottom: 1px solid #3989ff;
+    }
 }
 
 .warning {

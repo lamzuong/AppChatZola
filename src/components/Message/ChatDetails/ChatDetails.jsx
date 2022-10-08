@@ -67,7 +67,7 @@ const ChatDetails = (props) => {
                 <Store>
                     <StoreItem title="Ảnh/Video">
                         <div className={cx('content', 'gridv2')}>
-                            {imgStore.map((img) => (
+                            {imgStore.slice(0, 8).map((img) => (
                                 <>
                                     <div
                                         className={cx('wrapper-media')}

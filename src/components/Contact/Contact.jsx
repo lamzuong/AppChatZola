@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import Modal from 'react-modal';
 import classNames from 'classnames/bind';
 import style from './Contact.module.scss';
 import AccountItem from '../AccountItem/AccountItem';
 import { useState } from 'react';
+import Input from '../Input/Input';
 
 const cx = classNames.bind(style);
+const customStyles = {
+    content: {
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
 
 const user = [
     {
@@ -113,6 +126,16 @@ const category = [
 
 const Contact = (props) => {
     const [activeId, setActiveId] = useState(1);
+
+    Modal.setAppElement('#root');
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
@@ -133,6 +156,56 @@ const Contact = (props) => {
                             <li key={i}>
                                 <div className={cx('icon')}>{e.display}</div>
                                 <h4>{e.content}</h4>
+                                <div className={cx('group')} onClick={openModal}>
+                                    <i className="bx bx-group"></i>
+                                </div>
+                                <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal}>
+                                    <div className={cx('wrapper-modal')}>
+                                        <div className={cx('header-modal')}>
+                                            <span className={cx('title')}>Tạo nhóm</span>
+                                            <div className={cx('icon-exit')}>
+                                                <i class="bx bx-x"></i>
+                                            </div>
+                                        </div>
+                                        <div className={cx('body-modal')}>
+                                            <div className={cx('create-group-name')}>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Tên nhóm"
+                                                    icon={<i class="bx bxs-envelope"></i>}
+                                                />
+                                            </div>
+                                            <div className={cx('add-member')}>
+                                                <label>Thêm bạn vào nhóm:</label>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
+                                                    icon={<i class="bx bxs-envelope"></i>}
+                                                />
+                                            </div>
+                                            <div className={cx('list-friend')}>
+                                                <span style={{ marginBottom: 20, display: 'block' }}>
+                                                    Danh sách bạn bè
+                                                </span>
+
+                                                {user.map((u, i) => {
+                                                    return (
+                                                        <div className={cx('item-choose-frend')}>
+                                                            <input type="checkbox" name="" id="" />
+                                                            <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                        <div className={cx('footer-modal')}>
+                                            <div style={{ marginRight: 10 }}>
+                                                <button className={cx('btn-cancel')}>Hủy</button>
+                                                <button className={cx('btn-confirm')}>Cập nhật</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Modal>
                             </li>
                         ) : (
                             ''

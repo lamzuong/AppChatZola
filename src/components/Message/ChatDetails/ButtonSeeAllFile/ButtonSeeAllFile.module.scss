@@ -48,6 +48,9 @@
 .content-w {
     min-height: 320px;
     margin-top: 16px;
+    height: 300px;
+    overflow-y: auto;
+    overscroll-behavior: 'contain';
 }
 
 .active {
@@ -64,7 +67,7 @@
 
 .gridv2 {
     gap: 8px;
-    grid-template-columns: calc(25% - 6px) calc(25% - 6px) calc(25% - 6px) calc(25% - 6px);
+    grid-template-columns: calc(20% - 6px) calc(20% - 6px) calc(20% - 6px) calc(20% - 6px) calc(20% - 6px);
 }
 
 .wrapper-media {
