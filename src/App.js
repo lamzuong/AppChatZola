@@ -20,11 +20,19 @@ function App() {
             <Routes>
                 <Route
                     exact
-                    path="/"
+                    path={user ? '/' : '/login'}
                     element={
                         <div className="wrapper">
-                            <Navigation />
-                            <div className="page">{user ? <Home /> : <Login />}</div>
+                            {user ? (
+                                <>
+                                    <Navigation />
+                                    <div className="page">
+                                        <Home />
+                                    </div>
+                                </>
+                            ) : (
+                                <Login />
+                            )}
                         </div>
                     }
                 />

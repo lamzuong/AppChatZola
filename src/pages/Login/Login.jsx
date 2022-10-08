@@ -6,19 +6,32 @@ import styles from './Login.module.scss';
 import { useState, useRef } from 'react';
 import Input from '../../components/Input/Input';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import axiosClient from '../../api/axiosClient';
 
 const cx = classNames.bind(styles);
 
 const Login = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const handleLogin = async (e, userCredential, dispatch) => {
+    const { user, dispatch } = useContext(AuthContext);
+    const userCredential = { email, password };
+    const handleLogin = (e) => {
         e.preventDefault();
-        try {
-            const res = await axios.post('/');
-        } catch (error) {}
+        const login = async () => {
+            dispatch({ type: 'LOGIN_START' });
+            try {
+                console.log(123);
+                const res = await axiosClient.post('/zola/auth/login', userCredential);
+                dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+            } catch (error) {
+                dispatch({ type: 'LOGIN_FAILURE', payload: error });
+            }
+        };
+        login();
     };
+    console.log(user);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
