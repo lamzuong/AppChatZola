@@ -3,16 +3,35 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
 import styles from './Login.module.scss';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Input from '../../components/Input/Input';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import axiosClient from '../../api/axiosClient';
 
 const cx = classNames.bind(styles);
 
 const Login = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    console.log(email, password);
+    const { user, dispatch } = useContext(AuthContext);
+    const userCredential = { email, password };
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const login = async () => {
+            dispatch({ type: 'LOGIN_START' });
+            try {
+                console.log(123);
+                const res = await axiosClient.post('/zola/auth/login', userCredential);
+                dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+            } catch (error) {
+                dispatch({ type: 'LOGIN_FAILURE', payload: error });
+            }
+        };
+        login();
+    };
+    console.log(user);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -35,17 +54,19 @@ const Login = (props) => {
                             <Input
                                 type="text"
                                 placeholder="Email hoặc username"
-                                icon={<i class="bx bxs-envelope"></i>}
+                                icon={<i className="bx bxs-envelope"></i>}
                                 data={setEmail}
                             />
                             <Input
                                 type="password"
                                 placeholder="Mật khẩu"
-                                icon={<i class="bx bxs-lock"></i>}
+                                icon={<i className="bx bxs-lock"></i>}
                                 data={setPassword}
                             />
                             <div style={{ padding: '4px' }}></div>
-                            <button className={cx('btn-login')}>Đăng nhập với mật khẩu</button>
+                            <button className={cx('btn-login')} onClick={handleLogin}>
+                                Đăng nhập với mật khẩu
+                            </button>
                             <div className={cx('more')}>
                                 <Link to="/forgot-password" className={cx('forget-passwword')}>
                                     Quên mật khẩu?
