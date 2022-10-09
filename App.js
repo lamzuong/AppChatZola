@@ -11,6 +11,9 @@ import Rooms from "./screens/chat/Rooms";
 import ChatRoom from "./screens/chat/ChatRoom";
 import ChatRoomGroup from "./screens/chat/ChatRoomGroup";
 import ChatInfo from "./screens/chat/ChatInfo";
+import ChatInfoGroup from "./screens/chat/ChatInfoGroup";
+import ListMemberGroup from "./screens/chat/ListMemberGroup";
+import FileMediaGroup from "./screens/chat/FileMediaGroup";
 import AddFriend from "./screens/friend/AddFriend";
 import AddGroup from "./screens/friend/AddGroup";
 import Directory from "./screens/friend/Directory";
@@ -95,8 +98,23 @@ export default function App() {
         <Stack.Screen name="ChatRoom" component={ChatRoom} />
         <Stack.Screen name="ChatRoomGroup" component={ChatRoomGroup} />
         <Stack.Screen
+          name="ListMemberGroup"
+          component={ListMemberGroup}
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="FileMediaGroup"
+          component={FileMediaGroup}
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
           name="ChatInfo"
           component={ChatInfo}
+          options={{ animation: "slide_from_right" }}
+        />
+        <Stack.Screen
+          name="ChatInfoGroup"
+          component={ChatInfoGroup}
           options={{ animation: "slide_from_right" }}
         />
         <Stack.Screen name="AddFriend" component={AddFriend} />

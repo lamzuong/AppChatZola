@@ -121,7 +121,11 @@ export default function ChatRoomGroup({ route }) {
           <TouchableOpacity
             style={[styles.iconTop]}
             onPress={() => {
-              navigation.navigate("ChatInfo", { name: nameGroup, ava: avatar });
+              navigation.navigate("ChatInfoGroup", {
+                name: nameGroup,
+                ava: avatar,
+                users: users,
+              });
             }}
           >
             <Ionicons name="options" size={35} color="white" />

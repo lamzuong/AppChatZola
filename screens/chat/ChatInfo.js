@@ -21,7 +21,10 @@ const listImg = [
     id: 1,
     img: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
   },
-  { id: 2, img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg" },
+  {
+    id: 2,
+    img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
+  },
   {
     id: 3,
     img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
@@ -30,7 +33,10 @@ const listImg = [
     id: 4,
     img: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
   },
-  { id: 5, img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg" },
+  {
+    id: 5,
+    img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
+  },
   {
     id: 6,
     img: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
@@ -107,7 +113,7 @@ export default function ChatInfo({ navigation, route }) {
         <TouchableOpacity
           style={styles.iconBack}
           onPress={() => {
-            navigation.navigate("ChatRoom", { nickname: name, avatar: ava });
+            navigation.goBack();
           }}
         >
           <Ionicons name="md-arrow-back-sharp" size={40} color="white" />

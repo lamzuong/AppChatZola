@@ -132,63 +132,6 @@ const messageChat2 = [
     time: "Hôm nay 1:08 p.m",
   },
 ];
-const messageChatGr = [
-  {
-    owner: false,
-    title: "Hello",
-    time: "Hôm nay 1:00 p.m",
-  },
-  {
-    owner: true,
-    title: "Hi",
-    time: "Hôm nay 1:01 p.m",
-  },
-  {
-    owner: false,
-    title: "Ngày mai kiểm tra 1 tiết môn toán",
-    time: "Hôm nay 1:02 p.m",
-  },
-  {
-    owner: true,
-    title: "Ủa vậy hã? Mới biết luôn",
-    time: "Hôm nay 1:03 p.m",
-  },
-  {
-    owner: false,
-    title: "Có bài ôn chưa, hong có thì tui gửi nè",
-    time: "Hôm nay 1:04 p.m",
-  },
-  {
-    owner: false,
-    title: "Tui mới giải xong đề thầy cho",
-    time: "Hôm nay 1:05 p.m",
-  },
-  {
-    owner: true,
-    title: "Gửi tui với, cám ơn bạn nhiều luôn",
-    time: "Hôm nay 1:06 p.m",
-  },
-  {
-    owner: true,
-    title: "Ngày mai kiểm đúng hong",
-    time: "Hôm nay 1:07 p.m",
-  },
-  {
-    owner: false,
-    title: "Ừ mai kiểm",
-    time: "Hôm nay 1:07 p.m",
-  },
-  {
-    owner: false,
-    title: "Lát tui gửi bài qua cho",
-    time: "Hôm nay 1:08 p.m",
-  },
-  {
-    owner: true,
-    title: "Cám ơn nhiều nha!!",
-    time: "Hôm nay 1:08 p.m",
-  },
-];
 const user = [
   {
     id: "1",
