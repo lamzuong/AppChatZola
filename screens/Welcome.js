@@ -21,15 +21,16 @@ export default function Welcome({ navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View>
-        <StatusBar animated={true} backgroundColor="rgb(220,220,220)" />
-        <Text style={styles.zola}>Chào mừng bạn đã đến với Zola !!</Text>
-        <Image
-          source={require("../assets/Zola.png")}
-          style={{ width: "100%", height: 300, marginBottom: 30 }}
-        ></Image>
+    // <ScrollView>
+    <View style={styles.container}>
+      <StatusBar animated={true} backgroundColor="rgb(220,220,220)" />
+      <Text style={styles.zola}>Chào mừng bạn đã đến với Zola !!</Text>
+      <Image
+        source={require("../assets/Zola.png")}
+        style={{ width: "100%", height: 300, marginBottom: 30 }}
+      ></Image>
 
+      <View>
         <TouchableOpacity style={styles.buttonSignIn} onPress={logIn}>
           <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
             ĐĂNG NHẬP
@@ -42,14 +43,15 @@ export default function Welcome({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
+    // </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     flex: 1,
-    // marginTop: Constants.statusBarHeight,
+    justifyContent: "space-around",
   },
   zola: {
     // color: "#0091ff",

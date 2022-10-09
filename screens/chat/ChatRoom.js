@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   KeyboardAvoidingView,
+  Button,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -15,12 +16,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import MessageChat from "./MessageChat";
+import * as ImagePicker from "expo-image-picker";
 
 export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
   const navigation = useNavigation();
-  const [valueInput, setValueInput] = React.useState("");
-  const [nameInChat, setNameInChat] = React.useState(nickname);
+  const [valueInput, setValueInput] = useState("");
+  const [nameInChat, setNameInChat] = useState(nickname);
   const strName = new String(nameInChat);
   if (strName.length > 15) {
     setNameInChat(strName.slice(0, 12) + "...");
@@ -40,6 +42,51 @@ export default function ChatRoom({ route }) {
       setHiddenNext(false);
     }
   }, [valueInput]);
+
+  const [imagesSelected, setImagesSelected] = useState([]);
+  const arrShowImages = [];
+  const showImagePicker = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 1,
+    });
+    if (result.selected) {
+      const arr = result.selected;
+      for (let i = 0; i < arr.length; i++) {
+        const element = arr[i].uri;
+        arrShowImages.push(element);
+        setImagesSelected(arrShowImages);
+      }
+      console.log(arrShowImages);
+      console.log(1);
+    } else if (!result.selected) {
+      arrShowImages.push(result.uri);
+      setImagesSelected(arrShowImages);
+      console.log(arrShowImages);
+      console.log(2);
+    }
+  };
+
+  const [imageCamera, setImageCamera] = useState("");
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync();
+    if (!result.cancelled) {
+      setImageCamera(result.uri);
+      console.log(result.uri);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -97,14 +144,21 @@ export default function ChatRoom({ route }) {
 
       <View style={styles.footer}>
         {hiddenIcon ? null : (
-          <View style={{ width: "27%", flexDirection: "row", marginTop: 5 }}>
-            <TouchableOpacity>
+          <View
+            style={{
+              width: "27%",
+              flexDirection: "row",
+              marginTop: 5,
+              marginRight: 5,
+            }}
+          >
+            <TouchableOpacity onPress={showImagePicker}>
               <MaterialIcons name="image" size={30} color="rgb(0,145,255)" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconBottom}>
+            <TouchableOpacity style={{ marginLeft: 5 }} onPress={openCamera}>
               <AntDesign name="camera" size={30} color="rgb(0,145,255)" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconBottom}>
+            <TouchableOpacity style={{ marginLeft: 2 }}>
               <MaterialIcons
                 name="keyboard-voice"
                 size={30}
