@@ -1,11 +1,11 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import styles from "./styleChatList";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ChatList(props) {
   const navigation = useNavigation();
-  const [nameInChat, setNameInChat] = React.useState(props.name);
+  const [nameInChat, setNameInChat] = useState(props.name);
   const strName = new String(nameInChat);
   if (strName.length > 25) {
     setNameInChat(strName.slice(0, 22) + "...");
@@ -17,7 +17,7 @@ export default function ChatList(props) {
           navigation.navigate("ChatRoom", {
             nickname: props.name,
             avatar: props.ava,
-            message: props.mess,
+            message: props.messAll,
           })
         }
       >
@@ -30,7 +30,7 @@ export default function ChatList(props) {
           />
           <View style={styles.user}>
             <Text style={styles.nickname}>{nameInChat}</Text>
-            <Text style={styles.chatLastTime}>{props.mess}</Text>
+            <Text style={styles.chatLastTime}>{props.messLast}</Text>
           </View>
         </View>
       </TouchableOpacity>

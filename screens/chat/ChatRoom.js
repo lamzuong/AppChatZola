@@ -19,13 +19,6 @@ import { AntDesign } from "@expo/vector-icons";
 import MessageChat from "./MessageChat";
 import * as ImagePicker from "expo-image-picker";
 
-const messageChat = [
-  {
-    owner: false,
-    title: "Hello",
-    ava: "",
-  },
-];
 export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
   const navigation = useNavigation();
@@ -96,74 +89,74 @@ export default function ChatRoom({ route }) {
     }
   };
 
-  const messageChat = [
-    {
-      owner: false,
-      title: "Hello",
-      ava: avatar,
-      time: "Hôm nay 1:00 p.m",
-    },
-    {
-      owner: true,
-      title: "Hi",
-      ava: avatar,
-      time: "Hôm nay 1:01 p.m",
-    },
-    {
-      owner: false,
-      title: "Rất vui được gặp bạn!!",
-      ava: avatar,
-      time: "Hôm nay 1:02 p.m",
-    },
-    {
-      owner: true,
-      title: "Có chuyện gì không ?",
-      ava: avatar,
-      time: "Hôm nay 1:03 p.m",
-    },
-    {
-      owner: false,
-      title: "Tui muốn hỏi là bạn có tài liệu môn công nghệ mới không?",
-      ava: avatar,
-      time: "Hôm nay 1:04 p.m",
-    },
-    {
-      owner: false,
-      title: "Gửi tui với",
-      ava: avatar,
-      time: "Hôm nay 1:05 p.m",
-    },
-    {
-      owner: true,
-      title: "À có chứ",
-      ava: avatar,
-      time: "Hôm nay 1:06 p.m",
-    },
-    {
-      owner: true,
-      title: "Tí nữa tui gửi cho",
-      ava: avatar,
-      time: "Hôm nay 1:07 p.m",
-    },
-    {
-      owner: false,
-      title: "OK cám ơn nha",
-      ava: avatar,
-      time: "Hôm nay 1:07 p.m",
-    },
-    {
-      owner: false,
-      title: "À còn môn gì nữa gửi hết cho tui luôn đi",
-      ava: avatar,
-      time: "Hôm nay 1:08 p.m",
-    },
-    {
-      owner: true,
-      title: "OK nha",
-      ava: avatar,
-      time: "Hôm nay 1:08 p.m",
-    },
-  ];
+  // const messageChat = [
+  //   {
+  //     owner: false,
+  //     title: "Hello",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:00 p.m",
+  //   },
+  //   {
+  //     owner: true,
+  //     title: "Hi",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:01 p.m",
+  //   },
+  //   {
+  //     owner: false,
+  //     title: "Rất vui được gặp bạn!!",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:02 p.m",
+  //   },
+  //   {
+  //     owner: true,
+  //     title: "Có chuyện gì không ?",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:03 p.m",
+  //   },
+  //   {
+  //     owner: false,
+  //     title: "Tui muốn hỏi là bạn có tài liệu môn công nghệ mới không?",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:04 p.m",
+  //   },
+  //   {
+  //     owner: false,
+  //     title: "Gửi tui với",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:05 p.m",
+  //   },
+  //   {
+  //     owner: true,
+  //     title: "À có chứ",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:06 p.m",
+  //   },
+  //   {
+  //     owner: true,
+  //     title: "Tí nữa tui gửi cho",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:07 p.m",
+  //   },
+  //   {
+  //     owner: false,
+  //     title: "OK cám ơn nha",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:07 p.m",
+  //   },
+  //   {
+  //     owner: false,
+  //     title: "À còn môn gì nữa gửi hết cho tui luôn đi",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:08 p.m",
+  //   },
+  //   {
+  //     owner: true,
+  //     title: "OK nha",
+  //     ava: avatar,
+  //     time: "Hôm nay 1:08 p.m",
+  //   },
+  // ];
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -204,25 +197,11 @@ export default function ChatRoom({ route }) {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* <ScrollView>
-        <View style={styles.body}>
-          <MessageChat ava={avatar} />
-          <MessageChat owner={true} />
-          <MessageChat ava={avatar} />
-          <MessageChat ava={avatar} />
-          <MessageChat owner={true} />
-          <MessageChat owner={true} />
-          <MessageChat ava={avatar} />
-          <MessageChat ava={avatar} />
-          <MessageChat ava={avatar} />
-        </View>
-      </ScrollView> */}
       <FlatList
-        data={messageChat}
+        data={message}
         renderItem={({ item }) => (
           <MessageChat
-            ava={item.ava}
+            ava={avatar}
             owner={item.owner}
             title={item.title}
             time={item.time}
@@ -238,7 +217,8 @@ export default function ChatRoom({ route }) {
               width: "27%",
               flexDirection: "row",
               marginTop: 5,
-              marginRight: 5,
+              // marginRight: 5,
+              justifyContent: "center",
             }}
           >
             <TouchableOpacity onPress={showImagePicker}>
