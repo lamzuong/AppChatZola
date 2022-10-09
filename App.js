@@ -9,6 +9,7 @@ import SignUp from "./screens/SignUp";
 import Welcome from "./screens/Welcome";
 import Rooms from "./screens/chat/Rooms";
 import ChatRoom from "./screens/chat/ChatRoom";
+import ChatRoomGroup from "./screens/chat/ChatRoomGroup";
 import ChatInfo from "./screens/chat/ChatInfo";
 import AddFriend from "./screens/friend/AddFriend";
 import AddGroup from "./screens/friend/AddGroup";
@@ -92,6 +93,7 @@ export default function App() {
         ></Stack.Screen>
         <Stack.Screen name="Rooms" component={Rooms} />
         <Stack.Screen name="ChatRoom" component={ChatRoom} />
+        <Stack.Screen name="ChatRoomGroup" component={ChatRoomGroup} />
         <Stack.Screen
           name="ChatInfo"
           component={ChatInfo}

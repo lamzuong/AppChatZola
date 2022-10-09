@@ -8,6 +8,7 @@ import {
   StatusBar,
 } from "react-native";
 import ChatList from "./ChatList";
+import ChatListGroup from "./ChatListGroup";
 import styles from "./styleRooms";
 import { EvilIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -131,113 +132,346 @@ const messageChat2 = [
     time: "Hôm nay 1:08 p.m",
   },
 ];
-const userChat = [
+const messageChatGr = [
+  {
+    owner: false,
+    title: "Hello",
+    time: "Hôm nay 1:00 p.m",
+  },
+  {
+    owner: true,
+    title: "Hi",
+    time: "Hôm nay 1:01 p.m",
+  },
+  {
+    owner: false,
+    title: "Ngày mai kiểm tra 1 tiết môn toán",
+    time: "Hôm nay 1:02 p.m",
+  },
+  {
+    owner: true,
+    title: "Ủa vậy hã? Mới biết luôn",
+    time: "Hôm nay 1:03 p.m",
+  },
+  {
+    owner: false,
+    title: "Có bài ôn chưa, hong có thì tui gửi nè",
+    time: "Hôm nay 1:04 p.m",
+  },
+  {
+    owner: false,
+    title: "Tui mới giải xong đề thầy cho",
+    time: "Hôm nay 1:05 p.m",
+  },
+  {
+    owner: true,
+    title: "Gửi tui với, cám ơn bạn nhiều luôn",
+    time: "Hôm nay 1:06 p.m",
+  },
+  {
+    owner: true,
+    title: "Ngày mai kiểm đúng hong",
+    time: "Hôm nay 1:07 p.m",
+  },
+  {
+    owner: false,
+    title: "Ừ mai kiểm",
+    time: "Hôm nay 1:07 p.m",
+  },
+  {
+    owner: false,
+    title: "Lát tui gửi bài qua cho",
+    time: "Hôm nay 1:08 p.m",
+  },
+  {
+    owner: true,
+    title: "Cám ơn nhiều nha!!",
+    time: "Hôm nay 1:08 p.m",
+  },
+];
+const user = [
   {
     id: "1",
     ava: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
     name: "Phúc Du",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "2",
     ava: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
     name: "Phuc Nguyen",
-    messageLast: messageChat2[messageChat.length - 1].title,
-    messageAll: messageChat2,
   },
   {
     id: "3",
     ava: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
     name: "Minh Vuong M4U",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "4",
     ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
     name: "Nam Zuong",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "5",
     ava: "https://i.pinimg.com/280x280_RS/43/cd/7c/43cd7c65d590d2f41c05a23f3dfe82d4.jpg",
     name: "Trung Quoc",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "6",
     ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
     name: "Abalatrap",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "7",
     ava: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-    name: "Watson Dr.",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
+    name: "Watson",
   },
   {
     id: "8",
     ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
     name: "Nguyen",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "9",
     ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
     name: "Quất",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "10",
     ava: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
     name: "Vuong",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "11",
     ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
     name: "Nam Quốc",
-    messageLast: messageChat[messageChat.length - 1].title,
-
-    messageAll: messageChat,
   },
   {
     id: "12",
     ava: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
     name: "Phuc",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "13",
     ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
     name: "Ân Nguyen",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "14",
     ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
     name: "Lam Quoc",
-    messageLast: messageChat[messageChat.length - 1].title,
-    messageAll: messageChat,
   },
   {
     id: "15",
     ava: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
     name: "Chinh Vuong",
+  },
+];
+const group = [
+  {
+    idGr: 1,
+    ava: "https://thumbs.dreamstime.com/b/teamwork-group-friends-logo-image-holding-each-other-39918563.jpg",
+    name: "Anh em cay khe",
+    users: [user[0], user[2], user[4], user[6]],
+    message: [
+      {
+        owner: user[0],
+        title: "Hello",
+        time: "Hôm nay 1:00 p.m",
+      },
+      {
+        owner: user[2],
+        title: "Hi",
+        time: "Hôm nay 1:00 p.m",
+      },
+      {
+        owner: user[4],
+        title: "Chào",
+        time: "Hôm nay 1:00 p.m",
+      },
+      {
+        owner: user[6],
+        title: "2222",
+        time: "Hôm nay 1:00 p.m",
+      },
+      {
+        owner: "own",
+        title: "Hi",
+        time: "Hôm nay 1:01 p.m",
+      },
+      {
+        owner: user[2],
+        title: "Nhóm mình tuần sau đi chơi Vũng tàu đi",
+        time: "Hôm nay 1:02 p.m",
+      },
+      {
+        owner: "own",
+        title: "Cần chuẩn bị gì không?",
+        time: "Hôm nay 1:03 p.m",
+      },
+      {
+        owner: user[4],
+        title: "Đem tiền nhiều là được",
+        time: "Hôm nay 1:04 p.m",
+      },
+      {
+        owner: user[6],
+        title: "Đúng rồi tới chỗ thiếu gì thì móc tiền mua thoi",
+        time: "Hôm nay 1:05 p.m",
+      },
+      {
+        owner: user[4],
+        title: "Nghe ổn đó",
+        time: "Hôm nay 1:05 p.m",
+      },
+      {
+        owner: user[0],
+        title: "Đúng rồi làm vậy là tiện nhất rồi, khỏi suy nghĩ",
+        time: "Hôm nay 1:05 p.m",
+      },
+      {
+        owner: "own",
+        title: "Hay đó ae",
+        time: "Hôm nay 1:06 p.m",
+      },
+      {
+        owner: "own",
+        title: "Tuần sau chủ nhật triển thoi",
+        time: "Hôm nay 1:07 p.m",
+      },
+      {
+        owner: user[0],
+        title: "Okela",
+        time: "Hôm nay 1:07 p.m",
+      },
+      {
+        owner: user[0],
+        title: "Tui rủ thêm bạn tui nha",
+        time: "Hôm nay 1:08 p.m",
+      },
+      {
+        owner: "own",
+        title: "Ok càng đông càng vui",
+        time: "Hôm nay 1:08 p.m",
+      },
+    ],
+  },
+  {
+    idGr: 2,
+    users: [user[1], user[6], user[10], user[11]],
+    message: [],
+  },
+  {
+    idGr: 3,
+    users: [user[2], user[4], user[7], user[12]],
+    message: [],
+  },
+  {
+    idGr: 4,
+    users: [user[3], user[9], user[12], user[13]],
+    message: [],
+  },
+  {
+    idGr: 5,
+    users: [user[4], user[5], user[10], user[14]],
+    message: [],
+  },
+];
+const userChat = [
+  {
+    user: user[0],
     messageLast: messageChat[messageChat.length - 1].title,
-
     messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[1],
+    messageLast: messageChat2[messageChat.length - 1].title,
+    messageAll: messageChat2,
+    typeChat: "user",
+  },
+  {
+    user: user[2],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[3],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[4],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[5],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[6],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[7],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[8],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[9],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[10],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[11],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[12],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[13],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    user: user[14],
+    messageLast: messageChat[messageChat.length - 1].title,
+    messageAll: messageChat,
+    typeChat: "user",
+  },
+  {
+    group: group[0],
+    messageLast: group[0].message[group[0].message.length - 1].title,
+    messageAll: group[0].message,
+    typeChat: "group",
   },
 ];
 
@@ -306,16 +540,28 @@ export default function Rooms({ navigation }) {
         </Menu>
       </View>
       <ScrollView>
-        {userChat.map((e, i) => (
-          <ChatList
-            key={i}
-            id={e.id}
-            ava={e.ava}
-            name={e.name}
-            messLast={e.messageLast}
-            messAll={e.messageAll}
-          ></ChatList>
-        ))}
+        {userChat.map((e, i) =>
+          e.typeChat == "user" ? (
+            <ChatList
+              key={i}
+              id={e.user.id}
+              ava={e.user.ava}
+              name={e.user.name}
+              messLast={e.messageLast}
+              messAll={e.messageAll}
+            />
+          ) : (
+            <ChatListGroup
+              key={i}
+              id={e.group.idGr}
+              ava={e.group.ava}
+              name={e.group.name}
+              users={e.group.users}
+              messLast={e.messageLast}
+              messAll={e.messageAll}
+            />
+          )
+        )}
       </ScrollView>
     </SafeAreaView>
   );
