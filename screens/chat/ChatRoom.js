@@ -7,6 +7,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Button,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -18,6 +19,13 @@ import { AntDesign } from "@expo/vector-icons";
 import MessageChat from "./MessageChat";
 import * as ImagePicker from "expo-image-picker";
 
+const messageChat = [
+  {
+    owner: false,
+    title: "Hello",
+    ava: "",
+  },
+];
 export default function ChatRoom({ route }) {
   const { nickname, avatar, message } = route.params;
   const navigation = useNavigation();
@@ -87,6 +95,75 @@ export default function ChatRoom({ route }) {
       console.log(result.uri);
     }
   };
+
+  const messageChat = [
+    {
+      owner: false,
+      title: "Hello",
+      ava: avatar,
+      time: "Hôm nay 1:00 p.m",
+    },
+    {
+      owner: true,
+      title: "Hi",
+      ava: avatar,
+      time: "Hôm nay 1:01 p.m",
+    },
+    {
+      owner: false,
+      title: "Rất vui được gặp bạn!!",
+      ava: avatar,
+      time: "Hôm nay 1:02 p.m",
+    },
+    {
+      owner: true,
+      title: "Có chuyện gì không ?",
+      ava: avatar,
+      time: "Hôm nay 1:03 p.m",
+    },
+    {
+      owner: false,
+      title: "Tui muốn hỏi là bạn có tài liệu môn công nghệ mới không?",
+      ava: avatar,
+      time: "Hôm nay 1:04 p.m",
+    },
+    {
+      owner: false,
+      title: "Gửi tui với",
+      ava: avatar,
+      time: "Hôm nay 1:05 p.m",
+    },
+    {
+      owner: true,
+      title: "À có chứ",
+      ava: avatar,
+      time: "Hôm nay 1:06 p.m",
+    },
+    {
+      owner: true,
+      title: "Tí nữa tui gửi cho",
+      ava: avatar,
+      time: "Hôm nay 1:07 p.m",
+    },
+    {
+      owner: false,
+      title: "OK cám ơn nha",
+      ava: avatar,
+      time: "Hôm nay 1:07 p.m",
+    },
+    {
+      owner: false,
+      title: "À còn môn gì nữa gửi hết cho tui luôn đi",
+      ava: avatar,
+      time: "Hôm nay 1:08 p.m",
+    },
+    {
+      owner: true,
+      title: "OK nha",
+      ava: avatar,
+      time: "Hôm nay 1:08 p.m",
+    },
+  ];
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -128,19 +205,31 @@ export default function ChatRoom({ route }) {
         </View>
       </View>
 
-      <ScrollView>
+      {/* <ScrollView>
         <View style={styles.body}>
           <MessageChat ava={avatar} />
-          <MessageChat owner="true" />
+          <MessageChat owner={true} />
           <MessageChat ava={avatar} />
           <MessageChat ava={avatar} />
-          <MessageChat owner="true" />
-          <MessageChat owner="true" />
+          <MessageChat owner={true} />
+          <MessageChat owner={true} />
           <MessageChat ava={avatar} />
           <MessageChat ava={avatar} />
           <MessageChat ava={avatar} />
         </View>
-      </ScrollView>
+      </ScrollView> */}
+      <FlatList
+        data={messageChat}
+        renderItem={({ item }) => (
+          <MessageChat
+            ava={item.ava}
+            owner={item.owner}
+            title={item.title}
+            time={item.time}
+          />
+        )}
+        keyExtractor={(item, index) => index}
+      />
 
       <View style={styles.footer}>
         {hiddenIcon ? null : (

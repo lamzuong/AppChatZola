@@ -4,43 +4,45 @@ import React from "react";
 export default function MessageChat(props) {
   const owner = props.owner;
   const ava = props.ava;
+  const title = props.title;
+  const time = props.time;
   return (
-    <View
-      style={
-        owner
-          ? {
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "flex-end",
-              marginRight: 10,
-            }
-          : { flexDirection: "row", marginTop: 20, marginLeft: 10 }
-      }
-    >
-      <Image
-        source={{
-          uri: ava,
-        }}
-        style={owner ? null : styles.imageAva}
-      />
-      <View>
+    <View>
+      <View style={owner ? styles.styleOwner : styles.styleFriend}>
+        <Image
+          source={{
+            uri: ava,
+          }}
+          style={owner ? null : styles.imageAva}
+        />
         <View style={owner ? styles.txtContentOwner : styles.txtContent}>
           <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
-            Chao toan the anh em giang ho nha
+            {title}
           </Text>
         </View>
-        <View style={styles.time}>
-          <Text style={{ color: "grey" }}>Today 1:00 p.m</Text>
-        </View>
+      </View>
+      <View style={owner ? styles.timeOwner : styles.time}>
+        <Text style={{ color: "grey" }}>{time}</Text>
       </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   imageAva: {
-    height: 50,
-    width: 50,
+    height: 40,
+    width: 40,
     borderRadius: 100,
+  },
+  styleOwner: {
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    marginRight: 10,
+    marginTop: 10,
+  },
+  styleFriend: {
+    flexDirection: "row",
+    marginTop: 10,
+    marginLeft: 10,
   },
   txtContent: {
     maxWidth: 200,
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   txtMess: {
-    fontSize: 16,
+    fontSize: 17,
   },
   txtContentOwner: {
     maxWidth: 200,
@@ -64,6 +66,10 @@ const styles = StyleSheet.create({
     color: "white",
   },
   time: {
-    marginLeft: 20,
+    marginLeft: 70,
+  },
+  timeOwner: {
+    marginRight: 20,
+    alignItems: "flex-end",
   },
 });
