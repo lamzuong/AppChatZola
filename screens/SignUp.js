@@ -7,6 +7,7 @@ import {
   TextInput,
   Image,
   Alert,
+  StatusBar
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
@@ -64,6 +65,7 @@ export default function SignUp({ navigation }) {
 
   return (
     <View style={styles.container}>
+       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.signup}>
         Vui lòng nhập đầy đủ tên, Email và mật khẩu để đăng ký.
       </Text>
