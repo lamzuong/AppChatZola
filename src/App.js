@@ -1,6 +1,6 @@
 import './App.scss';
 import './assets/boxicons-2.1.2/css/boxicons.min.css';
-import { BrowserRouter as Router, Routes, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Home from './pages/Home';
 import Profilepage from './pages/ProfilePage';
@@ -20,7 +20,7 @@ function App() {
             <Routes>
                 <Route
                     exact
-                    path={user ? '/' : '/login'}
+                    path="/"
                     element={
                         <div className="wrapper">
                             {user ? (
@@ -31,7 +31,25 @@ function App() {
                                     </div>
                                 </>
                             ) : (
-                                <Login />
+                                <Navigate to="/login" replace />
+                            )}
+                        </div>
+                    }
+                />
+                <Route
+                    exact
+                    path="/t/:id"
+                    element={
+                        <div className="wrapper">
+                            {user ? (
+                                <>
+                                    <Navigation />
+                                    <div className="page">
+                                        <Home />
+                                    </div>
+                                </>
+                            ) : (
+                                <Navigate to="/login" replace />
                             )}
                         </div>
                     }
@@ -58,7 +76,7 @@ function App() {
                         </div>
                     }
                 />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/forgot-password/confirm" element={<ConfirmPassword />} />=

@@ -2,7 +2,7 @@ import { createContext, useEffect, useReducer } from 'react';
 import AuthReducer from './AuthReducer';
 
 const INITIAL_STATE = {
-    user: 1,
+    user: null,
     isFetching: false,
     error: false,
 };

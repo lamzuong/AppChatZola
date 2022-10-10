@@ -15,23 +15,23 @@ const cx = classNames.bind(styles);
 const Login = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { user, dispatch } = useContext(AuthContext);
+    const [err, setErr] = useState('');
+    const { error, dispatch } = useContext(AuthContext);
     const userCredential = { email, password };
     const handleLogin = (e) => {
         e.preventDefault();
         const login = async () => {
             dispatch({ type: 'LOGIN_START' });
             try {
-                console.log(123);
                 const res = await axiosClient.post('/zola/auth/login', userCredential);
-                dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+                dispatch({ type: 'LOGIN_SUCCESS', payload: res });
             } catch (error) {
-                dispatch({ type: 'LOGIN_FAILURE', payload: error });
+                dispatch({ type: 'LOGIN_FAILURE' });
+                setErr('Tên tài khoản hoặc mật khẩu không chính xác');
             }
         };
         login();
     };
-    console.log(user);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -63,6 +63,7 @@ const Login = (props) => {
                                 icon={<i className="bx bxs-lock"></i>}
                                 data={setPassword}
                             />
+                            {error && <span style={{ color: 'red' }}>{err}</span>}
                             <div style={{ padding: '4px' }}></div>
                             <button className={cx('btn-login')} onClick={handleLogin}>
                                 Đăng nhập với mật khẩu

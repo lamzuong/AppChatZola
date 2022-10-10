@@ -3,6 +3,9 @@ import Modal from 'react-modal';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './Profile.module.scss';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
+import noAvatar from '../../assets/noAvatar.png';
 
 const cx = classNames.bind(styles);
 const customStyles = {
@@ -40,25 +43,25 @@ const Profile = (props) => {
     };
 
     const [checkGender, setCheckGender] = useState();
-    console.log(checkGender);
+    const { user } = useContext(AuthContext);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('infor')}>
                 <div className={cx('avatar')}>
                     <div className={cx('ava')}>
-                        <img src="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg" alt="phuc" />
+                        <img src={user.img ? user.img : noAvatar} alt="phuc" />
                     </div>
-                    <h3>Minh Vương</h3>
+                    <h3>{user.fullName}</h3>
                 </div>
                 <div className={cx('detail')}>
                     <h2>Thông tin tài khoản</h2>
                     <div>
                         <span className={cx('label')}>Email:</span>
-                        <span className={cx('text-info')}>minhvuong06082001@gamil.com</span>
+                        <span className={cx('text-info')}>{user.email}</span>
                     </div>
                     <div>
                         <span className={cx('label')}>Giới tính:</span>
-                        <span className={cx('text-info')}>Nam</span>
+                        <span className={cx('text-info')}>{user.gender}</span>
                     </div>
                     <div>
                         <span className={cx('label')}>Ngày sinh:</span>

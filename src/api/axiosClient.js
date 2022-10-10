@@ -7,6 +7,7 @@ const axiosCilent = axios.create({
     headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Origin, X-Auth-Token, Authorization',
     },
     paramsSerializer: (params) => queryString.stringify({ ...params }),
 });
