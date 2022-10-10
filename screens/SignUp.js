@@ -28,10 +28,8 @@ export default function SignUp({ navigation }) {
   function conFirm() {
       const register = async () => {
         try {
-
           await axiosClient.post('/zola/auth/register',{username,email,name,password})
-          navigation.navigate("Login")
-            
+          navigation.navigate("Login") 
         } catch (error) {
           Alert.alert(
             "Cảnh báo",
@@ -58,7 +56,6 @@ export default function SignUp({ navigation }) {
             text: "Xác nhận",
             onPress: () => {
               register();
-              
             },
           },
         ]
