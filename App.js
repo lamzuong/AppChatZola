@@ -25,11 +25,14 @@ import ConfirmEmail from "./screens/ConfirmEmail";
 import ConfirmEmailForget from "./screens/ConfirmEmailForget";
 import ForgetPassword from "./screens/ForgetPassword";
 import RecoverPassword from "./screens/RecoverPassword";
+import { AuthContextProvider } from "./context/AuthContext";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <AuthContextProvider>
+      <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Welcome"
         screenOptions={{ headerShown: false }}
@@ -161,5 +164,6 @@ export default function App() {
         ></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
+    </AuthContextProvider>
   );
 }

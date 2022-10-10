@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -7,24 +7,52 @@ import {
   TextInput,
   Image,
   StatusBar,
+  Alert,
 } from "react-native";
 import { FloatingAction } from "react-native-floating-action";
 import { EvilIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "../context/AuthContext";
+import axiosCilent from "../api/axiosClient";
+
 export default function Login({ navigation }) {
   const [email, setemail] = useState();
   const [password, setpassword] = useState();
   const [icon, seticon] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
 
-  async function toHome() {
-    navigation.navigate("Home");
+  function toHome() {
+    
+    const login = async () => {
+      dispatch({type:'LOGIN_START'})
+      try {
+        const res = await axiosCilent.post('/zola/auth/login',{email, password});
+        dispatch({type:'LOGIN_SUCCESS', payload: res});
+        navigation.navigate("Home");
+      } catch (error) {
+        dispatch({type:'LOGIN_FAILURE'});
+        Alert.alert(
+          "Cảnh báo",
+          "Username hoặc mật khẩu không đúng!",
+          [
+            {
+              text: "Xác nhận",
+              style: "cancel",
+            },
+          ]
+        );
+      }
+    };
+
+    login();
   }
 
   function forget() {
     navigation.navigate("ForgetPassword");
   }
+
+  const {user, dispatch} = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
@@ -37,12 +65,12 @@ export default function Login({ navigation }) {
         <TextInput
           style={{ fontSize: 18, color: "black", width: "90%" }}
           value={email}
-          placeholder="Nhập Email"
+          placeholder="Nhập Username"
           placeholderTextColor="gray"
           onChangeText={(text) => {
             setemail(text);
           }}
-          keyboardType="email-address"
+          // keyboardType="email-address"
         />
         {email && (
           <TouchableOpacity

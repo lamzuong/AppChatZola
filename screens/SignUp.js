@@ -11,6 +11,8 @@ import {
 import { RadioButton } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import axiosClient from "../api/axiosClient"
+
 export default function SignUp({ navigation }) {
   const [email, setemail] = useState("");
   const [username, setusername] = useState("");
@@ -22,21 +24,45 @@ export default function SignUp({ navigation }) {
   const [icon1, seticon1] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
   const [hide1, sethide1] = React.useState(true);
+  
   function conFirm() {
-    Alert.alert(
-      "Xác nhận Email",
-      `Chúng tôi sẽ gửi mã kích hoạt đến Email: \n \t\t${email.toString()} \n Vui lòng xác nhận Email này là đúng.`,
-      [
-        {
-          text: "Thay đổi",
-          style: "cancel",
-        },
-        {
-          text: "Xác nhận",
-          onPress: () => navigation.navigate("ConfirmEmail"),
-        },
-      ]
-    );
+      const register = async () => {
+        try {
+
+          await axiosClient.post('/zola/auth/register',{username,email,name,password})
+          navigation.navigate("Login")
+            
+        } catch (error) {
+          Alert.alert(
+            "Cảnh báo",
+            "Username đã tồn tại!",
+            [
+              {
+                text: "Xác nhận",
+                style: "cancel",
+              },
+            ]
+          );
+        }
+      };
+
+      Alert.alert(
+        "Xác nhận Email",
+        `Chúng tôi sẽ gửi một Email kích hoạt đến địa chỉ: \n \t\t${email.toString()} \nVui lòng truy cập và xác nhận Email để hoàn thành đăng ký.`,
+        [
+          {
+            text: "Thay đổi",
+            style: "cancel",
+          },
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              register();
+              
+            },
+          },
+        ]
+      );
   }
 
   return (
