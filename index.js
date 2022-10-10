@@ -4,7 +4,9 @@ const app = express();
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+var cors = require('cors')
 
+app.use(cors());
 const authRoute = require('./routers/auth');
 const usersRoute = require('./routers/users');
 

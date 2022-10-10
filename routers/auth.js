@@ -16,12 +16,10 @@ const poolData = {
 };
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-router.get('/', (req, res) => {
-    res.send("fafafaew")
-})
 
 router.post('/register' ,(req, res) => {
-    const {name, email, password} = req.body;
+    const {username, email, password, fullName} = req.body;
+    console.log(username, email, password, fullName);
 
     var attributeList = [];
 
@@ -32,7 +30,7 @@ router.post('/register' ,(req, res) => {
 
     var dataPersonalName = {
         Name: 'name',
-        Value: name,
+        Value: username,
     };
     
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
@@ -41,7 +39,7 @@ router.post('/register' ,(req, res) => {
     attributeList.push(attributePersonalName);
     attributeList.push(attributeEmail);
 
-    userPool.signUp(name, password, attributeList, null, function(
+    userPool.signUp(username, password, attributeList, null, function(
         err,
         result
     ) {
@@ -54,7 +52,7 @@ router.post('/register' ,(req, res) => {
             TableName: tableName,
             Item: {
                 id: result.userSub,
-                fullName: '',
+                fullName,
                 email: email,
                 birthdate: '',
                 img: '',
@@ -96,7 +94,18 @@ router.post('/login', (req, res) => {
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function(result) {
             var accessToken = result;
-            res.status(200).json(accessToken.getIdToken().payload.sub)
+            const params = {
+                TableName: tableName,
+                Key:{
+                    id: accessToken.getIdToken().payload.sub
+                }
+            }
+            docClient.get(params,(err, data) => {
+                if(err) {
+                    res.status(500).send("dang nhap khong thanh cong");
+                }
+                res.status(200).json(data.Item)
+            })
         },
         onFailure: function(err) {
             res.status(500).send(err.message || JSON.stringify(err));
