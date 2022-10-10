@@ -20,7 +20,8 @@ function App() {
             <Routes>
                 <Route
                     exact
-                    path={user ? '/' : '/login'}
+                    // path={user ? '/' : '/login'}
+                    path="/"
                     element={
                         <div className="wrapper">
                             {user ? (
@@ -61,7 +62,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/forgot-password/confirm" element={<ConfirmPassword />} />=
+                <Route path="/forgot-password/confirm" element={<ConfirmPassword />} />
             </Routes>
         </Router>
     );
