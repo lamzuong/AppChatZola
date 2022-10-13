@@ -7,10 +7,12 @@ import {
   Image,
   TextInput,
   ScrollView,
-  Button
+  Button,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function Profile({ navigation }) {
   const [userName, setuserName] = useState("Anya");
@@ -33,8 +35,26 @@ export default function Profile({ navigation }) {
   }
 
   async function logout() {
-    navigation.navigate("Welcome");
+    Alert.alert(
+      "Cảnh báo",
+      "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?",
+      [
+        {
+          text: "Ở lại",
+          style: "cancel",
+        },
+        {
+          text: "Đăng xuất",
+          onPress: () => {
+            navigation.navigate("Welcome");
+          },
+        },
+      ]
+    );
+    
   }
+
+  // const currentUser = AuthContext.getCurrentUser;
 
   return (
     <SafeAreaView>
