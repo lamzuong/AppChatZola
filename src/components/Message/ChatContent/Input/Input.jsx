@@ -3,21 +3,34 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './Input.module.scss';
 import { useState } from 'react';
+import axiosCilent from '../../../../api/axiosClient';
 
 const cx = classNames.bind(styles);
 
 const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
-
-    const handleSendMessage = (e, chatContent) => {
+    const [rerender, setRerender] = useState(false);
+    const handleSendMessage = async (e) => {
         e.preventDefault();
-        if (chatContent) {
+        const message = {
+            conversationID: props.params,
+            senderID: props.user.id,
+            mess: chatContent,
+        };
+        try {
+            await axiosCilent.post('/zola/message', message);
             setChatContent('');
+            setRerender(!rerender);
+            sendData(rerender);
+        } catch (err) {
+            console.log(err);
         }
     };
-
+    const sendData = (data) => {
+        props.parentCb(data);
+    };
     return (
-        <div className={cx('wrapper')} onSubmit={(e) => handleSendMessage(e, chatContent)}>
+        <div className={cx('wrapper')}>
             <form className={cx('container')}>
                 <div className={cx('chatContent')}>
                     {!chatContent && (
@@ -38,7 +51,7 @@ const Input = (props) => {
                     placeholder="Message"
                 />
             </form>
-            <div className={cx('button')} onClick={() => alert('khkhk')}>
+            <div className={cx('button')} onClick={handleSendMessage}>
                 <i className="bx bxl-telegram" style={{ color: '#0091ff' }}></i>
             </div>
         </div>

@@ -45,7 +45,7 @@ const Login = (props) => {
                 </h2>
             </div>
             <div className={cx('body')}>
-                {
+                { 
                     <div className={cx('content')}>
                         <div className={cx('title')}>
                             <h2>Đăng nhập</h2>

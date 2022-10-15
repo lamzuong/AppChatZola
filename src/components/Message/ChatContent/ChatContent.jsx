@@ -11,28 +11,23 @@ import { useState } from 'react';
 const cx = classNames.bind(styles);
 
 const ChatContent = (props) => {
-    const [messContent, setMessContent] = useState({});
     const mess = props.data;
-    const param = props.param;
+    const [message, setMessage] = useState([]);
     useEffect(() => {
-        const rs = mess.find((e) => e.id === param);
-        setMessContent(rs);
-    }, [param]);
+        setMessage(mess);
+    }, [mess]);
+    console.log(message);
     return (
         <div className={cx('wrapper')}>
-            {messContent ? (
+            {props.currentChat ? (
                 <>
-                    <HeaderMess ava={messContent.ava} name={messContent.name} />
+                    <HeaderMess currentUser={props.user} currentChat={props.currentChat} />
                     <div className={cx('chatBox')}>
-                        <MessUser ava={messContent.ava} />
-                        <MessUser own={true} />
-                        <MessUser ava={messContent.ava} />
-                        <MessUser own={true} />
-                        <MessUser own={true} />
-                        <MessUser ava={messContent.ava} />
-                        <MessUser ava={messContent.ava} />
+                        {mess.map((m) => (
+                            <MessUser own={m.senderID === props.user.id} mess={m} user={props.user} />
+                        ))}
                     </div>
-                    <Input />
+                    <Input user={props.user} currentChat={props.currentChat} />
                 </>
             ) : (
                 <h1 style={{ display: 'flex', justifyContent: 'center', marginTop: '30%', color: '#646e74' }}>

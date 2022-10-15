@@ -5,3 +5,12 @@
     height: 100%;
     display: flex;
 }
+
+.chatWrapper {
+    width: 100%;
+}
+
+.chatBox {
+    height: calc(100vh - 143px);
+    overflow: auto;
+}

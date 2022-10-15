@@ -7,7 +7,7 @@ const Home = (props) => {
     const { id } = useParams();
     return (
         <div>
-            <Message param={id} />
+            <Message params={id} />
         </div>
     );
 };

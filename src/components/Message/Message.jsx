@@ -5,6 +5,14 @@ import ChatList from './ChatList/ChatList';
 import ChatContent from './ChatContent/ChatContent';
 import ChatDetails from './ChatDetails/ChatDetails';
 import styles from './Message.module.scss';
+import { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import axiosCilent from '../../api/axiosClient';
+import HeaderMess from './ChatContent/HeaderMess/HeaderMess';
+import MessUser from './ChatContent/Mess/MessUser';
+import Input from './ChatContent/Input/Input';
 
 const cx = classNames.bind(styles);
 
@@ -102,10 +110,68 @@ const mess = [
 ];
 
 const Message = (props) => {
+    const [conversation, setConversation] = useState([]);
+    const [currentChat, setCurrentChat] = useState(null);
+    const [rerender, setRerender] = useState(null);
+    const [message, setMessage] = useState([]);
+    const { user } = useContext(AuthContext);
+    useEffect(() => {
+        const getConversation = async () => {
+            try {
+                const res = await axiosCilent.get('/zola/conversation/' + user.id);
+                setConversation(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getConversation();
+    }, [user.id]);
+
+    let cbChild = (childData) => {
+        setCurrentChat(childData);
+    };
+
+    let cbChild1 = (childData) => {
+        setRerender(childData);
+    };
+
+    useEffect(() => {
+        const getMess = async () => {
+            try {
+                const res = await axiosCilent.get('/zola/message/' + props.params);
+                setMessage(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getMess();
+    }, [props.params, rerender]);
+    message.sort((a, b) => a.date - b.date);
     return (
         <div className={cx('wrapper')}>
-            <ChatList data={mess} />
-            <ChatContent data={mess} param={props.param} />
+            <ChatList data={mess} conversation={conversation} parentCb={cbChild} />
+            <div className={cx('chatWrapper')}>
+                {currentChat ? (
+                    <>
+                        <HeaderMess currentUser={user} currentChat={currentChat} />
+                        <div className={cx('chatBox')}>
+                            {message.map((m) => (
+                                <MessUser
+                                    own={m.senderID === user.id}
+                                    mess={m}
+                                    sender={m.senderID}
+                                    group={currentChat.members.length > 2}
+                                />
+                            ))}
+                        </div>
+                        <Input user={user} params={props.params} parentCb={cbChild1} />
+                    </>
+                ) : (
+                    <h1 style={{ display: 'flex', justifyContent: 'center', marginTop: '30%', color: '#646e74' }}>
+                        Chọn người bạn muốn chat!
+                    </h1>
+                )}
+            </div>
             <ChatDetails />
         </div>
     );

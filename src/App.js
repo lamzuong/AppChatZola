@@ -20,8 +20,6 @@ function App() {
             <Routes>
                 <Route
                     exact
-                    // path={user ? '/' : '/login'}
-
                     path="/"
                     element={
                         <div className="wrapper">

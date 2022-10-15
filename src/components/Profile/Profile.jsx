@@ -30,12 +30,6 @@ const genders = [
         name: 'Nữ',
     },
 ];
-const userInfo = {
-    email: 'minhvuong06082001@gamil.com',
-    name: 'Minh Vuong',
-    gender: false,
-    birthday: '06/08/2001',
-};
 
 const Profile = (props) => {
     Modal.setAppElement('#root');
@@ -47,20 +41,16 @@ const Profile = (props) => {
     const closeModal = () => {
         setModalIsOpen(false);
     };
+    const { user } = useContext(AuthContext);
 
-    const [email, setEmail] = useState(userInfo.email);
-    const [nameDisplay, setNameDisplay] = useState(userInfo.name);
-    const [gender, setGender] = useState(userInfo.gender);
-    const [birthday, setBirthday] = useState(userInfo.birthday);
+    const [nameDisplay, setNameDisplay] = useState(user.fullName);
+    const [gender, setGender] = useState(user.gender);
+    const [birthday, setBirthday] = useState(user.birthday);
     const [checkGender, setCheckGender] = useState(gender);
 
     const handleUpdate = () => {
-        userInfo.name = nameDisplay;
-        userInfo.gender = checkGender ? 'Nam' : 'Nu';
-        userInfo.birthday = birthday;
+        console.log(nameDisplay, gender, birthday);
     };
-
-    const { user } = useContext(AuthContext);
 
     return (
         <div className={cx('wrapper')}>
@@ -69,22 +59,12 @@ const Profile = (props) => {
                     <div className={cx('ava')}>
                         <img src={user.img ? user.img : noAvatar} alt="phuc" />
                     </div>
-
-                    <h3>{nameDisplay}</h3>
-
                     <h3>{user.fullName}</h3>
                 </div>
                 <div className={cx('detail')}>
                     <h2>Thông tin tài khoản</h2>
                     <div>
                         <span className={cx('label')}>Email:</span>
-
-                        <span className={cx('text-info')}>{email}</span>
-                    </div>
-                    <div>
-                        <span className={cx('label')}>Giới tính:</span>
-                        <span className={cx('text-info')}>{checkGender === true ? 'Nam' : 'Nữ'}</span>
-
                         <span className={cx('text-info')}>{user.email}</span>
                     </div>
                     <div>
@@ -93,7 +73,7 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <span className={cx('label')}>Ngày sinh:</span>
-                        <span className={cx('text-info')}>{birthday}</span>
+                        <span className={cx('text-info')}>{user.birthday}</span>
                     </div>
 
                     <button className={cx('btn-update-info')} onClick={openModal}>
@@ -120,12 +100,9 @@ const Profile = (props) => {
                             <div className={cx('body-modal')}>
                                 <div className={cx('avatar')}>
                                     <div className={cx('ava')}>
-                                        <img
-                                            src="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                            alt="phuc"
-                                        />
+                                        <img src={user.img ? user.img : noAvatar} alt="phuc" />
                                     </div>
-                                    <h3>{nameDisplay}</h3>
+                                    <h3>{user.fullName}</h3>
                                 </div>
                                 <div className={cx('name-display')}>
                                     <span className={cx('label')} style={{ marginBottom: 5 }}>
@@ -134,7 +111,7 @@ const Profile = (props) => {
                                     <input
                                         type="text"
                                         className={cx('ipt-name-change')}
-                                        value={nameDisplay}
+                                        value={user.fullName}
                                         onChange={(e) => setNameDisplay(e.target.value)}
                                     />
                                     <span className={cx('desc-ipt-chang-name')}>
@@ -169,7 +146,7 @@ const Profile = (props) => {
                                         <input
                                             type="text"
                                             className={cx('ipt-name-change')}
-                                            value={birthday}
+                                            value={user.birthday}
                                             onChange={(e) => setBirthday(e.target.value)}
                                         />
                                     </div>

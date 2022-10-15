@@ -6,6 +6,11 @@
     margin: 20px 15px;
 }
 
+.messName {
+    margin-left: 45px;
+    font-size: 0.9rem;
+}
+
 .messTop {
     display: flex;
 }
@@ -40,6 +45,10 @@
 
 .message.own {
     align-items: flex-end;
+}
+
+.message.own .messName {
+    display: none;
 }
 
 .message.own .messText {
