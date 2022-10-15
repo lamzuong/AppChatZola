@@ -12,9 +12,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Profile({ navigation }) {
+  const { user } = React.useContext(AuthContext);
+
   const [userName, setuserName] = useState("Anya");
   const [avatar, setavatar] = useState(
     "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
@@ -55,7 +58,8 @@ export default function Profile({ navigation }) {
   }
 
   // const currentUser = AuthContext.getCurrentUser;
-
+  
+  
   return (
     <SafeAreaView>
       <View style={styles.header}>
@@ -68,7 +72,8 @@ export default function Profile({ navigation }) {
           <View style={styles.containerUser}>
             <View style={styles.infoUser}>
               <TouchableOpacity>
-                <Image source={{ uri: avatar }} style={styles.AvatarURL}></Image>
+                <Image source={{ uri: user?.img ? user.img : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png" }} 
+                        style={styles.AvatarURL}></Image>
                 
                 <Ionicons
                   name="camera-reverse-outline"
@@ -81,7 +86,7 @@ export default function Profile({ navigation }) {
               <TextInput
                 editable={false}
                 style={styles.inputUser}
-                value={userName}
+                value={user.fullName}
                 onChangeText={(text) => {
                   setuserName(text);
                 }}
@@ -92,7 +97,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Email:</Text>
             <TextInput
               style={styles.input}
-              value={email}
+              value={user.email}
               editable={false}
               onChangeText={(text) => {
                 setemail(text);
@@ -101,7 +106,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Giới tính:</Text>
             <TextInput
               style={styles.input}
-              value={gender}
+              value={user?.gender ? user.gender : 'Nam'}
               editable={false}
               onChangeText={(text) => {
                 setgender(text);
@@ -111,7 +116,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Ngày sinh:</Text>
             <TextInput
               style={styles.input}
-              value={birthday}
+              value={user?.birthdate ? user.birthdate : '01/01/2000'}
               editable={false}
               onChangeText={(text) => {
                 setBirthday(text);
