@@ -50,7 +50,7 @@ router.get('/:id',(req, res) => {
         else{
             console.log(data.Item.address);
 
-            return res.send(data)
+            return res.send(data.Item)
         }
     })
 })
