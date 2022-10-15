@@ -19,9 +19,9 @@ export default function AddFriend({ navigation }, props) {
             navigation.navigate("Home");
           }}
         >
-          <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
+          <Ionicons name="md-arrow-back-sharp" size={30} color="white" />
         </TouchableOpacity>
-        <SearchBar title="Nhập email cần tìm..." />
+        <SearchBar title="Nhập email hoặc tên cần tìm..." />
       </View>
     </View>
   );

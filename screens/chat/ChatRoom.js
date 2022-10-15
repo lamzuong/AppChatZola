@@ -18,9 +18,11 @@ import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import MessageChat from "./MessageChat";
 import * as ImagePicker from "expo-image-picker";
+import axiosCilent from "../../api/axiosClient";
+import { AuthContext } from "../../context/AuthContext";
 
-export default function ChatRoom({ route }) {
-  const { nickname, avatar, message } = route.params;
+export default function ChatRoom({ route }, props) {
+  const { nickname, avatar, conversation } = route.params;
   const navigation = useNavigation();
   const [valueInput, setValueInput] = useState("");
   const [nameInChat, setNameInChat] = useState(nickname);
@@ -89,74 +91,40 @@ export default function ChatRoom({ route }) {
     }
   };
 
-  // const messageChat = [
-  //   {
-  //     owner: false,
-  //     title: "Hello",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:00 p.m",
-  //   },
-  //   {
-  //     owner: true,
-  //     title: "Hi",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:01 p.m",
-  //   },
-  //   {
-  //     owner: false,
-  //     title: "Rất vui được gặp bạn!!",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:02 p.m",
-  //   },
-  //   {
-  //     owner: true,
-  //     title: "Có chuyện gì không ?",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:03 p.m",
-  //   },
-  //   {
-  //     owner: false,
-  //     title: "Tui muốn hỏi là bạn có tài liệu môn công nghệ mới không?",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:04 p.m",
-  //   },
-  //   {
-  //     owner: false,
-  //     title: "Gửi tui với",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:05 p.m",
-  //   },
-  //   {
-  //     owner: true,
-  //     title: "À có chứ",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:06 p.m",
-  //   },
-  //   {
-  //     owner: true,
-  //     title: "Tí nữa tui gửi cho",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:07 p.m",
-  //   },
-  //   {
-  //     owner: false,
-  //     title: "OK cám ơn nha",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:07 p.m",
-  //   },
-  //   {
-  //     owner: false,
-  //     title: "À còn môn gì nữa gửi hết cho tui luôn đi",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:08 p.m",
-  //   },
-  //   {
-  //     owner: true,
-  //     title: "OK nha",
-  //     ava: avatar,
-  //     time: "Hôm nay 1:08 p.m",
-  //   },
-  // ];
+  //=============
+
+  const { user } = React.useContext(AuthContext);
+  const [message, setMessage] = useState([]);
+
+  const [rerender, setRerender] = useState(false);
+  useEffect(() => {
+    const getMess = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/message/" + conversation.id);
+        setMessage(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMess();
+  }, [conversation.id, rerender]);
+  message.sort((a, b) => a.date - b.date);
+  //====
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    const message = {
+      conversationID: conversation.id,
+      senderID: user.id,
+      mess: valueInput,
+    };
+    try {
+      await axiosCilent.post("/zola/message", message);
+      setValueInput("");
+      setRerender(!rerender);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -202,9 +170,11 @@ export default function ChatRoom({ route }) {
         renderItem={({ item }) => (
           <MessageChat
             ava={avatar}
-            owner={item.owner}
-            title={item.title}
-            time={item.time}
+            owner={item.senderID == user.id}
+            title={item.mess}
+            time={item.date}
+            group={conversation.members.length > 2}
+            sender={item.senderID}
           />
         )}
         keyExtractor={(item, index) => index}
@@ -267,7 +237,10 @@ export default function ChatRoom({ route }) {
             }}
           />
 
-          <TouchableOpacity style={[styles.iconBottom, { marginTop: 3 }]}>
+          <TouchableOpacity
+            style={[styles.iconBottom, { marginTop: 3 }]}
+            onPress={handleSendMessage}
+          >
             <Ionicons name="send" size={30} color="rgb(0,145,255)" />
           </TouchableOpacity>
         </View>

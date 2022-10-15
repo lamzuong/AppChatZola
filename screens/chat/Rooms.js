@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  Pressable,
 } from "react-native";
 import ChatList from "./ChatList";
 import ChatListGroup from "./ChatListGroup";
@@ -17,6 +18,9 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import SearchBar from "./SearchBar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthContext } from "../../context/AuthContext";
+import { useState, useEffect, useContext } from "react";
+import axiosCilent from "../../api/axiosClient";
 
 const messageChat = [
   {
@@ -419,15 +423,43 @@ const userChat = [
 ];
 
 export default function Rooms({ navigation }) {
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
 
+  const [conversation, setConversation] = useState([]);
+  const { user } = React.useContext(AuthContext);
+  useEffect(() => {
+    const getConversation = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/conversation/" + user.id);
+        setConversation(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getConversation();
+  }, [user.id]);
+  // console.log(conversation);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <View style={styles.header}>
-        <SearchBar title="Nhập tên cần tìm..." />
+        <Pressable
+          style={styles.btnSearch}
+          onPress={() => {
+            navigation.navigate("AddFriend");
+          }}
+        >
+          <EvilIcons
+            name="search"
+            size={40}
+            color="white"
+            style={{ paddingRight: 5 }}
+          />
+          <Text style={styles.txtSearch}>Tìm kiếm</Text>
+        </Pressable>
+        {/* <SearchBar title="Nhập tên cần tìm..." /> */}
         <Menu
           style={{ flex: 1, marginTop: 40 }}
           visible={visible}
@@ -471,19 +503,10 @@ export default function Rooms({ navigation }) {
             />
             <Text style={styles.iconMenu}>Tạo nhóm</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuFunction} onPress={closeMenu}>
-            <AntDesign
-              name="cloudo"
-              size={24}
-              color="black"
-              style={styles.iconMenu}
-            />
-            <Text style={styles.iconMenu}>Cloud của tôi</Text>
-          </TouchableOpacity>
         </Menu>
       </View>
       <ScrollView>
-        {userChat.map((e, i) =>
+        {/* {userChat.map((e, i) =>
           e.typeChat == "user" ? (
             <ChatList
               key={i}
@@ -504,7 +527,10 @@ export default function Rooms({ navigation }) {
               messAll={e.messageAll}
             />
           )
-        )}
+        )} */}
+        {conversation.map((e, i) => (
+          <ChatList key={i} conversation={e} currentUser={user} />
+        ))}
       </ScrollView>
     </SafeAreaView>
   );

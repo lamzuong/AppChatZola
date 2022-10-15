@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   items: {
-    marginTop: 10,
+    marginVertical: 5,
     marginLeft: 10,
     flexDirection: "row",
   },

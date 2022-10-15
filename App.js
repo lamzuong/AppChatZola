@@ -33,137 +33,141 @@ export default function App() {
   return (
     <AuthContextProvider>
       <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Welcome"
-        screenOptions={{ headerShown: false }}
-      >
-        <Stack.Screen
-          name="Welcome"
-          component={Welcome}
-          options={{ headerShown: false }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            title: "Đăng nhập",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ headerShown: false }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="SignUp"
-          component={SignUp}
-          options={{
-            title: "Tạo tài khoản",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="ConfirmEmail"
-          component={ConfirmEmail}
-          options={{
-            title: "Nhập mã kích hoạt",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="ConfirmEmailForget"
-          component={ConfirmEmailForget}
-          options={{
-            title: "Nhập mã xác thực",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            title: "Thông tin cá nhân",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen name="Rooms" component={Rooms} />
-        <Stack.Screen name="ChatRoom" component={ChatRoom} />
-        <Stack.Screen name="ChatRoomGroup" component={ChatRoomGroup} />
-        <Stack.Screen
-          name="ListMemberGroup"
-          component={ListMemberGroup}
-          options={{ animation: "slide_from_right" }}
-        />
-        <Stack.Screen
-          name="FileMediaGroup"
-          component={FileMediaGroup}
-          options={{ animation: "slide_from_right" }}
-        />
-        <Stack.Screen
-          name="ChatInfo"
-          component={ChatInfo}
-          options={{ animation: "slide_from_right" }}
-        />
-        <Stack.Screen
-          name="ChatInfoGroup"
-          component={ChatInfoGroup}
-          options={{ animation: "slide_from_right" }}
-        />
-        <Stack.Screen name="AddFriend" component={AddFriend} />
-        <Stack.Screen name="AddGroup" component={AddGroup} />
-        <Stack.Screen
-          name="ResetPassword"
-          component={ResetPassword}
-          options={{
-            title: "Đổi mật khẩu",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="UpdateProfile"
-          component={UpdateProfile}
-          options={{
-            title: "Cập nhật thông tin",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="ForgetPassword"
-          component={ForgetPassword}
-          options={{
-            title: "Lấy lại mật khẩu",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-        <Stack.Screen
-          name="RecoverPassword"
-          component={RecoverPassword}
-          options={{
-            title: "Lấy lại mật khẩu",
-            headerTintColor: "white",
-            headerStyle: { backgroundColor: "#0091ff" },
-            headerShown: true,
-          }}
-        ></Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Welcome"
+          screenOptions={{ headerShown: false }}
+        >
+          <Stack.Screen
+            name="Welcome"
+            component={Welcome}
+            options={{ headerShown: false }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              title: "Đăng nhập",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{ headerShown: false }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{
+              title: "Tạo tài khoản",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="ConfirmEmail"
+            component={ConfirmEmail}
+            options={{
+              title: "Nhập mã kích hoạt",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="ConfirmEmailForget"
+            component={ConfirmEmailForget}
+            options={{
+              title: "Nhập mã xác thực",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title: "Thông tin cá nhân",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen name="Rooms" component={Rooms} />
+          <Stack.Screen name="ChatRoom" component={ChatRoom} />
+          <Stack.Screen name="ChatRoomGroup" component={ChatRoomGroup} />
+          <Stack.Screen
+            name="ListMemberGroup"
+            component={ListMemberGroup}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="FileMediaGroup"
+            component={FileMediaGroup}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="ChatInfo"
+            component={ChatInfo}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="ChatInfoGroup"
+            component={ChatInfoGroup}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="AddFriend"
+            component={AddFriend}
+            options={{ animation: "fade" }}
+          />
+          <Stack.Screen name="AddGroup" component={AddGroup} />
+          <Stack.Screen
+            name="ResetPassword"
+            component={ResetPassword}
+            options={{
+              title: "Đổi mật khẩu",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="UpdateProfile"
+            component={UpdateProfile}
+            options={{
+              title: "Cập nhật thông tin",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="ForgetPassword"
+            component={ForgetPassword}
+            options={{
+              title: "Lấy lại mật khẩu",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="RecoverPassword"
+            component={RecoverPassword}
+            options={{
+              title: "Lấy lại mật khẩu",
+              headerTintColor: "white",
+              headerStyle: { backgroundColor: "#0091ff" },
+              headerShown: true,
+            }}
+          ></Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     </AuthContextProvider>
   );
 }
