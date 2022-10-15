@@ -2,6 +2,8 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
+import noAvatar from "../../assets/noAvatar.png";
+
 export default function MessageChat(props) {
   const owner = props.owner;
   const ava = props.ava;
@@ -62,7 +64,9 @@ export default function MessageChat(props) {
       <View style={owner ? styles.styleOwner : styles.styleFriend}>
         <Image
           source={{
-            uri: user?.img ? user.img : null,
+            uri: user?.img
+              ? user.img
+              : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
           }}
           style={owner ? null : styles.imageAva}
         />
