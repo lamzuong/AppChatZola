@@ -110,9 +110,6 @@ export default function ChatRoom({ route }) {
   }, [conversation.id, rerender]);
   message.sort((a, b) => a.date - b.date);
   //====Send Message======
-  //   const sendData = (data) => {
-  //     route.params.parentCb(data);
-  // };
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const message = {
