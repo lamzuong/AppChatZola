@@ -66,6 +66,9 @@ export default function SignUp({ navigation }) {
         {
           text: "Thay đổi",
           style: "cancel",
+          onPress: () => {
+            console.log(username, email, fullName, password, repassword);
+          },
         },
         {
           text: "Xác nhận",
@@ -150,10 +153,7 @@ export default function SignUp({ navigation }) {
               placeholder="Nhập Username"
               placeholderTextColor="gray"
               onChangeText={(text) => {
-                setusername(text);
-              }}
-              onBlur = {() => {
-                if (!validateUsername(username)) {
+                if (!validateUsername(text)) {
                   sethideErrorUsername(true);
                   seterrorUsername('Username chỉ chứa chữ cái và số từ 4 đến 16 ký tự.');
                   sethidebtn(false);
@@ -166,6 +166,7 @@ export default function SignUp({ navigation }) {
                     sethidebtn(false);
                   }
                }
+                setusername(text);
               }}
             />
             {username && (
@@ -189,16 +190,12 @@ export default function SignUp({ navigation }) {
               placeholder="Nhập Email"
               placeholderTextColor="gray"
               onChangeText={(text) => {
-                setemail(text);
-              }}
-              keyboardType="email-address"
-              onBlur = {() => {
-                if (isEmpty(email)) {
+                if (isEmpty(text)) {
                   sethideErrorEmail(true);
                   seterrorEmail('Địa chỉ email không được rỗng.');
                   sethidebtn(false);
                 } else {
-                  if (!validateEmail(email)) {
+                  if (!validateEmail(text)) {
                     sethideErrorEmail(true);
                     seterrorEmail('Địa chỉ email không hợp lệ.');
                     sethidebtn(false);
@@ -212,7 +209,9 @@ export default function SignUp({ navigation }) {
                     }
                   }
                 }
+                setemail(text);
               }}
+              keyboardType="email-address"
             />
             {email && (
               <TouchableOpacity
@@ -235,15 +234,12 @@ export default function SignUp({ navigation }) {
               placeholder="Nhập tên đầy đủ"
               placeholderTextColor="gray"
               onChangeText={(text) => {
-                setfullName(text);
-              }}
-              onBlur = {() => {
-                if (isEmpty(fullName)) {
+                if (isEmpty(text)) {
                   sethideErrorFullname(true);
                   seterrorFullname('Tên đầy đủ không được rỗng.');
                   sethidebtn(false);
                 } else {
-                  if (!validateFullname(fullName)) {
+                  if (!validateFullname(text)) {
                     sethideErrorFullname(true);
                     seterrorFullname('Tên đầy đủ không bao gồm chữ số và ký tự đặc biệt.');
                     sethidebtn(false);
@@ -257,6 +253,7 @@ export default function SignUp({ navigation }) {
                     }
                   }
                 }
+                setfullName(text);
               }}
             />
             {fullName && (
@@ -280,16 +277,12 @@ export default function SignUp({ navigation }) {
               placeholder="Nhập mật khẩu"
               placeholderTextColor="gray"
               onChangeText={(text) => {
-                setpassword(text);
-              }}
-              secureTextEntry={hide}
-              onBlur = {() => {
-                if (isEmpty(password)) {
+                if (isEmpty(text)) {
                   sethideErrorPassword(true);
                   seterrorPassword('Mật khẩu không được rỗng.');
                   sethidebtn(false);
                 } else {
-                  if (!validatePassword(password)) {
+                  if (!validatePassword(text)) {
                     sethideErrorPassword(true);
                     seterrorPassword('Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 kỹ tự.');
                     sethidebtn(false);
@@ -297,7 +290,7 @@ export default function SignUp({ navigation }) {
                     seterrorPassword('');
                     sethideErrorPassword(false);
                     if (!hideBtnSignup(username, email, fullName, password, repassword)) {
-                      if (!validateRepassword(password, repassword)) {
+                      if (!validateRepassword(text, repassword)) {
                         sethidebtn(false);
                         sethideErrorPassword(true);
                         seterrorPassword('Mật khẩu và mật khẩu nhập lại phải giống nhau.');
@@ -309,7 +302,9 @@ export default function SignUp({ navigation }) {
                     }
                   }
                 }
+                setpassword(text);
               }}
+              secureTextEntry={hide}
             />
             {password && (
               <TouchableOpacity
@@ -355,16 +350,12 @@ export default function SignUp({ navigation }) {
               placeholder="Nhập lại mật khẩu"
               placeholderTextColor="gray"
               onChangeText={(text) => {
-                setrepassword(text);
-              }}
-              secureTextEntry={hide1}
-              onBlur = {() => {
-                if (isEmpty(repassword)) {
+                if (isEmpty(text)) {
                   sethideErrorRepassword(true);
                   seterrorRepassword('Nhập lại mật khẩu không được rỗng.');
                   sethidebtn(false);
                 } else {
-                  if (!validateRepassword(password,repassword)) {
+                  if (!validateRepassword(password,text)) {
                     sethideErrorRepassword(true);
                     seterrorRepassword('Nhập lại mật khẩu không đúng.');
                     sethidebtn(false);
@@ -380,7 +371,9 @@ export default function SignUp({ navigation }) {
                     }
                   }
                 }
+                setrepassword(text);
               }}
+              secureTextEntry={hide1}
             />
             {repassword && (
               <TouchableOpacity
