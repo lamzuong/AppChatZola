@@ -114,7 +114,7 @@ export default function ChatRoom({ route }) {
     e.preventDefault();
     const message = {
       conversationID: conversation.id,
-      senderID: user.id,
+      sender: user,
       mess: valueInput,
     };
     try {
@@ -178,11 +178,10 @@ export default function ChatRoom({ route }) {
         renderItem={({ item }) => (
           <MessageChat
             ava={avatar}
-            owner={item.senderID == user.id}
             title={item.mess}
             time={item.date}
             group={conversation.members.length > 2}
-            sender={item.senderID}
+            sender={item.sender}
           />
         )}
         keyExtractor={(item, index) => index}

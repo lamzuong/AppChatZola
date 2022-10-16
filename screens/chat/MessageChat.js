@@ -1,63 +1,48 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import noAvatar from "../../assets/noAvatar.png";
 
 export default function MessageChat(props) {
-  const owner = props.owner;
+  const { user } = useContext(AuthContext);
+
   const ava = props.ava;
   const title = props.title;
   const time = props.time;
   const group = props.group;
+  const sender = props.sender;
+  const owner = sender.id == user.id;
 
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const getInfoFriends = async () => {
-      try {
-        const res = await axiosCilent.get("/zola/users/" + props.sender);
-        setUser(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getInfoFriends();
-  }, [props.sender]);
-
-  let nameShow = user?.fullName.split(" ").slice(-1);
-
+  let nameShow = sender?.fullName.split(" ").slice(-1);
   //====getTime=====
-  const [timeShow, setTimeShow] = useState("");
-  useEffect(() => {
-    function timeSince(date) {
-      var seconds = Math.floor((new Date() - date) / 1000);
+  function timeSince(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
 
-      var interval = seconds / 31536000;
+    var interval = seconds / 31536000;
 
-      if (interval > 1) {
-        return Math.floor(interval) + " năm";
-      }
-      interval = seconds / 2592000;
-      if (interval > 1) {
-        return Math.floor(interval) + " tháng";
-      }
-      interval = seconds / 86400;
-      if (interval > 1) {
-        return Math.floor(interval) + " ngày";
-      }
-      interval = seconds / 3600;
-      if (interval > 1) {
-        return Math.floor(interval) + " giờ";
-      }
-      interval = seconds / 60;
-      if (interval > 1) {
-        return Math.floor(interval) + " phút";
-      }
-      // return Math.floor(seconds) + " giây";
-      return "";
+    if (interval > 1) {
+      return Math.floor(interval) + " năm trước";
     }
-    setTimeShow(timeSince(new Date(time)));
-  });
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " tháng trước";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " ngày trước";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " giờ trước";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " phút trước";
+    }
+    // return Math.floor(seconds) + " giây";
+    return "";
+  }
   return (
     <View>
       <View>
@@ -68,8 +53,8 @@ export default function MessageChat(props) {
       <View style={owner ? styles.styleOwner : styles.styleFriend}>
         <Image
           source={{
-            uri: user?.img
-              ? user.img
+            uri: sender?.img
+              ? sender.img
               : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
           }}
           style={owner ? null : styles.imageAva}
@@ -81,7 +66,7 @@ export default function MessageChat(props) {
         </View>
       </View>
       <View style={owner ? styles.timeOwner : styles.time}>
-        <Text style={{ color: "grey" }}>{timeShow}</Text>
+        <Text style={{ color: "grey" }}>{timeSince(new Date(time))}</Text>
       </View>
     </View>
   );

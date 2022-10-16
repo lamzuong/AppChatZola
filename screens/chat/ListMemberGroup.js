@@ -1,4 +1,13 @@
-import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  Modal,
+  Button,
+  Pressable,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -6,10 +15,6 @@ import styles from "./styleChatInfoGroup";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
-const yourself = {
-  ava: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
-  name: "Anya",
-};
 export default function ListMemberGroup({ navigation, route }) {
   const { members } = route.params;
   const { user } = useContext(AuthContext);
@@ -67,32 +72,96 @@ export default function ListMemberGroup({ navigation, route }) {
   );
 }
 const ListMem = (props) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [addFr, setAddFr] = useState(false);
+  const [inListFr, setInListFr] = useState(true);
+
+  let img = props.members.img;
+  if (img == "")
+    img =
+      "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png";
   return (
     <View style={{ flexDirection: "row" }}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalViewInfo}>
+            <View style={styles.contentModal}>
+              <Image
+                source={{
+                  uri: img,
+                }}
+                style={styles.imgAvaModal}
+              />
+              <Text style={styles.nameModal}>{props.members.fullName}</Text>
+              {inListFr ? (
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity
+                    style={[styles.btnAddFr, { marginRight: 10 }]}
+                  >
+                    <Text style={styles.txtAddFr}>Chấp nhận</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.btnCancelAddFr, { marginLeft: 10 }]}
+                  >
+                    <Text style={styles.txtCancelAddFr}>Xóa lời mời</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <View>
+                  {addFr ? (
+                    <TouchableOpacity
+                      style={styles.btnCancelAddFr}
+                      onPress={() => {
+                        setAddFr(!addFr);
+                      }}
+                    >
+                      <Text style={styles.txtCancelAddFr}>Hủy lời mời</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={styles.btnAddFr}
+                      onPress={() => {
+                        setAddFr(!addFr);
+                      }}
+                    >
+                      <Text style={styles.txtAddFr}>Kết bạn</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
       {props.members.id == props.currentUser.id ? null : (
         <>
           <View style={{ width: "80%" }}>
-            <TouchableOpacity style={styles.itemMember}>
-              {props.members.img ? (
-                <Image
-                  source={{ uri: props.members.img }}
-                  style={styles.imgAvaMini}
-                />
-              ) : (
-                <Image
-                  source={{
-                    uri: "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
-                  }}
-                  style={styles.imgAvaMini}
-                />
-              )}
+            <TouchableOpacity
+              style={styles.itemMember}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <Image
+                source={{
+                  uri: img,
+                }}
+                style={styles.imgAvaMini}
+              />
               <Text style={styles.txtNameMember}>{props.members.fullName}</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.iconAction}>
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Ionicons name="person-add-outline" size={24} color="black" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity>
               <MaterialIcons name="person-remove" size={32} color="red" />
             </TouchableOpacity>

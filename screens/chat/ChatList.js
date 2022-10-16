@@ -49,14 +49,19 @@ export default function ChatList(props) {
       }
     };
     getMess();
-  });
+  }, [conversation.id]);
   message.sort((a, b) => a.date - b.date);
   let lastMess = "";
   if (message.slice(-1).length > 0) {
     let foo = message.slice(-1);
     lastMess = foo.map(({ mess }) => mess);
-    let senderID = foo.map(({ senderID }) => senderID);
-    if (senderID == props.currentUser.id) lastMess = "Bạn: " + lastMess;
+    let senderID = foo[0].sender.id;
+    if (senderID == props.currentUser.id) {
+      lastMess = "Bạn: " + lastMess;
+      if (lastMess.length > 34) {
+        lastMess = lastMess.slice(0, 29) + "...";
+      }
+    }
   }
   //======================
   return (

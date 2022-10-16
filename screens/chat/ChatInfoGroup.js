@@ -103,7 +103,7 @@ const listFile = [
 ];
 
 export default function ChatInfoGroup({ navigation, route }) {
-  const { name, ava, users, conversation } = route.params;
+  const { name, ava, conversation } = route.params;
   const [select, setSelected] = useState("image");
 
   return (
