@@ -58,7 +58,7 @@ export default function Login({ navigation }) {
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.login}>
-        Vui lòng nhập Email và mật khẩu để đăng nhập.
+        Vui lòng nhập username và mật khẩu để đăng nhập.
       </Text>
 
       <View style={styles.input}>
