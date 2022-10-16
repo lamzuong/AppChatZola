@@ -37,6 +37,28 @@ export default function ChatList(props) {
     img = user?.img ? user.img : null;
     name = user?.fullName;
   }
+  //========getLastMessage===================
+  const [message, setMessage] = useState([]);
+  useEffect(() => {
+    const getMess = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/message/" + conversation.id);
+        setMessage(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMess();
+  }, [conversation.id]);
+  message.sort((a, b) => a.date - b.date);
+  let lastMess = "";
+  if (message.slice(-1).length > 0) {
+    let foo = message.slice(-1);
+    lastMess = foo.map(({ mess }) => mess);
+    let senderID = foo.map(({ senderID }) => senderID);
+    if (senderID == props.currentUser.id) lastMess = "Bạn: " + lastMess;
+  }
+  //======================
   return (
     <View style={{ backgroundColor: "white" }}>
       <TouchableOpacity
@@ -57,7 +79,7 @@ export default function ChatList(props) {
           />
           <View style={styles.user}>
             <Text style={styles.nickname}>{name}</Text>
-            <Text style={styles.chatLastTime}>{props.messLast}</Text>
+            <Text style={styles.chatLastTime}>{lastMess}</Text>
           </View>
         </View>
       </TouchableOpacity>

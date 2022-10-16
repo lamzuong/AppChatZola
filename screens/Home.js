@@ -14,6 +14,7 @@ import Friends from "./friend/Friends";
 import Profile from "./profile/Profile";
 import Directory from "./friend/Directory";
 import GroupFriends from "./friend/GroupFriends";
+import InviteAddFrReceive from "./friend/InviteAddFrReceive";
 
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
@@ -147,6 +148,7 @@ const TopNavigator = () => {
         ],
       }}
     >
+      <TopTab.Screen name="Lời mời" component={InviteAddFrReceive} />
       <TopTab.Screen name="Bạn bè" component={Directory} />
       <TopTab.Screen name="Nhóm" component={GroupFriends} />
     </TopTab.Navigator>

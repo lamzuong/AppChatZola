@@ -441,7 +441,7 @@ export default function Rooms({ navigation }) {
     getConversation();
   }, [user.id]);
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <View style={styles.header}>
         <Pressable
