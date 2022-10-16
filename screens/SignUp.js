@@ -111,7 +111,7 @@ export default function SignUp({ navigation }) {
   }
 
   const validateFullname = (fullName) => {
-    var re = /^[a-zA-Z ]*$/;
+    var re = /^[a-zA-Z ]{1,30}$/;
     return re.test(removeAscent(fullName));
   };
 
@@ -241,7 +241,7 @@ export default function SignUp({ navigation }) {
                 } else {
                   if (!validateFullname(text)) {
                     sethideErrorFullname(true);
-                    seterrorFullname('Tên đầy đủ không bao gồm chữ số và ký tự đặc biệt.');
+                    seterrorFullname('Tên đầy đủ không bao gồm chữ số, ký tự đặc biệt và tối đa 30 ký tự.');
                     sethidebtn(false);
                   } else {
                     seterrorFullname('');
