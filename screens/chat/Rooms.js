@@ -429,6 +429,7 @@ export default function Rooms({ navigation }) {
 
   const [conversation, setConversation] = useState([]);
   const { user } = useContext(AuthContext);
+  const [rerender, setRerender] = useState(false);
   useEffect(() => {
     const getConversation = async () => {
       try {
@@ -439,7 +440,7 @@ export default function Rooms({ navigation }) {
       }
     };
     getConversation();
-  }, [user.id]);
+  }, [user.id, rerender]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
