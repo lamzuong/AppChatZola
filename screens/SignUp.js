@@ -174,6 +174,7 @@ export default function SignUp({ navigation }) {
                 style={{ marginTop: 15 }}
                 onPress={() => {
                   setusername("");
+                  sethidebtn(false);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -218,6 +219,7 @@ export default function SignUp({ navigation }) {
                 style={{ marginTop: 15 }}
                 onPress={() => {
                   setemail("");
+                  sethidebtn(false);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -261,6 +263,7 @@ export default function SignUp({ navigation }) {
                 style={{ marginTop: 15 }}
                 onPress={() => {
                   setfullName("");
+                  sethidebtn(false);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -334,6 +337,7 @@ export default function SignUp({ navigation }) {
                   setpassword("");
                   sethide(true);
                   seticon("eye-outline");
+                  sethidebtn(false);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -403,6 +407,7 @@ export default function SignUp({ navigation }) {
                   setrepassword("");
                   sethide1(true);
                   seticon1("eye-outline");
+                  sethidebtn(false);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
