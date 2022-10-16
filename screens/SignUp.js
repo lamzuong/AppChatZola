@@ -27,6 +27,16 @@ export default function SignUp({ navigation }) {
   const [icon1, seticon1] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
   const [hide1, sethide1] = React.useState(true);
+  const [errorUsername, seterrorUsername] = useState('Lỗi');
+  const [hideErrorUsername, sethideErrorUsername] = useState(false);
+  const [errorEmail, seterrorEmail] = useState('Lỗi');
+  const [hideErrorEmail, sethideErrorEmail] = useState(false);
+  const [errorFullname, seterrorFullname] = useState('Lỗi');
+  const [hideErrorFullname, sethideErrorFullname] = useState(false);
+  const [errorPassword, seterrorPassword] = useState('Lỗi');
+  const [hideErrorPassword, sethideErrorPassword] = useState(false);
+  const [errorRepassword, seterrorRepassword] = useState('Lỗi');
+  const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
 
   function conFirm() {
     const register = async () => {
@@ -65,14 +75,61 @@ export default function SignUp({ navigation }) {
       ]
     );
   }
+  const isEmpty = (str) => {
+    if (str.trim().length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateUsername = (username) => {
+    var re = /^[a-zA-Z0-9]{4,16}$/;
+    return re.test(username);
+  };
+
+  const validateEmail = (email) => {
+    var re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+    return re.test(email);
+  };
+
+  function removeAscent (str) {
+    if (str === null || str === undefined) return str;
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    return str;
+  }
+
+  const validateFullname = (fullName) => {
+    var re = /^[a-zA-Z ]*$/;
+    return re.test(removeAscent(fullName));
+  };
+
+  const validatePassword = (password) => {
+    var re = /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/;
+    return re.test(password);
+  };
+
+  const validateRepassword = (password, repassword) => {
+    if (password === repassword) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.signup}>
-        Vui lòng nhập đầy đủ tên, Email và mật khẩu để đăng ký.
+        Vui lòng nhập username, email, tên đầy đủ và mật khẩu để đăng ký.
       </Text>
-
       <SafeAreaView>
         <ScrollView style={{ height: "auto", marginBottom: 150 }}>
           <View style={styles.input}>
@@ -84,6 +141,15 @@ export default function SignUp({ navigation }) {
               onChangeText={(text) => {
                 setusername(text);
               }}
+              onBlur = {() => {
+                if (!validateUsername(username)) {
+                  sethideErrorUsername(true);
+                  seterrorUsername('Username chỉ chứa chữ cái và số từ 4 đến 16 ký tự.');
+               } else {
+                seterrorUsername('');
+                sethideErrorUsername(false);
+               }
+              }}
             />
             {username && (
               <TouchableOpacity
@@ -94,8 +160,11 @@ export default function SignUp({ navigation }) {
               >
                 <MaterialIcons name="clear" size={24} color="black" />
               </TouchableOpacity>
-            )}
+            )} 
           </View>
+          { hideErrorUsername && 
+              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorUsername}</Text>
+          }
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "90%" }}
@@ -106,6 +175,20 @@ export default function SignUp({ navigation }) {
                 setemail(text);
               }}
               keyboardType="email-address"
+              onBlur = {() => {
+                if (isEmpty(email)) {
+                  sethideErrorEmail(true);
+                  seterrorEmail('Địa chỉ email không được rỗng.');
+                } else {
+                  if (!validateEmail(email)) {
+                  sethideErrorEmail(true);
+                  seterrorEmail('Địa chỉ email không hợp lệ.');
+                  } else {
+                    seterrorEmail('');
+                    sethideErrorEmail(false);
+                  }
+                }
+              }}
             />
             {email && (
               <TouchableOpacity
@@ -118,6 +201,9 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
+          { hideErrorEmail && 
+              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorEmail}</Text>
+          }
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "90%" }}
@@ -126,6 +212,20 @@ export default function SignUp({ navigation }) {
               placeholderTextColor="gray"
               onChangeText={(text) => {
                 setfullName(text);
+              }}
+              onBlur = {() => {
+                if (isEmpty(fullName)) {
+                  sethideErrorFullname(true);
+                  seterrorFullname('Tên đầy đủ không được rỗng.');
+                } else {
+                  if (!validateFullname(fullName)) {
+                    sethideErrorFullname(true);
+                    seterrorFullname('Tên đầy đủ không bao gồm chữ số và ký tự đặc biệt.');
+                  } else {
+                    seterrorFullname('');
+                    sethideErrorFullname(false);
+                  }
+                }
               }}
             />
             {fullName && (
@@ -139,6 +239,9 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
+          { hideErrorFullname && 
+              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorFullname}</Text>
+          }
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -149,6 +252,20 @@ export default function SignUp({ navigation }) {
                 setpassword(text);
               }}
               secureTextEntry={hide}
+              onBlur = {() => {
+                if (isEmpty(password)) {
+                  sethideErrorPassword(true);
+                  seterrorPassword('Mật khẩu không được rỗng.');
+                } else {
+                  if (!validatePassword(password)) {
+                    sethideErrorPassword(true);
+                    seterrorPassword('Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 kỹ tự.');
+                  } else {
+                    seterrorPassword('');
+                    sethideErrorPassword(false);
+                  }
+                }
+              }}
             />
             {password && (
               <TouchableOpacity
@@ -184,7 +301,9 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
-
+          { hideErrorPassword && 
+              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorPassword}</Text>
+          }
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -195,6 +314,20 @@ export default function SignUp({ navigation }) {
                 setrepassword(text);
               }}
               secureTextEntry={hide1}
+              onBlur = {() => {
+                if (isEmpty(repassword)) {
+                  sethideErrorRepassword(true);
+                  seterrorRepassword('Nhập lại mật khẩu không được rỗng.');
+                } else {
+                  if (!validateRepassword(password,repassword)) {
+                    sethideErrorRepassword(true);
+                    seterrorRepassword('Nhập lại mật khẩu không đúng.');
+                  } else {
+                    seterrorRepassword('');
+                    sethideErrorRepassword(false);
+                  }
+                }
+              }}
             />
             {repassword && (
               <TouchableOpacity
@@ -230,9 +363,15 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
+          { hideErrorRepassword && 
+              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorRepassword}</Text>
+          }
+         
+          {/* this.setState({showTheThing: true}) */}
+          
         </ScrollView>
       </SafeAreaView>
-
+     
       {/* <View style={styles.gender}>
              <RadioButton
                  value="true"
