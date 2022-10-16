@@ -2,17 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import ChatList from './ChatList/ChatList';
-import ChatContent from './ChatContent/ChatContent';
 import ChatDetails from './ChatDetails/ChatDetails';
 import styles from './Message.module.scss';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axiosCilent from '../../api/axiosClient';
-import HeaderMess from './ChatContent/HeaderMess/HeaderMess';
 import MessUser from './ChatContent/Mess/MessUser';
 import Input from './ChatContent/Input/Input';
+import noAvatar from '../../assets/noAvatar.png';
 
 const cx = classNames.bind(styles);
 
@@ -115,6 +113,7 @@ const Message = (props) => {
     const [rerender, setRerender] = useState(null);
     const [message, setMessage] = useState([]);
     const { user } = useContext(AuthContext);
+    const scrollRef = useRef();
     useEffect(() => {
         const getConversation = async () => {
             try {
@@ -147,21 +146,65 @@ const Message = (props) => {
         getMess();
     }, [props.params, rerender]);
     message.sort((a, b) => a.date - b.date);
+
+    const [userChat, setUserChat] = useState(null);
+    useEffect(() => {
+        const friendID = currentChat?.members.find((m) => m !== user.id);
+        const getInfoFriends = async () => {
+            try {
+                const res = await axiosCilent.get('/zola/users/' + friendID);
+                setUserChat(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        if (currentChat) {
+            getInfoFriends();
+        }
+    }, [currentChat, user.id]);
+    let img = '';
+    let name = '';
+    if (currentChat?.members.length > 2) {
+        img = currentChat.avatarGroup;
+        name = currentChat.groupName;
+    } else {
+        img = userChat?.img ? userChat.img : noAvatar;
+        name = userChat?.fullName;
+    }
+
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [message]);
     return (
         <div className={cx('wrapper')}>
-            <ChatList data={mess} conversation={conversation} parentCb={cbChild} />
+            <ChatList data={mess} conversation={conversation} rerender={rerender} parentCb={cbChild} />
             <div className={cx('chatWrapper')}>
                 {currentChat ? (
                     <>
-                        <HeaderMess currentUser={user} currentChat={currentChat} />
+                        {/* chatHeader */}
+                        <div className={cx('headermessWrapper')}>
+                            <div className={cx('headermessInfo')}>
+                                <div className={cx('headermessAvatar')}>
+                                    <img src={img} alt="" />
+                                </div>
+                                <div className={cx('headermessName')}>{name}</div>
+                            </div>
+                            <div className={cx('headermessNav')}>
+                                <i className="bx bxs-phone"></i>
+                                <i className="bx bxs-video"></i>
+                            </div>
+                        </div>
+                        {/* chatContent */}
                         <div className={cx('chatBox')}>
                             {message.map((m) => (
-                                <MessUser
-                                    own={m.senderID === user.id}
-                                    mess={m}
-                                    sender={m.senderID}
-                                    group={currentChat.members.length > 2}
-                                />
+                                <div key={m.id} ref={scrollRef}>
+                                    <MessUser
+                                        own={m.sender.id === user.id}
+                                        mess={m}
+                                        sender={m.sender}
+                                        group={currentChat.members.length > 2}
+                                    />
+                                </div>
                             ))}
                         </div>
                         <Input user={user} params={props.params} parentCb={cbChild1} />
@@ -172,7 +215,7 @@ const Message = (props) => {
                     </h1>
                 )}
             </div>
-            <ChatDetails />
+            {currentChat ? <ChatDetails img={img} name={name} currentChat={currentChat} /> : null}
         </div>
     );
 };

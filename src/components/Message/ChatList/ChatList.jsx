@@ -41,7 +41,13 @@ const ChatList = (props) => {
                         }}
                     >
                         <li key={i} className={cx(i === active ? 'active' : '')}>
-                            <Conversation key={i} id={e.id} conversation={e} currentUser={user} />
+                            <Conversation
+                                key={e.id}
+                                id={e.id}
+                                rerender={props.rerender}
+                                conversation={e}
+                                currentUser={user}
+                            />
                         </li>
                     </div>
                 ))}

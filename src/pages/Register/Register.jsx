@@ -15,7 +15,6 @@ const Register = (props) => {
     const [fullName, setFullName] = useState('');
     const navigate = useNavigate();
     const user = { email, username, password, fullName };
-    console.log(user);
     const handleRegister = (e) => {
         e.preventDefault();
         const register = async () => {
