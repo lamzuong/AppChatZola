@@ -13,7 +13,7 @@ import {
 import { RadioButton } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import axiosClient from "../api/axiosClient"
+import axiosClient from "../api/axiosClient";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignUp({ navigation }) {
@@ -27,202 +27,213 @@ export default function SignUp({ navigation }) {
   const [icon1, seticon1] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
   const [hide1, sethide1] = React.useState(true);
-  
-  function conFirm() {
-      const register = async () => {
-        try {
-          await axiosClient.post('/zola/auth/register',{username,email,fullName,password})
-          navigation.navigate("Login") 
-        } catch (error) {
-          Alert.alert(
-            "Cảnh báo",
-            "Username đã tồn tại!",
-            [
-              {
-                text: "Xác nhận",
-                style: "cancel",
-              },
-            ]
-          );
-        }
-      };
 
-      Alert.alert(
-        "Xác nhận Email",
-        `Chúng tôi sẽ gửi một Email kích hoạt đến địa chỉ: \n \t\t${email.toString()} \nVui lòng truy cập và xác nhận Email để hoàn thành đăng ký.`,
-        [
-          {
-            text: "Thay đổi",
-            style: "cancel",
-          },
+  function conFirm() {
+    const register = async () => {
+      try {
+        await axiosClient.post("/zola/auth/register", {
+          username,
+          email,
+          fullName,
+          password,
+        });
+        navigation.navigate("Login");
+      } catch (error) {
+        Alert.alert("Cảnh báo", "Username đã tồn tại!", [
           {
             text: "Xác nhận",
-            onPress: () => {
-              register();
-            },
+            style: "cancel",
           },
-        ]
-      );
+        ]);
+      }
+    };
+
+    Alert.alert(
+      "Xác nhận Email",
+      `Chúng tôi sẽ gửi một Email kích hoạt đến địa chỉ: \n \t\t${email.toString()} \nVui lòng truy cập và xác nhận Email để hoàn thành đăng ký.`,
+      [
+        {
+          text: "Thay đổi",
+          style: "cancel",
+        },
+        {
+          text: "Xác nhận",
+          onPress: () => {
+            register();
+          },
+        },
+      ]
+    );
   }
 
   return (
     <View style={styles.container}>
-    <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
-   <Text style={styles.signup}>
-     Vui lòng nhập đầy đủ tên, Email và mật khẩu để đăng ký.
-   </Text>
-   
-   <SafeAreaView>
-    <ScrollView style={{height:'auto', marginBottom:150}}>
-    <View style={styles.input}>
-     <TextInput
-       style={{ fontSize: 18, color: "black", width: "90%" }}
-       value={username}
-       placeholder="Nhập Username"
-       placeholderTextColor="gray"
-       onChangeText={(text) => {
-         setusername(text);
-       }}
-     />
-     {username && (
-       <TouchableOpacity
-         style={{ marginTop: 15 }}
-         onPress={() => {
-           setusername("");
-         }}
-       >
-         <MaterialIcons name="clear" size={24} color="black" />
-       </TouchableOpacity>
-     )}
-   </View>
-   <View style={styles.input}>
-     <TextInput
-       style={{ fontSize: 18, color: "black", width: "90%" }}
-       value={email}
-       placeholder="Nhập Email"
-       placeholderTextColor="gray"
-       onChangeText={(text) => {
-         setemail(text);
-       }}
-       keyboardType="email-address"
-     />
-     {email && (
-       <TouchableOpacity
-         style={{ marginTop: 15 }}
-         onPress={() => {
-           setemail("");
-         }}
-       >
-         <MaterialIcons name="clear" size={24} color="black" />
-       </TouchableOpacity>
-     )}
-   </View>
-   <View style={styles.input}>
-     <TextInput
-       style={{ fontSize: 18, color: "black", width: "90%" }}
-       value={fullName}
-       placeholder="Nhập tên đầy đủ"
-       placeholderTextColor="gray"
-       onChangeText={(text) => {
-         setfullName(text);
-       }}
-     />
-     {fullName && (
-       <TouchableOpacity
-         style={{ marginTop: 15 }}
-         onPress={() => {
-           setfullName("");
-         }}
-       >
-         <MaterialIcons name="clear" size={24} color="black" />
-       </TouchableOpacity>
-     )}
-   </View>
-   <View style={styles.input}>
-     <TextInput
-       style={{ fontSize: 18, color: "black", width: "80%" }}
-       value={password}
-       placeholder="Nhập mật khẩu"
-       placeholderTextColor="gray"
-       onChangeText={(text) => {
-         setpassword(text);
-       }}
-       secureTextEntry={hide}
-     />
-     {password && (
-       <TouchableOpacity
-         style={{ marginTop: 15, marginRight: 10 }}
-         onPress={() => {
-           if (hide === true) {
-             sethide(false);
-             seticon("eye-off-outline");
-           } else {
-             sethide(true);
-             seticon("eye-outline");
-           }
-         }}
-       >
-         <Ionicons name={icon} size={24} color="black" style={styles.cam} />
-       </TouchableOpacity>
-     )}
-     {password && (
-       <TouchableOpacity
-         style={{ marginTop: 15 }}
-         onPress={() => {
-           setpassword("");
-           sethide(true);
-           seticon("eye-outline");
-         }}
-       >
-         <MaterialIcons name="clear" size={24} color="black" />
-       </TouchableOpacity>
-     )}
-   </View>
+      <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
+      <Text style={styles.signup}>
+        Vui lòng nhập đầy đủ tên, Email và mật khẩu để đăng ký.
+      </Text>
 
-   <View style={styles.input}>
-     <TextInput
-       style={{ fontSize: 18, color: "black", width: "80%" }}
-       value={repassword}
-       placeholder="Nhập lại mật khẩu"
-       placeholderTextColor="gray"
-       onChangeText={(text) => {
-         setrepassword(text);
-       }}
-       secureTextEntry={hide1}
-     />
-     {repassword && (
-       <TouchableOpacity
-         style={{ marginTop: 15, marginRight: 10 }}
-         onPress={() => {
-           if (hide1 === true) {
-             sethide1(false);
-             seticon1("eye-off-outline");
-           } else {
-             sethide1(true);
-             seticon1("eye-outline");
-           }
-         }}
-       >
-         <Ionicons name={icon1} size={24} color="black" style={styles.cam} />
-       </TouchableOpacity>
-     )}
-     {repassword && (
-       <TouchableOpacity
-         style={{ marginTop: 15 }}
-         onPress={() => {
-           setrepassword("");
-           sethide1(true);
-           seticon1("eye-outline");
-         }}
-       >
-         <MaterialIcons name="clear" size={24} color="black" />
-       </TouchableOpacity>
-     )}
-    </View>
-    </ScrollView>
-   </SafeAreaView>
+      <SafeAreaView>
+        <ScrollView style={{ height: "auto", marginBottom: 150 }}>
+          <View style={styles.input}>
+            <TextInput
+              style={{ fontSize: 18, color: "black", width: "90%" }}
+              value={username}
+              placeholder="Nhập Username"
+              placeholderTextColor="gray"
+              onChangeText={(text) => {
+                setusername(text);
+              }}
+            />
+            {username && (
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => {
+                  setusername("");
+                }}
+              >
+                <MaterialIcons name="clear" size={24} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={{ fontSize: 18, color: "black", width: "90%" }}
+              value={email}
+              placeholder="Nhập Email"
+              placeholderTextColor="gray"
+              onChangeText={(text) => {
+                setemail(text);
+              }}
+              keyboardType="email-address"
+            />
+            {email && (
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => {
+                  setemail("");
+                }}
+              >
+                <MaterialIcons name="clear" size={24} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={{ fontSize: 18, color: "black", width: "90%" }}
+              value={fullName}
+              placeholder="Nhập tên đầy đủ"
+              placeholderTextColor="gray"
+              onChangeText={(text) => {
+                setfullName(text);
+              }}
+            />
+            {fullName && (
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => {
+                  setfullName("");
+                }}
+              >
+                <MaterialIcons name="clear" size={24} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+          <View style={styles.input}>
+            <TextInput
+              style={{ fontSize: 18, color: "black", width: "80%" }}
+              value={password}
+              placeholder="Nhập mật khẩu"
+              placeholderTextColor="gray"
+              onChangeText={(text) => {
+                setpassword(text);
+              }}
+              secureTextEntry={hide}
+            />
+            {password && (
+              <TouchableOpacity
+                style={{ marginTop: 15, marginRight: 10 }}
+                onPress={() => {
+                  if (hide === true) {
+                    sethide(false);
+                    seticon("eye-off-outline");
+                  } else {
+                    sethide(true);
+                    seticon("eye-outline");
+                  }
+                }}
+              >
+                <Ionicons
+                  name={icon}
+                  size={24}
+                  color="black"
+                  style={styles.cam}
+                />
+              </TouchableOpacity>
+            )}
+            {password && (
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => {
+                  setpassword("");
+                  sethide(true);
+                  seticon("eye-outline");
+                }}
+              >
+                <MaterialIcons name="clear" size={24} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
 
-   {/* <View style={styles.gender}>
+          <View style={styles.input}>
+            <TextInput
+              style={{ fontSize: 18, color: "black", width: "80%" }}
+              value={repassword}
+              placeholder="Nhập lại mật khẩu"
+              placeholderTextColor="gray"
+              onChangeText={(text) => {
+                setrepassword(text);
+              }}
+              secureTextEntry={hide1}
+            />
+            {repassword && (
+              <TouchableOpacity
+                style={{ marginTop: 15, marginRight: 10 }}
+                onPress={() => {
+                  if (hide1 === true) {
+                    sethide1(false);
+                    seticon1("eye-off-outline");
+                  } else {
+                    sethide1(true);
+                    seticon1("eye-outline");
+                  }
+                }}
+              >
+                <Ionicons
+                  name={icon1}
+                  size={24}
+                  color="black"
+                  style={styles.cam}
+                />
+              </TouchableOpacity>
+            )}
+            {repassword && (
+              <TouchableOpacity
+                style={{ marginTop: 15 }}
+                onPress={() => {
+                  setrepassword("");
+                  sethide1(true);
+                  seticon1("eye-outline");
+                }}
+              >
+                <MaterialIcons name="clear" size={24} color="black" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+
+      {/* <View style={styles.gender}>
              <RadioButton
                  value="true"
                  status={ checked === true ? 'checked' : 'unchecked' }
@@ -237,13 +248,13 @@ export default function SignUp({ navigation }) {
              /><Text style={styles.text}>Nữ</Text>
          </View> */}
 
-   <TouchableOpacity style={styles.button} onPress={conFirm}>
-     <Image
-       source={require("../assets/next.png")}
-       style={styles.image}
-     ></Image>
-   </TouchableOpacity>
-  </View>
+      <TouchableOpacity style={styles.button} onPress={conFirm}>
+        <Image
+          source={require("../assets/next.png")}
+          style={styles.image}
+        ></Image>
+      </TouchableOpacity>
+    </View>
   );
 }
 const styles = StyleSheet.create({

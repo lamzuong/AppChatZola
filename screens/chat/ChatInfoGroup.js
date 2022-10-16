@@ -103,7 +103,7 @@ const listFile = [
 ];
 
 export default function ChatInfoGroup({ navigation, route }) {
-  const { name, ava, users } = route.params;
+  const { name, ava, users, conversation } = route.params;
   const [select, setSelected] = useState("image");
 
   return (
@@ -164,7 +164,7 @@ export default function ChatInfoGroup({ navigation, route }) {
           style={styles.btnInfoGr}
           onPress={() => {
             navigation.navigate("ListMemberGroup", {
-              users: users,
+              members: conversation.members,
             });
           }}
         >

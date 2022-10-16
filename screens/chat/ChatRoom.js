@@ -9,7 +9,7 @@ import {
   Button,
   FlatList,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styleChatRoom";
 import { Ionicons } from "@expo/vector-icons";
@@ -21,16 +21,17 @@ import * as ImagePicker from "expo-image-picker";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function ChatRoom({ route }, props) {
+export default function ChatRoom({ route }) {
   const { nickname, avatar, conversation } = route.params;
   const navigation = useNavigation();
-  const [valueInput, setValueInput] = useState("");
+  //======edit name header chat if it too long====
   const [nameInChat, setNameInChat] = useState(nickname);
   const strName = new String(nameInChat);
   if (strName.length > 15) {
     setNameInChat(strName.slice(0, 12) + "...");
   }
-
+  //======edit input text chat======
+  const [valueInput, setValueInput] = useState("");
   const [widthInput, setWidthInput] = useState("80%");
   const [hiddenIcon, setHiddenIcon] = useState(false);
   const [hiddenNext, setHiddenNext] = useState(true);
@@ -45,7 +46,7 @@ export default function ChatRoom({ route }, props) {
       setHiddenNext(false);
     }
   }, [valueInput]);
-
+  //=======getGalleryImageCamera======
   const [imagesSelected, setImagesSelected] = useState([]);
   const arrShowImages = [];
   const showImagePicker = async () => {
@@ -91,9 +92,8 @@ export default function ChatRoom({ route }, props) {
     }
   };
 
-  //=============
-
-  const { user } = React.useContext(AuthContext);
+  //======getConversation=======
+  const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
 
   const [rerender, setRerender] = useState(false);
@@ -109,7 +109,7 @@ export default function ChatRoom({ route }, props) {
     getMess();
   }, [conversation.id, rerender]);
   message.sort((a, b) => a.date - b.date);
-  //====
+  //====Send Message======
   const handleSendMessage = async (e) => {
     e.preventDefault();
     const message = {
@@ -125,6 +125,10 @@ export default function ChatRoom({ route }, props) {
       console.log(err);
     }
   };
+  //========
+  let chatInfo = "ChatInfo";
+  if (conversation.members.length > 2) chatInfo = "ChatInfoGroup";
+  //========
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -158,7 +162,11 @@ export default function ChatRoom({ route }, props) {
           <TouchableOpacity
             style={[styles.iconTop]}
             onPress={() => {
-              navigation.navigate("ChatInfo", { name: nickname, ava: avatar });
+              navigation.navigate(chatInfo, {
+                name: nickname,
+                ava: avatar,
+                conversation: conversation,
+              });
             }}
           >
             <Ionicons name="options" size={35} color="white" />
@@ -187,7 +195,6 @@ export default function ChatRoom({ route }, props) {
               width: "27%",
               flexDirection: "row",
               marginTop: 5,
-              // marginRight: 5,
               justifyContent: "center",
             }}
           >

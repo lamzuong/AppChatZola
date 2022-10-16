@@ -428,7 +428,7 @@ export default function Rooms({ navigation }) {
   const closeMenu = () => setVisible(false);
 
   const [conversation, setConversation] = useState([]);
-  const { user } = React.useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   useEffect(() => {
     const getConversation = async () => {
       try {
@@ -440,7 +440,6 @@ export default function Rooms({ navigation }) {
     };
     getConversation();
   }, [user.id]);
-  // console.log(conversation);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
