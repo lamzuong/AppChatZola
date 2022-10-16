@@ -372,6 +372,8 @@ export default function SignUp({ navigation }) {
                     seterrorRepassword('');
                     sethideErrorRepassword(false);
                     if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                      sethideErrorPassword(false);
+                      sethideErrorPassword('')
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);
