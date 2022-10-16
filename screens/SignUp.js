@@ -37,6 +37,7 @@ export default function SignUp({ navigation }) {
   const [hideErrorPassword, sethideErrorPassword] = useState(false);
   const [errorRepassword, seterrorRepassword] = useState('Lỗi');
   const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
+  const [hidebtn, sethidebtn] = useState(false);
 
   function conFirm() {
     const register = async () => {
@@ -124,6 +125,16 @@ export default function SignUp({ navigation }) {
     }
   };
 
+  const hideBtnSignup = (username, email, fullName, password, repassword) => {
+    if (isEmpty(username) || isEmpty(email) || isEmpty(fullName) || isEmpty(password) || isEmpty(repassword)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // hideBtnSignup(username, email, fullName, password, repassword);
+
   return (
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
@@ -145,9 +156,15 @@ export default function SignUp({ navigation }) {
                 if (!validateUsername(username)) {
                   sethideErrorUsername(true);
                   seterrorUsername('Username chỉ chứa chữ cái và số từ 4 đến 16 ký tự.');
+                  sethidebtn(false);
                } else {
-                seterrorUsername('');
-                sethideErrorUsername(false);
+                  seterrorUsername('');
+                  sethideErrorUsername(false);
+                  if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                    sethidebtn(true);
+                  } else {
+                    sethidebtn(false);
+                  }
                }
               }}
             />
@@ -179,13 +196,20 @@ export default function SignUp({ navigation }) {
                 if (isEmpty(email)) {
                   sethideErrorEmail(true);
                   seterrorEmail('Địa chỉ email không được rỗng.');
+                  sethidebtn(false);
                 } else {
                   if (!validateEmail(email)) {
-                  sethideErrorEmail(true);
-                  seterrorEmail('Địa chỉ email không hợp lệ.');
+                    sethideErrorEmail(true);
+                    seterrorEmail('Địa chỉ email không hợp lệ.');
+                    sethidebtn(false);
                   } else {
                     seterrorEmail('');
                     sethideErrorEmail(false);
+                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
               }}
@@ -217,13 +241,20 @@ export default function SignUp({ navigation }) {
                 if (isEmpty(fullName)) {
                   sethideErrorFullname(true);
                   seterrorFullname('Tên đầy đủ không được rỗng.');
+                  sethidebtn(false);
                 } else {
                   if (!validateFullname(fullName)) {
                     sethideErrorFullname(true);
                     seterrorFullname('Tên đầy đủ không bao gồm chữ số và ký tự đặc biệt.');
+                    sethidebtn(false);
                   } else {
                     seterrorFullname('');
                     sethideErrorFullname(false);
+                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
               }}
@@ -256,13 +287,20 @@ export default function SignUp({ navigation }) {
                 if (isEmpty(password)) {
                   sethideErrorPassword(true);
                   seterrorPassword('Mật khẩu không được rỗng.');
+                  sethidebtn(false);
                 } else {
                   if (!validatePassword(password)) {
                     sethideErrorPassword(true);
                     seterrorPassword('Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 kỹ tự.');
+                    sethidebtn(false);
                   } else {
                     seterrorPassword('');
                     sethideErrorPassword(false);
+                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
               }}
@@ -318,13 +356,20 @@ export default function SignUp({ navigation }) {
                 if (isEmpty(repassword)) {
                   sethideErrorRepassword(true);
                   seterrorRepassword('Nhập lại mật khẩu không được rỗng.');
+                  sethidebtn(false);
                 } else {
                   if (!validateRepassword(password,repassword)) {
                     sethideErrorRepassword(true);
                     seterrorRepassword('Nhập lại mật khẩu không đúng.');
+                    sethidebtn(false);
                   } else {
                     seterrorRepassword('');
                     sethideErrorRepassword(false);
+                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
               }}
@@ -386,13 +431,15 @@ export default function SignUp({ navigation }) {
                  color="#0091ff"
              /><Text style={styles.text}>Nữ</Text>
          </View> */}
-
-      <TouchableOpacity style={styles.button} onPress={conFirm}>
-        <Image
-          source={require("../assets/next.png")}
-          style={styles.image}
-        ></Image>
-      </TouchableOpacity>
+      { hidebtn && 
+        <TouchableOpacity style={styles.button} onPress={conFirm}>
+          <Image
+            source={require("../assets/next.png")}
+            style={styles.image}
+          ></Image>
+        </TouchableOpacity>
+      }
+      
     </View>
   );
 }
