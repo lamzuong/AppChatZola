@@ -26,34 +26,38 @@ export default function MessageChat(props) {
 
   let nameShow = user?.fullName.split(" ").slice(-1);
 
-  //==test
-  function timeSince(date) {
-    var seconds = Math.floor((new Date() - date) / 1000);
+  //====getTime=====
+  const [timeShow, setTimeShow] = useState("");
+  useEffect(() => {
+    function timeSince(date) {
+      var seconds = Math.floor((new Date() - date) / 1000);
 
-    var interval = seconds / 31536000;
+      var interval = seconds / 31536000;
 
-    if (interval > 1) {
-      return Math.floor(interval) + " năm";
+      if (interval > 1) {
+        return Math.floor(interval) + " năm";
+      }
+      interval = seconds / 2592000;
+      if (interval > 1) {
+        return Math.floor(interval) + " tháng";
+      }
+      interval = seconds / 86400;
+      if (interval > 1) {
+        return Math.floor(interval) + " ngày";
+      }
+      interval = seconds / 3600;
+      if (interval > 1) {
+        return Math.floor(interval) + " giờ";
+      }
+      interval = seconds / 60;
+      if (interval > 1) {
+        return Math.floor(interval) + " phút";
+      }
+      // return Math.floor(seconds) + " giây";
+      return "";
     }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return Math.floor(interval) + " tháng";
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return Math.floor(interval) + " ngày";
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return Math.floor(interval) + " giờ";
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return Math.floor(interval) + " phút";
-    }
-    // return Math.floor(seconds) + " giây";
-    return "";
-  }
+    setTimeShow(timeSince(new Date(time)));
+  });
   return (
     <View>
       <View>
@@ -77,7 +81,7 @@ export default function MessageChat(props) {
         </View>
       </View>
       <View style={owner ? styles.timeOwner : styles.time}>
-        <Text style={{ color: "grey" }}>{timeSince(new Date(time))}</Text>
+        <Text style={{ color: "grey" }}>{timeShow}</Text>
       </View>
     </View>
   );

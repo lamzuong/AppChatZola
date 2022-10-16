@@ -49,7 +49,7 @@ export default function ChatList(props) {
       }
     };
     getMess();
-  }, [conversation.id]);
+  });
   message.sort((a, b) => a.date - b.date);
   let lastMess = "";
   if (message.slice(-1).length > 0) {
