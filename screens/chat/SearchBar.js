@@ -42,7 +42,7 @@ export default function SearchBar(props) {
 }
 const styles = StyleSheet.create({
   txtSearch: {
-    height: 45,
+    height: 40,
     width: "90%",
     flexDirection: "row",
     fontSize: 18,
