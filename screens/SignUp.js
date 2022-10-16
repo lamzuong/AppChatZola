@@ -297,7 +297,13 @@ export default function SignUp({ navigation }) {
                     seterrorPassword('');
                     sethideErrorPassword(false);
                     if (!hideBtnSignup(username, email, fullName, password, repassword)) {
-                      sethidebtn(true);
+                      if (!validateRepassword(password, repassword)) {
+                        sethidebtn(false);
+                        sethideErrorPassword(true);
+                        seterrorPassword('Mật khẩu và mật khẩu nhập lại phải giống nhau.');
+                      } else {
+                        sethidebtn(true);
+                      }
                     } else {
                       sethidebtn(false);
                     }
