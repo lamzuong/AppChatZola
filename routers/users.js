@@ -5,32 +5,33 @@ const docClient = require("../db.config.js")
 const tableName = 'user';
 
 //Update user
-router.put('/:id',(req, res) => {
-    const {id} = req.params;
-    const {fullName, birthdate, fiends, email, img, gender} = req.body;
+router.put('/',(req, res) => {
+    // const {id} = req.params;
+    const {id, birthdate, fiends, img, gender} = req.body;
     const params = {
-        TableName: tableName,
-        Key: id,
-        Item: {
-            id,
-            fullName,
-            email,
-            birthdate,
-            img,
-            gender,
-            fiends
-        }
-    };
-    docClient.put(params, (err, data) => {
-        if(err) {
-            console.log(err);
-            return res.status(500).send("Loi")
-        }
-        else{
-            console.log(data);
-            return res.json(data)
-        }
-    })
+            TableName: 'user',
+            Key: {
+                id
+            },               
+            UpdateExpression: 'SET #birthdate =:birthdate, #gender=:gender, #img=:img',
+            ExpressionAttributeNames: {//COLUMN NAME 
+                '#birthdate': 'birthdate',
+                '#gender': 'gender',
+                '#img': 'img'
+            },
+            ExpressionAttributeValues: {
+                ':birthdate': birthdate ? birthdate : req.body.birthdateOld,
+                ':gender': gender !== null ? gender : req.body.genderOld,
+                ':img': img ? img : req.body.imgOld,
+            }
+        };
+        console.log(params.ExpressionAttributeValues);
+        docClient.update(params, (err, data) => {
+            if(err) {
+                return res.status(500).send("Loi "+err)
+            }
+            return res.status(200).json(data)
+        })
 })
 
 //Get user
@@ -51,6 +52,27 @@ router.get('/:id',(req, res) => {
             console.log(data.Item.address);
 
             return res.send(data.Item)
+        }
+    })
+})
+
+router.get('/search/:name', (req, res) => {
+    const {name} = req.params;
+    var params = {
+        ExpressionAttributeValues: {
+         ":name": name
+        }, 
+        ExpressionAttributeNames: { "#fullName": "fullName" },
+        FilterExpression: "contains(#fullName , :name)", 
+        TableName: tableName
+       };
+    docClient.scan(params, (err, data) => {
+        if(err) {
+            console.log(err);
+            return res.status(500).send("Loi"+err)
+        }
+        else{
+            return res.status(200).json(data.Items)
         }
     })
 })

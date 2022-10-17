@@ -6,13 +6,13 @@ const docClient = require('../db.config');
 const tableName = 'message';
 
 router.post('/', (req, res) => {
-    const {conversationID, senderID, mess} = req.body
+    const {conversationID, sender, mess} = req.body
     const params = {
         TableName: tableName,
         Item: {
             id: uuid(),
             conversationID,
-            senderID,
+            sender,
             mess,
             date: new Date().getTime()
         }
