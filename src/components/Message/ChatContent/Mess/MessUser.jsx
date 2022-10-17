@@ -3,11 +3,24 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './MessUser.module.scss';
 import noAvatar from '../../../../assets/noAvatar.png';
+import { useState, useEffect } from 'react';
+import axiosCilent from '../../../../api/axiosClient';
 
 const cx = classNames.bind(styles);
 
 const MessUser = (props) => {
-    console.log(props.sender.img);
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        const getInfoFriends = async () => {
+            try {
+                const res = await axiosCilent.get('/zola/users/' + props.sender);
+                setUser(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getInfoFriends();
+    }, [props.sender]);
     function timeSince(date) {
         var seconds = Math.floor((new Date() - date) / 1000);
 
@@ -37,10 +50,10 @@ const MessUser = (props) => {
     return (
         <div className={cx('message', props.group ? 'group' : '', props.own ? 'own' : '')}>
             <div className={cx('messImg')}>
-                <img src={props.sender?.img ? props.sender.img : noAvatar} alt="" />
+                <img src={user?.img ? user.img : noAvatar} alt="" />
             </div>
             <div className={cx('messright')}>
-                <div className={cx('messName')}>{props.group ? props.sender?.fullName : '  '}</div>
+                <div className={cx('messName')}>{props.group ? user?.fullName : '  '}</div>
                 <div className={cx('messText')}>{props.mess.mess}</div>
                 <div className={cx('messBot')}>{timeSince(new Date(props.mess.date))}</div>
             </div>

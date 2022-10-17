@@ -12,6 +12,7 @@ const cx = classNames.bind(styles);
 const Conversation = (props) => {
     const { user } = useContext(AuthContext);
     const [userChat, setUserChat] = useState(null);
+    const [role, setRole] = useState(null);
     const [mess, setMess] = useState([]);
     useEffect(() => {
         const friendID = props.conversation.members.find((m) => m !== props.currentUser.id);
@@ -48,10 +49,28 @@ const Conversation = (props) => {
     }
 
     let nameLast = '';
+<<<<<<< HEAD
     const rs = mess[mess.length - 1]?.sender.id === user.id;
     //let nameShow = mess[mess.length - 1]?.sender.fullName.split(' ').slice(-1);
     //nameLast = rs ? 'Bạn' : nameShow;
     // console.log(m.sender?.fullName);
+=======
+    const rs = mess[mess.length - 1]?.sender === user.id;
+    // let idUser = mess[mess.length - 1]?.sender;
+    // useEffect(() => {
+    //     const getInfoFriends = async () => {
+    //         try {
+    //             const res = await axiosCilent.get('/zola/users/' + idUser);
+    //             setRole(res);
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     };
+    //     getInfoFriends();
+    // }, [idUser]);
+    // console.log(role);
+    nameLast = rs ? 'Bạn: ' : '';
+>>>>>>> c29f25b1af61b63a439810c20b6473f136fee2c1
     const messLast = mess[mess.length - 1]?.mess;
     return (
         <div className={cx('wrapper')}>
@@ -64,7 +83,7 @@ const Conversation = (props) => {
                     <span>{name}</span>
                 </h4>
                 <div className={cx('mess')}>
-                    {messLast?.length > 30 ? `${nameLast}: ${messLast?.slice(0, 15)}...` : `${nameLast}: ${messLast}`}
+                    {messLast?.length > 30 ? `${nameLast}${messLast?.slice(0, 15)}...` : `${nameLast}${messLast}`}
                 </div>
             </div>
         </div>

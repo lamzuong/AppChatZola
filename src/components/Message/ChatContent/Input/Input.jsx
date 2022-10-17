@@ -13,7 +13,7 @@ const Input = (props) => {
     const handleSendMessage = async (e) => {
         const message = {
             conversationID: props.params,
-            sender: props.user,
+            sender: props.user.id,
             mess: chatContent,
         };
         try {
@@ -25,6 +25,11 @@ const Input = (props) => {
             console.log(err);
         }
     };
+    // const handleKeyDown = (event) => {
+    //     if (event.key === 'Enter') {
+    //         console.log(event);
+    //     }
+    // };
     const sendData = (data) => {
         props.parentCb(data);
     };
@@ -48,6 +53,11 @@ const Input = (props) => {
                     onChange={(e) => setChatContent(e.target.value)}
                     className={cx('input')}
                     placeholder="Message"
+                    onKeyPress={(event) => {
+                        if (event.key === 'enter') {
+                            console.log(event.key);
+                        }
+                    }}
                 />
             </form>
             <div className={cx('button')} onClick={handleSendMessage}>
