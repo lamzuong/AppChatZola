@@ -14,7 +14,7 @@ const Input = (props) => {
         e.preventDefault();
         const message = {
             conversationID: props.params,
-            sender: props.user,
+            sender: props.user.id,
             mess: chatContent,
         };
         try {
@@ -24,6 +24,11 @@ const Input = (props) => {
             sendData(rerender);
         } catch (err) {
             console.log(err);
+        }
+    };
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            console.log(event);
         }
     };
     const sendData = (data) => {
@@ -49,6 +54,11 @@ const Input = (props) => {
                     type="text"
                     className={cx('input')}
                     placeholder="Message"
+                    onKeyPress={(event) => {
+                        if (event.key === 'Enter') {
+                            console.log(event);
+                        }
+                    }}
                 />
             </form>
             <div className={cx('button')} onClick={handleSendMessage}>

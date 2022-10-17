@@ -175,7 +175,6 @@ const Message = (props) => {
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [message]);
-    console.log(message);
     return (
         <div className={cx('wrapper')}>
             <ChatList data={mess} conversation={conversation} rerender={rerender} parentCb={cbChild} />
@@ -200,7 +199,7 @@ const Message = (props) => {
                             {message.map((m) => (
                                 <div key={m.id} ref={scrollRef}>
                                     <MessUser
-                                        own={m.sender.id === user.id}
+                                        own={m.sender === user.id}
                                         mess={m}
                                         sender={m.sender}
                                         group={currentChat.members.length > 2}
