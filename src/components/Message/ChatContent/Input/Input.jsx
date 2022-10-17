@@ -11,7 +11,6 @@ const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
     const [rerender, setRerender] = useState(false);
     const handleSendMessage = async (e) => {
-        e.preventDefault();
         const message = {
             conversationID: props.params,
             sender: props.user,
@@ -43,10 +42,10 @@ const Input = (props) => {
                     )}
                 </div>
                 <input
+                    type="text"
                     spellCheck="false"
                     value={chatContent}
                     onChange={(e) => setChatContent(e.target.value)}
-                    type="text"
                     className={cx('input')}
                     placeholder="Message"
                 />

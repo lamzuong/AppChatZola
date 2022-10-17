@@ -55,7 +55,7 @@ const Register = (props) => {
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
                 <h2>
-                    Đăng nhập tài khoản Zola
+                    Đăng kí tài khoản Zola
                     <br />
                     để kết nối với ứng dụng Zola Web
                 </h2>

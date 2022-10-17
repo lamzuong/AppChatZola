@@ -11,7 +11,7 @@ const Input = ({
     icon = `<i className="bx bxs-envelope"></i>`,
     standard = {},
     validation = () => {},
-
+    onEnter = () => {},
     data = () => {},
 }) => {
     const [txtIpt, setTxtIpt] = useState('');
@@ -35,6 +35,11 @@ const Input = ({
                         setTxtIpt(e.target.value);
                         data(e.target.value);
                         setInit(false);
+                    }}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                            onEnter();
+                        }
                     }}
                 />
                 <br />

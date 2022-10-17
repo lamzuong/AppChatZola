@@ -49,8 +49,8 @@ const Conversation = (props) => {
 
     let nameLast = '';
     const rs = mess[mess.length - 1]?.sender.id === user.id;
-    let nameShow = mess[mess.length - 1]?.sender.fullName.split(' ').slice(-1);
-    nameLast = rs ? 'Bạn' : nameShow;
+    //let nameShow = mess[mess.length - 1]?.sender.fullName.split(' ').slice(-1);
+    //nameLast = rs ? 'Bạn' : nameShow;
     // console.log(m.sender?.fullName);
     const messLast = mess[mess.length - 1]?.mess;
     return (
