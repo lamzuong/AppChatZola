@@ -11,7 +11,6 @@ const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
     const [rerender, setRerender] = useState(false);
     const handleSendMessage = async (e) => {
-        e.preventDefault();
         const message = {
             conversationID: props.params,
             sender: props.user.id,
@@ -26,11 +25,11 @@ const Input = (props) => {
             console.log(err);
         }
     };
-    const handleKeyDown = (event) => {
-        if (event.key === 'Enter') {
-            console.log(event);
-        }
-    };
+    // const handleKeyDown = (event) => {
+    //     if (event.key === 'Enter') {
+    //         console.log(event);
+    //     }
+    // };
     const sendData = (data) => {
         props.parentCb(data);
     };
@@ -55,8 +54,8 @@ const Input = (props) => {
                     className={cx('input')}
                     placeholder="Message"
                     onKeyPress={(event) => {
-                        if (event.key === 'Enter') {
-                            console.log(event);
+                        if (event.key === 'enter') {
+                            console.log(event.key);
                         }
                     }}
                 />

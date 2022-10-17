@@ -37,7 +37,6 @@ const Register = (props) => {
     };
     const user = { email, username, password, fullName };
     const handleRegister = (e) => {
-        e.preventDefault();
         const register = async () => {
             try {
                 await axiosClient.post('/zola/auth/register', user);

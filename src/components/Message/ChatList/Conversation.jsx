@@ -50,7 +50,7 @@ const Conversation = (props) => {
 
     let nameLast = '';
     const rs = mess[mess.length - 1]?.sender === user.id;
-    let idUser = mess[mess.length - 1]?.sender;
+    // let idUser = mess[mess.length - 1]?.sender;
     // useEffect(() => {
     //     const getInfoFriends = async () => {
     //         try {
@@ -63,7 +63,7 @@ const Conversation = (props) => {
     //     getInfoFriends();
     // }, [idUser]);
     // console.log(role);
-    nameLast = rs ? 'Bạn :' : '';
+    nameLast = rs ? 'Bạn: ' : '';
     const messLast = mess[mess.length - 1]?.mess;
     return (
         <div className={cx('wrapper')}>

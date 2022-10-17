@@ -19,7 +19,6 @@ const Login = (props) => {
     const { error, dispatch } = useContext(AuthContext);
     const userCredential = { email, password };
     const handleLogin = (e) => {
-        e.preventDefault();
         const login = async () => {
             dispatch({ type: 'LOGIN_START' });
             try {
@@ -45,7 +44,7 @@ const Login = (props) => {
                 </h2>
             </div>
             <div className={cx('body')}>
-                { 
+                {
                     <div className={cx('content')}>
                         <div className={cx('title')}>
                             <h2>Đăng nhập</h2>

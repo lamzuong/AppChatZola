@@ -31,6 +31,7 @@ const Input = ({
                     type={type}
                     className={cx('ipt')}
                     placeholder={placeholder}
+                    autoComplete="off"
                     onChange={(e) => {
                         setTxtIpt(e.target.value);
                         data(e.target.value);
