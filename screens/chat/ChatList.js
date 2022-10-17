@@ -38,15 +38,19 @@ export default function ChatList(props) {
     name = user?.fullName;
   }
   //========getUser======================
-  const [userSend, setUserSend] = useState("");
-  const getInfoFriends = async (id) => {
-    try {
-      const res = await axiosCilent.get("/zola/users/" + id);
-      setUserSend(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const [userSend, setUserSend] = useState("");
+  // useEffect(() => {
+  //   const getInfoFriends = async (id) => {
+  //     try {
+  //       const res = await axiosCilent.get("/zola/users/" + id);
+  //       setUserSend(res);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getInfoFriends(userSend);
+  // }, [userSend]);
+  // console.log(userSend);
   //========getLastMessage===================
   const [message, setMessage] = useState([]);
   useEffect(() => {
@@ -73,8 +77,8 @@ export default function ChatList(props) {
       lastMess = "Bạn: " + lastMess;
     } else {
       if (numMembers > 2) {
-        getInfoFriends(senderID);
-        lastMess = userSend.fullName.split(" ").slice(-1) + ": " + lastMess;
+        // getInfoFriends(senderID);
+        // lastMess = userSend.fullName.split(" ").slice(-1) + ": " + lastMess;
       }
     }
     if (lastMess.length > 30) {

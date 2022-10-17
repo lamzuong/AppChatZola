@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { Text, View, StyleSheet, Alert, BackHandler } from "react-native";
 import { Appbar } from "react-native-paper";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -20,6 +20,27 @@ const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 
 export default function Home() {
+  //=======Button Back============
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     Alert.alert("Thông báo", "Bạn có chắc muốn rời khỏi ứng dụng?", [
+  //       {
+  //         text: "Hủy",
+  //         onPress: () => null,
+  //         style: "cancel",
+  //       },
+  //       { text: "Có", onPress: () => BackHandler.exitApp() },
+  //     ]);
+  //     return true;
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     "hardwareBackPress",
+  //     backAction
+  //   );
+
+  //   return () => backHandler.remove();
+  // }, []);
   return (
     <Tab.Navigator
       initialRouteName="Rooms"

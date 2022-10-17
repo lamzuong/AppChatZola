@@ -9,7 +9,7 @@ import {
   Button,
   FlatList,
 } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styleChatRoom";
 import { Ionicons } from "@expo/vector-icons";
@@ -132,6 +132,8 @@ export default function ChatRoom({ route }) {
   let chatInfo = "ChatInfo";
   if (conversation.members.length > 2) chatInfo = "ChatInfoGroup";
   //========
+  const flatlistRef = useRef();
+  //===========
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -187,6 +189,8 @@ export default function ChatRoom({ route }) {
           />
         )}
         keyExtractor={(item, index) => index}
+        // ref={flatlistRef}
+        // onLayout={() => flatlistRef.current.scrollToEnd({ animated: true })}
       />
 
       <View style={styles.footer}>
