@@ -193,7 +193,7 @@ export default function ChatRoom({ route }) {
         </View>
       </View>
       <FlatList
-        data={message}
+        data={message.reverse()}
         renderItem={({ item }) => (
           <MessageChat
             title={item.mess}
@@ -204,7 +204,8 @@ export default function ChatRoom({ route }) {
         )}
         keyExtractor={(item, index) => index}
         ref={flatlistRef}
-        onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
+        inverted
+        // onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
       />
 
       <View style={styles.footer}>

@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
@@ -53,6 +53,7 @@ export default function MessageChat(props) {
     // return Math.floor(seconds) + " giây";
     return "";
   }
+  const [showTime, setShowTime] = useState(false);
   return (
     <View>
       <View>
@@ -69,15 +70,22 @@ export default function MessageChat(props) {
           }}
           style={owner ? null : styles.imageAva}
         />
-        <View style={owner ? styles.txtContentOwner : styles.txtContent}>
+        <TouchableOpacity
+          style={owner ? styles.txtContentOwner : styles.txtContent}
+          onPress={() => {
+            setShowTime(!showTime);
+          }}
+        >
           <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
             {title}
           </Text>
+        </TouchableOpacity>
+      </View>
+      {showTime ? (
+        <View style={owner ? styles.timeOwner : styles.time}>
+          <Text style={{ color: "grey" }}>{timeSince(new Date(time))}</Text>
         </View>
-      </View>
-      <View style={owner ? styles.timeOwner : styles.time}>
-        <Text style={{ color: "grey" }}>{timeSince(new Date(time))}</Text>
-      </View>
+      ) : null}
     </View>
   );
 }
