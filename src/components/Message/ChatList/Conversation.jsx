@@ -64,7 +64,7 @@ const Conversation = (props) => {
                     <span>{name}</span>
                 </h4>
                 <div className={cx('mess')}>
-                    {messLast?.length > 30 ? `${nameLast}: ${messLast?.slice(0, 16)}...` : `${nameLast}: ${messLast}`}
+                    {messLast?.length > 30 ? `${nameLast}: ${messLast?.slice(0, 15)}...` : `${nameLast}: ${messLast}`}
                 </div>
             </div>
         </div>
