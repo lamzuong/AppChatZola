@@ -1,4 +1,11 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
@@ -70,16 +77,29 @@ export default function MessageChat(props) {
           }}
           style={owner ? null : styles.imageAva}
         />
-        <TouchableOpacity
-          style={owner ? styles.txtContentOwner : styles.txtContent}
-          onPress={() => {
-            setShowTime(!showTime);
-          }}
-        >
-          <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
-            {title}
-          </Text>
-        </TouchableOpacity>
+        {showTime ? (
+          <Pressable
+            style={owner ? styles.txtContentOwnerClick : styles.txtContentClick}
+            onPress={() => {
+              setShowTime(!showTime);
+            }}
+          >
+            <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
+              {title}
+            </Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            style={owner ? styles.txtContentOwner : styles.txtContent}
+            onPress={() => {
+              setShowTime(!showTime);
+            }}
+          >
+            <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
+              {title}
+            </Text>
+          </Pressable>
+        )}
       </View>
       {showTime ? (
         <View style={owner ? styles.timeOwner : styles.time}>
@@ -112,15 +132,29 @@ const styles = StyleSheet.create({
     padding: 10,
     marginLeft: 10,
   },
-  txtMess: {
-    fontSize: 17,
-  },
   txtContentOwner: {
     maxWidth: 200,
     backgroundColor: "rgb(0,145,255)",
     borderRadius: 20,
     padding: 10,
     marginLeft: 10,
+  },
+  txtContentClick: {
+    maxWidth: 200,
+    backgroundColor: "#a6a6a6",
+    borderRadius: 20,
+    padding: 10,
+    marginLeft: 10,
+  },
+  txtContentOwnerClick: {
+    maxWidth: 200,
+    backgroundColor: "#99bbff",
+    borderRadius: 20,
+    padding: 10,
+    marginLeft: 10,
+  },
+  txtMess: {
+    fontSize: 17,
   },
   txtMessOwner: {
     fontSize: 16,
