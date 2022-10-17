@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Button,
   FlatList,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -22,7 +23,7 @@ import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function ChatRoom({ route }) {
-  const { nickname, avatar, conversation } = route.params;
+  let { nickname, avatar, conversation } = route.params;
   const navigation = useNavigation();
   //======edit name header chat if it too long====
   const [nameInChat, setNameInChat] = useState(nickname);
@@ -95,7 +96,6 @@ export default function ChatRoom({ route }) {
   //======getConversation=======
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
-
   const [rerender, setRerender] = useState(false);
   useEffect(() => {
     const getMess = async () => {
@@ -109,6 +109,7 @@ export default function ChatRoom({ route }) {
     getMess();
   }, [conversation.id, rerender]);
   message.sort((a, b) => a.date - b.date);
+
   //====Send Message======
   const handleSendMessage = async (e) => {
     if (valueInput.trim() === "") {
@@ -128,12 +129,31 @@ export default function ChatRoom({ route }) {
       }
     }
   };
-  //========
+  //========ChatInfo======
   let chatInfo = "ChatInfo";
   if (conversation.members.length > 2) chatInfo = "ChatInfoGroup";
-  //========
+  //=====Sroll to end=======
   const flatlistRef = useRef();
-  //===========
+  const onPressFunction = () => {
+    flatlistRef.current.scrollToEnd({ animating: true });
+  };
+  useEffect(() => {
+    onPressFunction();
+  }, [message]);
+  //======Button Back=======
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  //==========
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -189,8 +209,7 @@ export default function ChatRoom({ route }) {
           />
         )}
         keyExtractor={(item, index) => index}
-        // ref={flatlistRef}
-        // onLayout={() => flatlistRef.current.scrollToEnd({ animated: true })}
+        ref={flatlistRef}
       />
 
       <View style={styles.footer}>

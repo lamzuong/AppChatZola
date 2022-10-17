@@ -7,8 +7,9 @@ import {
   Image,
   FlatList,
   Alert,
+  BackHandler,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../chat/SearchBar";
 import { Ionicons } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
@@ -152,6 +153,19 @@ export default function AddGroup({ navigation }, props) {
   for (let i = 0; i < listTitle.length; i++) {
     listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
   }
+  //======Button Back=======
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
   return (
     <View style={{ justifyContent: "flex-end" }}>
       <Header />

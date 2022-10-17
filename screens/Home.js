@@ -21,26 +21,26 @@ const TopTab = createMaterialTopTabNavigator();
 
 export default function Home() {
   //=======Button Back============
-  // useEffect(() => {
-  //   const backAction = () => {
-  //     Alert.alert("Thông báo", "Bạn có chắc muốn rời khỏi ứng dụng?", [
-  //       {
-  //         text: "Hủy",
-  //         onPress: () => null,
-  //         style: "cancel",
-  //       },
-  //       { text: "Có", onPress: () => BackHandler.exitApp() },
-  //     ]);
-  //     return true;
-  //   };
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Thông báo", "Bạn có chắc muốn rời khỏi ứng dụng?", [
+        {
+          text: "Hủy",
+          onPress: () => null,
+          style: "cancel",
+        },
+        { text: "Có", onPress: () => BackHandler.exitApp() },
+      ]);
+      return true;
+    };
 
-  //   const backHandler = BackHandler.addEventListener(
-  //     "hardwareBackPress",
-  //     backAction
-  //   );
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
 
-  //   return () => backHandler.remove();
-  // }, []);
+    return () => backHandler.remove();
+  }, []);
   return (
     <Tab.Navigator
       initialRouteName="Rooms"

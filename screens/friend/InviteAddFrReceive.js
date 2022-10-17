@@ -55,10 +55,10 @@ export default function InviteAddFrReceive() {
               </TouchableOpacity>
               <View style={styles.itemRight}>
                 <TouchableOpacity style={{ marginHorizontal: 10 }}>
-                  <AntDesign name="checkcircle" size={30} color="green" />
+                  <AntDesign name="checkcircle" size={30} color="#33ff33" />
                 </TouchableOpacity>
                 <TouchableOpacity>
-                  <AntDesign name="closecircle" size={30} color="red" />
+                  <AntDesign name="closecircle" size={30} color="#ff1a1a" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   txtName: {
-    fontSize: 18,
-    marginHorizontal: 10,
+    fontSize: 22,
+    marginLeft: 20,
   },
   itemRight: {
     flexDirection: "row",

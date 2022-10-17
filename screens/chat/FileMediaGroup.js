@@ -93,6 +93,7 @@ function ChooseTab(props) {
 }
 const GridView = ({ name }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [showCloseBtn, setShowCloseBtn] = useState(false);
   return (
     <View>
       <Modal
@@ -103,28 +104,34 @@ const GridView = ({ name }) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.modalView}>
-          <Pressable
-            style={{
-              alignItems: "flex-end",
-              paddingRight: 10,
-              paddingTop: 10,
-              zIndex: 4,
-            }}
-            onPress={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <MaterialIcons name="clear" size={30} color="white" />
-          </Pressable>
-          <Image
-            source={{
-              uri: name,
-            }}
-            style={styles.imageShow}
-          />
-        </View>
+        <Pressable
+          onPress={() => {
+            setShowCloseBtn(!showCloseBtn);
+          }}
+        >
+          <View style={styles.modalView}>
+            {showCloseBtn ? (
+              <Pressable
+                style={styles.btnCloseModal}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <MaterialIcons name="clear" size={30} color="white" />
+              </Pressable>
+            ) : (
+              <View style={{ height: 40 }}></View>
+            )}
+            <Image
+              source={{
+                uri: name,
+              }}
+              style={styles.imageShow}
+            />
+          </View>
+        </Pressable>
       </Modal>
+
       <Pressable onPress={() => setModalVisible(!modalVisible)}>
         <Image
           source={{

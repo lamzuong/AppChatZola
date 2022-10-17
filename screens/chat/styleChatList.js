@@ -25,6 +25,8 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 5,
     color: "grey",
+    maxWidth: 300,
+    maxHeight: 20,
   },
 });
 export default styles;

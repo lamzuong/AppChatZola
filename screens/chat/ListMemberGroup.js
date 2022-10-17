@@ -8,11 +8,12 @@ import {
   Button,
   Pressable,
   Alert,
+  StyleSheet,
+  Dimensions,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import styles from "./styleChatInfoGroup";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -213,3 +214,96 @@ const MySelf = (props) => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "white" },
+  header: {
+    width: "100%",
+    padding: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "rgb(0,145,255)",
+    flexDirection: "row",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imageShow: {
+    height: "100%",
+    width: "100%",
+    resizeMode: "contain",
+    marginTop: -50,
+  },
+  itemMember: {
+    flexDirection: "row",
+    paddingVertical: 5,
+    paddingLeft: 10,
+    alignItems: "center",
+  },
+  imgAvaMini: {
+    height: 60,
+    width: 60,
+    borderRadius: 100,
+  },
+  txtNameMember: {
+    fontSize: 20,
+    marginLeft: 20,
+  },
+  modalViewInfo: {
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    height: Dimensions.get("window").height / 2,
+    width: Dimensions.get("window").width - 40,
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderRadius: 10,
+  },
+  contentModal: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imgAvaModal: {
+    height: 150,
+    width: 150,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: "black",
+  },
+  nameModal: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  btnAddFr: {
+    backgroundColor: "rgb(0,145,255)",
+    padding: 10,
+    marginTop: 20,
+    width: 120,
+    borderWidth: 1,
+    borderColor: "rgb(0,145,255)",
+  },
+  txtAddFr: {
+    fontSize: 17,
+    color: "white",
+    textAlign: "center",
+  },
+  btnCancelAddFr: {
+    backgroundColor: "white",
+    padding: 10,
+    marginTop: 20,
+    width: 120,
+    borderWidth: 1,
+    borderColor: "rgb(0,145,255)",
+  },
+  txtCancelAddFr: {
+    fontSize: 17,
+    color: "rgb(0,145,255)",
+    textAlign: "center",
+  },
+});

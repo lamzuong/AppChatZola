@@ -68,11 +68,12 @@ export default function ChatList(props) {
 
   let numMembers = conversation.members.length;
   let lastMess = "";
+  let senderID = "";
   if (message.slice(-1).length > 0) {
     let foo = message.slice(-1);
     // lastMess = foo.map(({ mess }) => mess);
     lastMess = foo[0].mess;
-    let senderID = foo[0].sender;
+    senderID = foo[0].sender;
     if (senderID == props.currentUser.id) {
       lastMess = "Bạn: " + lastMess;
     } else {
@@ -81,9 +82,9 @@ export default function ChatList(props) {
         // lastMess = userSend.fullName.split(" ").slice(-1) + ": " + lastMess;
       }
     }
-    if (lastMess.length > 30) {
-      lastMess = lastMess.slice(0, 25) + "...";
-    }
+    // if (lastMess.length > 30) {
+    //   lastMess = lastMess.slice(0, 25) + "...";
+    // }
   }
   //======================
   return (
