@@ -114,7 +114,7 @@ export default function ChatRoom({ route }) {
     e.preventDefault();
     const message = {
       conversationID: conversation.id,
-      sender: user,
+      sender: user.id,
       mess: valueInput,
     };
     try {
@@ -177,7 +177,6 @@ export default function ChatRoom({ route }) {
         data={message}
         renderItem={({ item }) => (
           <MessageChat
-            ava={avatar}
             title={item.mess}
             time={item.date}
             group={conversation.members.length > 2}

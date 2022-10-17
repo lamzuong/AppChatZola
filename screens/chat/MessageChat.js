@@ -2,19 +2,29 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
-import noAvatar from "../../assets/noAvatar.png";
 
 export default function MessageChat(props) {
   const { user } = useContext(AuthContext);
 
-  const ava = props.ava;
   const title = props.title;
   const time = props.time;
   const group = props.group;
   const sender = props.sender;
-  const owner = sender.id == user.id;
+  const owner = sender == user.id;
 
-  let nameShow = sender?.fullName.split(" ").slice(-1);
+  const [userSend, setUserSend] = useState(null);
+  useEffect(() => {
+    const getInfoFriends = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/users/" + sender);
+        setUserSend(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getInfoFriends();
+  }, [sender]);
+  let nameShow = userSend?.fullName.split(" ").slice(-1);
   //====getTime=====
   function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
@@ -53,8 +63,8 @@ export default function MessageChat(props) {
       <View style={owner ? styles.styleOwner : styles.styleFriend}>
         <Image
           source={{
-            uri: sender?.img
-              ? sender.img
+            uri: userSend?.img
+              ? userSend.img
               : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
           }}
           style={owner ? null : styles.imageAva}

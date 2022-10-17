@@ -7,6 +7,7 @@ import {
   Modal,
   Button,
   Pressable,
+  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,7 +17,7 @@ import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function ListMemberGroup({ navigation, route }) {
-  const { members } = route.params;
+  const { conversation } = route.params;
   const { user } = useContext(AuthContext);
   const [listMem, setListMem] = useState([]);
   const [rerender, setRerender] = useState(false);
@@ -27,18 +28,21 @@ export default function ListMemberGroup({ navigation, route }) {
       try {
         const res = await axiosCilent.get("/zola/users/" + mem);
         list.push(res);
-        if (mem == members[members.length - 1]) {
-          setListMem(list);
+        if (mem == conversation.members[conversation.members.length - 1]) {
+          const arrSort = list.sort((a, b) =>
+            a.fullName > b.fullName ? 1 : -1
+          );
+          setListMem(arrSort);
           setRerender(!rerender);
         }
       } catch (error) {
         console.log(error);
       }
     };
-    members.forEach((element) => {
+    conversation.members.forEach((element) => {
       getInfoFriends(element);
     });
-  }, [members]);
+  }, [conversation.members]);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -65,7 +69,14 @@ export default function ListMemberGroup({ navigation, route }) {
       <MySelf currentUser={user} />
       <FlatList
         data={listMem}
-        renderItem={({ item }) => <ListMem members={item} currentUser={user} />}
+        renderItem={({ item }) => (
+          <ListMem
+            members={item}
+            currentUser={user}
+            conversation={conversation}
+            user={user}
+          />
+        )}
         keyExtractor={(item, index) => index}
       />
     </View>
@@ -80,6 +91,7 @@ const ListMem = (props) => {
   if (img == "")
     img =
       "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png";
+  let name = props.members.fullName;
   return (
     <View style={{ flexDirection: "row" }}>
       <Modal
@@ -99,7 +111,7 @@ const ListMem = (props) => {
                 }}
                 style={styles.imgAvaModal}
               />
-              <Text style={styles.nameModal}>{props.members.fullName}</Text>
+              <Text style={styles.nameModal}>{name}</Text>
               {inListFr ? (
                 <View style={{ flexDirection: "row" }}>
                   <TouchableOpacity
@@ -159,12 +171,26 @@ const ListMem = (props) => {
             </TouchableOpacity>
           </View>
           <View style={styles.iconAction}>
-            {/* <TouchableOpacity>
-              <Ionicons name="person-add-outline" size={24} color="black" />
-            </TouchableOpacity> */}
-            <TouchableOpacity>
-              <MaterialIcons name="person-remove" size={32} color="red" />
-            </TouchableOpacity>
+            {props.conversation.creator == props.user.id ? (
+              <TouchableOpacity
+                onPress={() => {
+                  Alert.alert(
+                    "Cảnh báo",
+                    "Bạn có chắc muốn xóa '" + name + "' ra khỏi nhóm không?",
+                    [
+                      {
+                        text: "Cancel",
+                        onPress: () => console.log("Cancel Pressed"),
+                        style: "cancel",
+                      },
+                      { text: "OK", onPress: () => console.log("OK Pressed") },
+                    ]
+                  );
+                }}
+              >
+                <MaterialIcons name="person-remove" size={32} color="red" />
+              </TouchableOpacity>
+            ) : null}
           </View>
         </>
       )}

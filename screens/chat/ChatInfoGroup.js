@@ -11,7 +11,7 @@ import {
   Pressable,
   StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -19,6 +19,7 @@ import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import styles from "./styleChatInfoGroup";
+import { AuthContext } from "../../context/AuthContext";
 
 const listImg = [
   {
@@ -104,8 +105,7 @@ const listFile = [
 
 export default function ChatInfoGroup({ navigation, route }) {
   const { name, ava, conversation } = route.params;
-  const [select, setSelected] = useState("image");
-
+  const { user } = useContext(AuthContext);
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -164,7 +164,7 @@ export default function ChatInfoGroup({ navigation, route }) {
           style={styles.btnInfoGr}
           onPress={() => {
             navigation.navigate("ListMemberGroup", {
-              members: conversation.members,
+              conversation: conversation,
             });
           }}
         >
@@ -195,6 +195,16 @@ export default function ChatInfoGroup({ navigation, route }) {
             </Text>
           </View>
         </TouchableOpacity>
+        {conversation.creator == user?.id ? (
+          <TouchableOpacity style={styles.btnInfoGr}>
+            <AntDesign name="delete" size={30} color="red" />
+            <View style={styles.borderBot}>
+              <Text style={[styles.txtInfoGr, { color: "red" }]}>
+                Giải tán nhóm
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );
