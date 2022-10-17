@@ -51,7 +51,7 @@ export default function MessageChat(props) {
       return Math.floor(interval) + " phút trước";
     }
     // return Math.floor(seconds) + " giây";
-    return "";
+    return "Vừa gửi";
   }
   const [showTime, setShowTime] = useState(false);
   return (
