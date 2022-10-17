@@ -37,6 +37,16 @@ export default function ChatList(props) {
     img = user?.img ? user.img : null;
     name = user?.fullName;
   }
+  //========getUser======================
+  const [userSend, setUserSend] = useState("");
+  const getInfoFriends = async (id) => {
+    try {
+      const res = await axiosCilent.get("/zola/users/" + id);
+      setUserSend(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //========getLastMessage===================
   const [message, setMessage] = useState([]);
   useEffect(() => {
@@ -51,16 +61,24 @@ export default function ChatList(props) {
     getMess();
   }, [conversation.id]);
   message.sort((a, b) => a.date - b.date);
+
+  let numMembers = conversation.members.length;
   let lastMess = "";
   if (message.slice(-1).length > 0) {
     let foo = message.slice(-1);
-    lastMess = foo.map(({ mess }) => mess);
-    let senderID = foo[0].sender.id;
+    // lastMess = foo.map(({ mess }) => mess);
+    lastMess = foo[0].mess;
+    let senderID = foo[0].sender;
     if (senderID == props.currentUser.id) {
       lastMess = "Bạn: " + lastMess;
-      if (lastMess.length > 34) {
-        lastMess = lastMess.slice(0, 29) + "...";
+    } else {
+      if (numMembers > 2) {
+        getInfoFriends(senderID);
+        lastMess = userSend.fullName.split(" ").slice(-1) + ": " + lastMess;
       }
+    }
+    if (lastMess.length > 30) {
+      lastMess = lastMess.slice(0, 25) + "...";
     }
   }
   //======================

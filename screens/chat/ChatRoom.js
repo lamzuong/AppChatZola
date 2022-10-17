@@ -111,18 +111,21 @@ export default function ChatRoom({ route }) {
   message.sort((a, b) => a.date - b.date);
   //====Send Message======
   const handleSendMessage = async (e) => {
-    e.preventDefault();
-    const message = {
-      conversationID: conversation.id,
-      sender: user.id,
-      mess: valueInput,
-    };
-    try {
-      await axiosCilent.post("/zola/message", message);
-      setValueInput("");
-      setRerender(!rerender);
-    } catch (err) {
-      console.log(err);
+    if (valueInput.trim() === "") {
+    } else {
+      e.preventDefault();
+      const message = {
+        conversationID: conversation.id,
+        sender: user.id,
+        mess: valueInput,
+      };
+      try {
+        await axiosCilent.post("/zola/message", message);
+        setValueInput("");
+        setRerender(!rerender);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   //========
