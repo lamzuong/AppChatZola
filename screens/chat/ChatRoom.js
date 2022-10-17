@@ -134,12 +134,6 @@ export default function ChatRoom({ route }) {
   if (conversation.members.length > 2) chatInfo = "ChatInfoGroup";
   //=====Sroll to end=======
   const flatlistRef = useRef();
-  const onPressFunction = () => {
-    flatlistRef.current.scrollToEnd({ animating: true });
-  };
-  useEffect(() => {
-    onPressFunction();
-  }, [message]);
   //======Button Back=======
   useEffect(() => {
     const backAction = () => {
@@ -210,6 +204,7 @@ export default function ChatRoom({ route }) {
         )}
         keyExtractor={(item, index) => index}
         ref={flatlistRef}
+        onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
       />
 
       <View style={styles.footer}>
