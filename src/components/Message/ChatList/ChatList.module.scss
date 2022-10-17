@@ -9,6 +9,10 @@
 
 .header {
     width: 100%;
+    height: 80px;
+    min-height: 64px;
+    @include flex(center, unset);
+    border: 1px solid #ccc;
 }
 
 .userOnl {
@@ -26,10 +30,67 @@
     overflow-y: auto;
     overscroll-behavior: contain;
 }
+.wrapper-header {
+    @include flex(unset, center);
+    flex-direction: column;
+    background-color: transparent;
+    z-index: 1;
+}
 
-li {
-    border-radius: 10px;
-    &.active {
-        background-color: #f5f5f5;
+.container {
+    height: 43px;
+    margin: 0 2px;
+    display: flex;
+}
+
+.search {
+    .btnSearch {
+        padding: 5px;
     }
+    margin-left: 10px;
+    @include flex(center, flex-start);
+    width: 200px;
+    background-color: #eeeff2;
+    border: 1px solid #eeeff2;
+    border-radius: 5px;
+    font-weight: 400;
+    &:focus-within {
+        border: 1px solid #0091ff;
+        background-color: #fff;
+    }
+    input {
+        width: 100%;
+        border: none;
+        outline: none;
+        caret-color: $main-color;
+        background-color: transparent;
+    }
+
+    .btnCleanText {
+        padding: 5px;
+        &:hover {
+            color: #0091ff;
+            cursor: pointer;
+        }
+    }
+}
+
+.btnClose {
+    border: none;
+    outline: none;
+    margin-left: 5px;
+    padding: 0 36px;
+    width: 50px;
+    border-radius: 5px;
+    font-weight: 600;
+    @include flex(center, center);
+    &:hover {
+        background-color: #eeeff2;
+        cursor: pointer;
+    }
+}
+
+.group {
+    font-size: 2.5rem;
+    margin-top: 5px;
 }
