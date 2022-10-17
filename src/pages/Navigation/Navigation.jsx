@@ -2,7 +2,9 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import styles from './Navigation.module.scss';
 import { Link, useLocation } from 'react-router-dom';
-import logo from '../../assets/logo.png';
+import { AuthContext } from '../../context/AuthContext';
+import { useContext } from 'react';
+import noAvatar from '../../assets/noAvatar.png';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +16,7 @@ const nav = [
 ];
 
 const Navigation = () => {
+    const { user } = useContext(AuthContext);
     const { pathname } = useLocation();
     const active = nav.findIndex((e) => e.path === pathname);
     return (
@@ -21,7 +24,7 @@ const Navigation = () => {
             <div className={cx('container')}>
                 <div className={cx('ava')}>
                     <Link to="/">
-                        <img src={logo} alt="" />
+                        <img src={user.img ? user.img : noAvatar} alt="" />
                     </Link>
                 </div>
                 <ul className={cx('nav')}>

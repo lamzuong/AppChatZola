@@ -29,8 +29,6 @@ const customStyles1 = {
 
 const ChatDetails = (props) => {
     Modal.setAppElement('#root');
-
-    const [name, setName] = useState('Lưu Trương Hoàng Phúc');
     const [src, setSrc] = useState('a');
 
     ////////show modal img
@@ -47,23 +45,13 @@ const ChatDetails = (props) => {
     const handleShowImage = (src) => {
         setSrc(src);
     };
-
+    // console.log(props.currentChat.files);
+    // console.log(props.currentChat.images);
     return (
         <div className={cx('wrapper')}>
             <Header title="Thông tin hội thoại" className={cx('customHeader')} />
             <div className={cx('wrapper-info')}>
-                <Info
-                    img="https://s120-ava-talk.zadn.vn/c/f/c/d/4/120/b391dd6ba1681c427460c4d1fb83325f.jpg"
-                    nameInfo={name}
-                />
-                <div className={cx('general')}>
-                    <ListView>
-                        <ListViewItem
-                            icon={<i className="bx bx-user" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                            title="19 nhóm chung"
-                        />
-                    </ListView>
-                </div>
+                <Info img={props.img} nameInfo={props.name} />
                 <Store>
                     <StoreItem title="Ảnh/Video">
                         <div className={cx('content', 'gridv2')}>

@@ -2,9 +2,9 @@
 
 .wrapper {
     border-radius: 8px;
+    cursor: pointer;
     @include flex(center, unset);
-    &:hover,
-    &.active {
+    &:hover {
         background-color: #f5f5f5;
     }
 }

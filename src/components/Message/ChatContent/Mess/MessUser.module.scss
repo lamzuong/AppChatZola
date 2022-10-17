@@ -2,17 +2,16 @@
 
 .message {
     display: flex;
-    flex-direction: column;
     margin: 20px 15px;
 }
 
-.messName {
-    margin-left: 45px;
-    font-size: 0.9rem;
+.messright {
+    display: flex;
+    flex-direction: column;
 }
 
-.messTop {
-    display: flex;
+.messName {
+    font-size: 0.9rem;
 }
 
 .messImg {
@@ -35,20 +34,25 @@
     border-radius: 20px;
     background-color: rgb(245, 241, 241);
     color: black;
-    max-width: 600px;
+    word-wrap: break-word;
+    max-width: 500px;
 }
 
 .messBot {
     font-size: 0.9rem;
-    margin-top: 5px;
 }
 
 .message.own {
-    align-items: flex-end;
+    justify-content: flex-end;
 }
 
 .message.own .messName {
     display: none;
+}
+
+.message.own .messright {
+    align-items: flex-end;
+    height: auto;
 }
 
 .message.own .messText {
@@ -58,4 +62,12 @@
 
 .message.own .messImg {
     display: none;
+}
+
+.message.group .messright {
+    height: 92px;
+}
+
+.message.group .messImg {
+    margin-top: 21px;
 }

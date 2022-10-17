@@ -1,12 +1,25 @@
 import classNames from 'classnames/bind';
-import { useNavigate } from 'react-router-dom';
+import Modal from 'react-modal';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from './Register.module.scss';
 import Input from '../../components/Input/Input';
-import { isEmail, isPassword, isRePassword, isUsername } from '../../ulities/Validations';
 import { useState } from 'react';
+import { isEmail, isPassword, isRePassword, isUsername } from '../../ulities/Validations';
 import axiosClient from '../../api/axiosClient';
 
 const cx = classNames.bind(styles);
+
+const customStyles = {
+    content: {
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
 
 const Register = (props) => {
     const [email, setEmail] = useState('');
@@ -14,8 +27,15 @@ const Register = (props) => {
     const [password, setPassword] = useState('');
     const [fullName, setFullName] = useState('');
     const navigate = useNavigate();
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
     const user = { email, username, password, fullName };
-    console.log(user);
     const handleRegister = (e) => {
         e.preventDefault();
         const register = async () => {
@@ -27,6 +47,7 @@ const Register = (props) => {
             }
         };
         register();
+        openModal();
     };
 
     //console.log('vuong@gmail.com'.match('/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/'));
@@ -89,6 +110,27 @@ const Register = (props) => {
                             <button className={cx('btn-register')} onClick={handleRegister}>
                                 Đăng kí
                             </button>
+                            <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal}>
+                                <div className={cx('wrapper-modal')}>
+                                    <div className={cx('header-modal')}>
+                                        <span>Zola-Xác nhận</span>
+                                        <i class="bx bx-x" onClick={closeModal}></i>
+                                    </div>
+                                    <div className={cx('body-modal')}>
+                                        <span>Xác nhận email:</span>
+                                        <h4 className={cx('my-email')}>{email}</h4>
+                                        <p className={cx('desc')}>
+                                            Mã xác thực sẽ được gửi đến email của bạn. Vui lòng dùng mã xác thực này để
+                                            đặt lại mật khẩu.
+                                        </p>
+                                    </div>
+                                    <div className={cx('footer-modal')}>
+                                        <Link to={'/forgot-password/confirm'} className={cx('btn-confirm')}>
+                                            Xác nhận
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Modal>
                         </div>
                     </div>
                 }

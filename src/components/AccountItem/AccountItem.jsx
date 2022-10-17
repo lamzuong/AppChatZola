@@ -13,7 +13,7 @@ const AccountItem = (props) => {
     return (
         <Link to={`/t/${props.id}`} className={cx('wrapper', props.none ? 'none' : active ? 'active' : '')}>
             <div className={cx('avatar')}>
-                <img src={props.ava} alt="phuc" />
+                <img src={props.ava} alt="" />
                 <div className={cx('onl')}></div>
             </div>
             <div className={cx('info')}>

@@ -20,10 +20,9 @@ const customStyles = {
 const Info = ({ img, nameInfo }) => {
     Modal.setAppElement('#root');
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [editName, setEditName] = useState('Lưu Trương Hoàng Phúc');
+    const [editName, setEditName] = useState(nameInfo);
     const [name, setName] = useState(nameInfo);
     const refInput = useRef();
-
     const openModal = () => {
         setModalIsOpen(true);
     };
@@ -44,7 +43,7 @@ const Info = ({ img, nameInfo }) => {
                 </div>
                 <div className={cx('info-name')}>
                     <div style={{ width: '32px' }}></div>
-                    <span style={{ fontSize: 16 }}>{name}</span>
+                    <span style={{ fontSize: 16 }}>{nameInfo}</span>
                     <div className={cx('edit')} onClick={openModal}>
                         <i className="bx bx-edit-alt"></i>
                     </div>

@@ -14,7 +14,7 @@ const Input = (props) => {
         e.preventDefault();
         const message = {
             conversationID: props.params,
-            senderID: props.user.id,
+            sender: props.user,
             mess: chatContent,
         };
         try {
