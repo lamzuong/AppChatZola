@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   },
   txtContentOwnerClick: {
     maxWidth: 200,
-    backgroundColor: "#99bbff",
+    backgroundColor: "#3333ff",
     borderRadius: 20,
     padding: 10,
     marginLeft: 10,
