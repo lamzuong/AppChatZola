@@ -52,7 +52,8 @@ router.post('/register' ,(req, res) => {
                 birthdate: '',
                 img: '',
                 gender: '',
-                friends: []
+                friends: [],
+                loginFirst: true
             }
         };
         docClient.put(params, (err, data) => {

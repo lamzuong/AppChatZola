@@ -6,26 +6,26 @@ const tableName = 'user';
 
 //Update user
 router.put('/',(req, res) => {
-    // const {id} = req.params;
-    const {id, birthdate, fiends, img, gender} = req.body;
+    const {id, birthdate, img, gender, fullName, fullNameOld, birthdateOld, genderOld, imgOld} = req.body;
     const params = {
             TableName: 'user',
             Key: {
                 id
             },               
-            UpdateExpression: 'SET #birthdate =:birthdate, #gender=:gender, #img=:img',
+            UpdateExpression: 'SET #fullName=:fullName, #birthdate =:birthdate, #gender=:gender, #img=:img',
             ExpressionAttributeNames: {//COLUMN NAME 
+                '#fullName': 'fullName',
                 '#birthdate': 'birthdate',
                 '#gender': 'gender',
                 '#img': 'img'
             },
             ExpressionAttributeValues: {
-                ':birthdate': birthdate ? birthdate : req.body.birthdateOld,
-                ':gender': gender !== null ? gender : req.body.genderOld,
-                ':img': img ? img : req.body.imgOld,
+                ':fullName': fullName ? fullName : fullNameOld,
+                ':birthdate': birthdate ? birthdate : birthdateOld,
+                ':gender': gender !== null ? gender : genderOld,
+                ':img': img ? img : imgOld,
             }
         };
-        console.log(params.ExpressionAttributeValues);
         docClient.update(params, (err, data) => {
             if(err) {
                 return res.status(500).send("Loi "+err)
