@@ -12,18 +12,20 @@ router.put('/',(req, res) => {
             Key: {
                 id
             },               
-            UpdateExpression: 'SET #fullName=:fullName, #birthdate =:birthdate, #gender=:gender, #img=:img',
+            UpdateExpression: 'SET #fullName=:fullName, #birthdate =:birthdate, #gender=:gender, #img=:img, #loginFirst=:loginFirst',
             ExpressionAttributeNames: {//COLUMN NAME 
                 '#fullName': 'fullName',
                 '#birthdate': 'birthdate',
                 '#gender': 'gender',
-                '#img': 'img'
+                '#img': 'img',
+                '#loginFirst': 'loginFirst'
             },
             ExpressionAttributeValues: {
                 ':fullName': fullName ? fullName : fullNameOld,
                 ':birthdate': birthdate ? birthdate : birthdateOld,
                 ':gender': gender !== null ? gender : genderOld,
                 ':img': img ? img : imgOld,
+                ':loginFirst': false
             }
         };
         docClient.update(params, (err, data) => {
