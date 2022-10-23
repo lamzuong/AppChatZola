@@ -23,36 +23,33 @@ export default function Login({ navigation }) {
   const [hide, sethide] = React.useState(true);
   const [hidebtn, sethidebtn] = useState(false);
 
-  const [errorUsername, seterrorUsername] = useState('Lỗi');
+  const [errorUsername, seterrorUsername] = useState("Lỗi");
   const [hideErrorUsername, sethideErrorUsername] = useState(false);
-  const [errorPassword, seterrorPassword] = useState('Lỗi');
+  const [errorPassword, seterrorPassword] = useState("Lỗi");
   const [hideErrorPassword, sethideErrorPassword] = useState(false);
-
+  const { user, dispatch } = useContext(AuthContext);
   function toHome() {
-    
     const login = async () => {
-      dispatch({type:'LOGIN_START'})
+      dispatch({ type: "LOGIN_START" });
       try {
-        const res = await axiosCilent.post('/zola/auth/login',{email, password});
-        dispatch({type:'LOGIN_SUCCESS', payload: res});
-        if (user.loginFirst) {
+        const res = await axiosCilent.post("/zola/auth/login", {
+          email,
+          password,
+        });
+        dispatch({ type: "LOGIN_SUCCESS", payload: res });
+        if (res?.loginFirst == true) {
           navigation.navigate("LogInFirst");
-        } else {
+        } else if (res?.loginFirst == false) {
           navigation.navigate("Home");
         }
-        
       } catch (error) {
-        dispatch({type:'LOGIN_FAILURE'});
-        Alert.alert(
-          "Cảnh báo",
-          "Username hoặc mật khẩu không đúng!",
-          [
-            {
-              text: "Xác nhận",
-              style: "cancel",
-            },
-          ]
-        );
+        dispatch({ type: "LOGIN_FAILURE" });
+        Alert.alert("Cảnh báo", "Username hoặc mật khẩu không đúng!", [
+          {
+            text: "Xác nhận",
+            style: "cancel",
+          },
+        ]);
       }
     };
 
@@ -70,15 +67,13 @@ export default function Login({ navigation }) {
       return false;
     }
   };
-  const hideBtnLogin = (email,password) => {
+  const hideBtnLogin = (email, password) => {
     if (isEmpty(email) || isEmpty(password)) {
       return true;
     } else {
       return false;
     }
-  }
-
-  const {user, dispatch} = useContext(AuthContext);
+  };
 
   return (
     <View style={styles.container}>
@@ -96,17 +91,16 @@ export default function Login({ navigation }) {
           onChangeText={(text) => {
             if (isEmpty(text)) {
               sethideErrorUsername(true);
-              seterrorUsername('Username không được rỗng.');
+              seterrorUsername("Username không được rỗng.");
               sethidebtn(false);
-            } 
-            else {
-                seterrorUsername('');
-                sethideErrorUsername(false);
-                if (!hideBtnLogin(email,password)) {
-                  sethidebtn(true);
-                } else {
-                  sethidebtn(false);
-                }
+            } else {
+              seterrorUsername("");
+              sethideErrorUsername(false);
+              if (!hideBtnLogin(email, password)) {
+                sethidebtn(true);
+              } else {
+                sethidebtn(false);
+              }
             }
             setemail(text);
           }}
@@ -124,9 +118,19 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         )}
       </View>
-      {hideErrorUsername && 
-          <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorUsername}</Text>
-      }
+      {hideErrorUsername && (
+        <Text
+          style={{
+            fontSize: 14,
+            color: "red",
+            marginLeft: 25,
+            marginRight: 25,
+            marginTop: 10,
+          }}
+        >
+          {errorUsername}
+        </Text>
+      )}
       <View style={styles.input}>
         <TextInput
           style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -136,17 +140,16 @@ export default function Login({ navigation }) {
           onChangeText={(text) => {
             if (isEmpty(text)) {
               sethideErrorPassword(true);
-              seterrorPassword('Mật khẩu không được rỗng.');
+              seterrorPassword("Mật khẩu không được rỗng.");
               sethidebtn(false);
-            } 
-            else {
-                seterrorPassword('');
-                sethideErrorPassword(false);
-                if (!hideBtnLogin(email,password)) {
-                  sethidebtn(true);
-                } else {
-                  sethidebtn(false);
-                }
+            } else {
+              seterrorPassword("");
+              sethideErrorPassword(false);
+              if (!hideBtnLogin(email, password)) {
+                sethidebtn(true);
+              } else {
+                sethidebtn(false);
+              }
             }
             setpassword(text);
           }}
@@ -182,9 +185,19 @@ export default function Login({ navigation }) {
           </TouchableOpacity>
         )}
       </View>
-      {hideErrorPassword && 
-          <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorPassword}</Text>
-      }
+      {hideErrorPassword && (
+        <Text
+          style={{
+            fontSize: 14,
+            color: "red",
+            marginLeft: 25,
+            marginRight: 25,
+            marginTop: 10,
+          }}
+        >
+          {errorPassword}
+        </Text>
+      )}
       <TouchableOpacity style={{ margin: 20 }} onPress={forget}>
         <Text
           style={{
@@ -198,7 +211,11 @@ export default function Login({ navigation }) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={hidebtn?styles.button:styles.buttonhide} onPress={toHome} disabled={!hidebtn}>
+      <TouchableOpacity
+        style={hidebtn ? styles.button : styles.buttonhide}
+        onPress={toHome}
+        disabled={!hidebtn}
+      >
         <Image
           source={require("../assets/next.png")}
           style={styles.image}

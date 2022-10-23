@@ -9,7 +9,6 @@ import SignUp from "./screens/SignUp";
 import Welcome from "./screens/Welcome";
 import Rooms from "./screens/chat/Rooms";
 import ChatRoom from "./screens/chat/ChatRoom";
-import ChatRoomGroup from "./screens/chat/ChatRoomGroup";
 import ChatInfo from "./screens/chat/ChatInfo";
 import ChatInfoGroup from "./screens/chat/ChatInfoGroup";
 import ListMemberGroup from "./screens/chat/ListMemberGroup";
@@ -98,7 +97,6 @@ export default function App() {
           ></Stack.Screen>
           <Stack.Screen name="Rooms" component={Rooms} />
           <Stack.Screen name="ChatRoom" component={ChatRoom} />
-          <Stack.Screen name="ChatRoomGroup" component={ChatRoomGroup} />
           <Stack.Screen
             name="ListMemberGroup"
             component={ListMemberGroup}

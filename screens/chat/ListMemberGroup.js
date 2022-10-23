@@ -154,8 +154,8 @@ const ListMem = (props) => {
         </View>
       </Modal>
       {props.members.id == props.currentUser.id ? null : (
-        <>
-          <View style={{ width: "80%" }}>
+        <View style={styles.itemContainer}>
+          <View>
             <TouchableOpacity
               style={styles.itemMember}
               onPress={() => {
@@ -193,7 +193,7 @@ const ListMem = (props) => {
               </TouchableOpacity>
             ) : null}
           </View>
-        </>
+        </View>
       )}
     </View>
   );
@@ -305,5 +305,14 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: "rgb(0,145,255)",
     textAlign: "center",
+  },
+  iconAction: {
+    marginRight: 10,
+    justifyContent: "center",
+  },
+  itemContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flex: 1,
   },
 });

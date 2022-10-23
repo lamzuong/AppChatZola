@@ -11,7 +11,6 @@ import {
   Alert,
 } from "react-native";
 import ChatList from "./ChatList";
-import ChatListGroup from "./ChatListGroup";
 import styles from "./styleRooms";
 import { EvilIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
@@ -509,28 +508,6 @@ export default function Rooms({ navigation }) {
         </Menu>
       </View>
       <ScrollView>
-        {/* {userChat.map((e, i) =>
-          e.typeChat == "user" ? (
-            <ChatList
-              key={i}
-              id={e.user.id}
-              ava={e.user.ava}
-              name={e.user.name}
-              messLast={e.messageLast}
-              messAll={e.messageAll}
-            />
-          ) : (
-            <ChatListGroup
-              key={i}
-              id={e.group.idGr}
-              ava={e.group.ava}
-              name={e.group.name}
-              users={e.group.users}
-              messLast={e.messageLast}
-              messAll={e.messageAll}
-            />
-          )
-        )} */}
         {conversation.map((e, i) => (
           <ChatList key={i} conversation={e} currentUser={user} />
         ))}
