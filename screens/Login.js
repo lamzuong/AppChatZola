@@ -21,7 +21,7 @@ export default function Login({ navigation }) {
   const [password, setpassword] = useState();
   const [icon, seticon] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
-
+  
   function toHome() {
     
     const login = async () => {
@@ -29,7 +29,12 @@ export default function Login({ navigation }) {
       try {
         const res = await axiosCilent.post('/zola/auth/login',{email, password});
         dispatch({type:'LOGIN_SUCCESS', payload: res});
-        navigation.navigate("Home");
+        if (user.loginFirst) {
+          navigation.navigate("LogInFirst");
+        } else {
+          navigation.navigate("Home");
+        }
+        
       } catch (error) {
         dispatch({type:'LOGIN_FAILURE'});
         Alert.alert(

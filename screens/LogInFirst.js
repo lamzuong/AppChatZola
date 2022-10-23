@@ -6,12 +6,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-
-export default function UpdateProfile() {
+export default function LogInFirst({navigation}) {
+    
     const [name, setname] = useState("Anya");
     const [birthday, setbirthday] = useState('');
     const [checked, setChecked] = useState(true);
-    const [avatar,setavatar] = useState("https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg");
+    const [avatar,setavatar] = useState("https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png");
 
     const [icon, seticon] = useState("calendar");
 
@@ -31,8 +31,28 @@ export default function UpdateProfile() {
         hideDatePicker();
     };
     
+
     return (
         <View style={styles.container}>
+        <View style={styles.header}>
+            <TouchableOpacity
+                style={styles.iconBack}
+                onPress={() => {
+                    navigation.goBack();
+                }}
+                >
+                <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Home"); 
+                }}
+            >
+                <Text style={{ fontSize: 20, fontWeight: "700", color: "white", marginLeft:275 }}>
+                    Bỏ qua
+                </Text>
+            </TouchableOpacity>
+        </View>
             <View style={styles.infoUser}>
                 <TouchableOpacity>
                     <Image source={{uri:avatar}} style={styles.AvatarURL}></Image>
@@ -42,9 +62,9 @@ export default function UpdateProfile() {
                         color="black"
                         style={styles.cam}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity>  
             </View>
-            <View  style={styles.input}>
+            {/* <View  style={styles.input}>
                 <TextInput 
                     style={{ fontSize: 18, color: "black", width: "90%" }}
                     value={name}
@@ -62,7 +82,7 @@ export default function UpdateProfile() {
                     <MaterialIcons name="clear" size={24} color="black" />
                     </TouchableOpacity>
                 )}
-            </View>
+            </View> */}
             <TouchableOpacity  style={styles.input}
                 onPress={() => {showDatePicker()}}
             >
@@ -128,7 +148,10 @@ export default function UpdateProfile() {
             </View>
 
         </View> 
+        
     );
+    
+  
 }
 const styles = StyleSheet.create({
     container: {
@@ -211,6 +234,22 @@ const styles = StyleSheet.create({
       datePickerStyle: {
         width: 200,
         marginTop: 20,
+      },
+      header: {
+        width: "100%",
+        padding: 10,
+        paddingHorizontal: 15,
+        backgroundColor: "rgb(0,145,255)",
+        flexDirection: "row",
+        height: 60,
+        alignItems: "center",
+      },
+      iconBack: {
+        width: 40,
+        height: 40,
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 1,
       },
   });
   

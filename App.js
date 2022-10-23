@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
-
+import LogInFirst from "./screens/LogInFirst";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
 import SignUp from "./screens/SignUp";
@@ -21,7 +21,6 @@ import GroupFriends from "./screens/friend/GroupFriends";
 import Profile from "./screens/profile/Profile";
 import ResetPassword from "./screens/profile/ResetPassword";
 import UpdateProfile from "./screens/profile/UpdateProfile";
-import ConfirmEmail from "./screens/ConfirmEmail";
 import ConfirmEmailForget from "./screens/ConfirmEmailForget";
 import ForgetPassword from "./screens/ForgetPassword";
 import RecoverPassword from "./screens/RecoverPassword";
@@ -68,13 +67,13 @@ export default function App() {
             }}
           ></Stack.Screen>
           <Stack.Screen
-            name="ConfirmEmail"
-            component={ConfirmEmail}
+            name="LogInFirst"
+            component={LogInFirst}
             options={{
               title: "Nhập mã kích hoạt",
               headerTintColor: "white",
               headerStyle: { backgroundColor: "#0091ff" },
-              headerShown: true,
+              headerShown: false,
             }}
           ></Stack.Screen>
           <Stack.Screen

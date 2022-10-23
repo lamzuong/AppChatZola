@@ -66,9 +66,6 @@ export default function SignUp({ navigation }) {
         {
           text: "Thay đổi",
           style: "cancel",
-          onPress: () => {
-            console.log(username, email, fullName, password, repassword);
-          },
         },
         {
           text: "Xác nhận",
@@ -79,6 +76,41 @@ export default function SignUp({ navigation }) {
       ]
     );
   }
+
+  useEffect(() => {
+    const UsernamRegex = async (username) => {
+      try {
+        const listUsers = await axiosClient.get("/zola/users/");
+        listUsers.forEach(u => {
+          if (u.username === username){
+            sethideErrorUsername(true);
+            seterrorUsername('Username đã tồn tại.');
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    UsernamRegex(username);
+  },[username]);
+
+  useEffect(() => {
+    const EmailRegex = async (email) => {
+      try {
+        const listUsers = await axiosClient.get("/zola/users/");
+        listUsers.forEach(u => {
+          if (u.email === email){
+            sethideErrorEmail(true);
+            seterrorEmail('Email đã được đăng ký.');
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    EmailRegex(email);
+  },[email]);
+
   const isEmpty = (str) => {
     if (str.trim().length === 0) {
       return true;
