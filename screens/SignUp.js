@@ -85,6 +85,7 @@ export default function SignUp({ navigation }) {
           if (u.username === username){
             sethideErrorUsername(true);
             seterrorUsername('Username đã tồn tại.');
+            sethidebtn(false);
           }
         });
       } catch (error) {
@@ -102,6 +103,7 @@ export default function SignUp({ navigation }) {
           if (u.email === email){
             sethideErrorEmail(true);
             seterrorEmail('Email đã được đăng ký.');
+            sethidebtn(false);
           }
         });
       } catch (error) {
@@ -469,14 +471,14 @@ export default function SignUp({ navigation }) {
                  color="#0091ff"
              /><Text style={styles.text}>Nữ</Text>
          </View> */}
-      { hidebtn && 
-        <TouchableOpacity style={styles.button} onPress={conFirm}>
+      {/* { hidebtn &&  */}
+        <TouchableOpacity style={hidebtn ? styles.button : styles.buttonhide} onPress={conFirm} disabled={!hidebtn}>
           <Image
             source={require("../assets/next.png")}
             style={styles.image}
           ></Image>
         </TouchableOpacity>
-      }
+      {/* } */}
       
     </View>
   );
@@ -519,6 +521,18 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#0091ff",
+    borderRadius: 100,
+    height: 55,
+    width: 55,
+    flex: 1,
+    alignSelf: "flex-end",
+    margin: 15,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  buttonhide: {
+    backgroundColor: "#7EC0EE",
     borderRadius: 100,
     height: 55,
     width: 55,
