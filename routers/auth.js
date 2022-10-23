@@ -47,8 +47,9 @@ router.post('/register' ,(req, res) => {
             TableName: tableName,
             Item: {
                 id: result.userSub,
+                username,
                 fullName,
-                email: email,
+                email,
                 birthdate: '',
                 img: '',
                 gender: '',
