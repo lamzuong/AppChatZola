@@ -47,13 +47,25 @@ router.get('/:id',(req, res) => {
     };
     docClient.get(params, (err, data) => {
         if(err) {
-            console.log(err);
             return res.status(500).send("Loi"+err)
         }
         else{
-            console.log(data.Item.address);
-
             return res.send(data.Item)
+        }
+    })
+})
+
+//Get all user
+router.get('/',(req, res) => {
+    const params = {
+        TableName: tableName,
+    };
+    docClient.scan(params, (err, data) => {
+        if(err) {
+            return res.status(500).send("Loi"+err)
+        }
+        else{
+            return res.send(data.Items)
         }
     })
 })
@@ -70,7 +82,6 @@ router.get('/search/:name', (req, res) => {
        };
     docClient.scan(params, (err, data) => {
         if(err) {
-            console.log(err);
             return res.status(500).send("Loi"+err)
         }
         else{
