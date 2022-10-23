@@ -17,11 +17,17 @@ import { AuthContext } from "../context/AuthContext";
 import axiosCilent from "../api/axiosClient";
 
 export default function Login({ navigation }) {
-  const [email, setemail] = useState();
-  const [password, setpassword] = useState();
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
   const [icon, seticon] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
-  
+  const [hidebtn, sethidebtn] = useState(false);
+
+  const [errorUsername, seterrorUsername] = useState('Lỗi');
+  const [hideErrorUsername, sethideErrorUsername] = useState(false);
+  const [errorPassword, seterrorPassword] = useState('Lỗi');
+  const [hideErrorPassword, sethideErrorPassword] = useState(false);
+
   function toHome() {
     
     const login = async () => {
@@ -57,6 +63,21 @@ export default function Login({ navigation }) {
     navigation.navigate("ForgetPassword");
   }
 
+  const isEmpty = (str) => {
+    if (str.trim().length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const hideBtnLogin = (email,password) => {
+    if (isEmpty(email) || isEmpty(password)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   const {user, dispatch} = useContext(AuthContext);
 
   return (
@@ -73,6 +94,20 @@ export default function Login({ navigation }) {
           placeholder="Nhập Username"
           placeholderTextColor="gray"
           onChangeText={(text) => {
+            if (isEmpty(text)) {
+              sethideErrorUsername(true);
+              seterrorUsername('Username không được rỗng.');
+              sethidebtn(false);
+            } 
+            else {
+                seterrorUsername('');
+                sethideErrorUsername(false);
+                if (!hideBtnLogin(email,password)) {
+                  sethidebtn(true);
+                } else {
+                  sethidebtn(false);
+                }
+            }
             setemail(text);
           }}
           // keyboardType="email-address"
@@ -82,13 +117,16 @@ export default function Login({ navigation }) {
             style={{ marginTop: 15 }}
             onPress={() => {
               setemail("");
+              sethidebtn(false);
             }}
           >
             <MaterialIcons name="clear" size={24} color="black" />
           </TouchableOpacity>
         )}
       </View>
-
+      {hideErrorUsername && 
+          <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorUsername}</Text>
+      }
       <View style={styles.input}>
         <TextInput
           style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -96,6 +134,20 @@ export default function Login({ navigation }) {
           placeholder="Nhập mật khẩu"
           placeholderTextColor="gray"
           onChangeText={(text) => {
+            if (isEmpty(text)) {
+              sethideErrorPassword(true);
+              seterrorPassword('Mật khẩu không được rỗng.');
+              sethidebtn(false);
+            } 
+            else {
+                seterrorPassword('');
+                sethideErrorPassword(false);
+                if (!hideBtnLogin(email,password)) {
+                  sethidebtn(true);
+                } else {
+                  sethidebtn(false);
+                }
+            }
             setpassword(text);
           }}
           secureTextEntry={hide}
@@ -123,13 +175,16 @@ export default function Login({ navigation }) {
               setpassword("");
               sethide(true);
               seticon("eye-outline");
+              sethidebtn(false);
             }}
           >
             <MaterialIcons name="clear" size={24} color="black" />
           </TouchableOpacity>
         )}
       </View>
-
+      {hideErrorPassword && 
+          <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorPassword}</Text>
+      }
       <TouchableOpacity style={{ margin: 20 }} onPress={forget}>
         <Text
           style={{
@@ -143,7 +198,7 @@ export default function Login({ navigation }) {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={toHome}>
+      <TouchableOpacity style={hidebtn?styles.button:styles.buttonhide} onPress={toHome} disabled={!hidebtn}>
         <Image
           source={require("../assets/next.png")}
           style={styles.image}
@@ -178,6 +233,18 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#0091ff",
+    borderRadius: 100,
+    height: 55,
+    width: 55,
+    flex: 1,
+    alignSelf: "flex-end",
+    margin: 15,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  buttonhide: {
+    backgroundColor: "#7EC0EE",
     borderRadius: 100,
     height: 55,
     width: 55,

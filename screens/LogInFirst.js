@@ -17,6 +17,10 @@ export default function LogInFirst({navigation}) {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
+    const [errorDob, seterrorDob] = useState(false);
+    const [hideErrorDob, sethideErrorDob] = useState(false);
+    const [hidebtn, sethidebtn] = useState(false);
+
     const showDatePicker = () => {
         setDatePickerVisibility(true);
     };
@@ -26,12 +30,23 @@ export default function LogInFirst({navigation}) {
     };
 
     const handleConfirm = (date) => {
-        setbirthday(date.getDate()+'/'+(date.getMonth()+1) +'/'+date.getFullYear());
-        seticon("close");
-        hideDatePicker();
+        if (date === undefined) {
+            sethidebtn(false);
+        } else {
+            setbirthday(date.getDate()+'/'+(date.getMonth()+1) +'/'+date.getFullYear());
+            seticon("close");
+            sethidebtn(true);
+            hideDatePicker();
+        }       
     };
     
-
+    const isEmpty = (str) => {
+        if (str.trim().length === 0) {
+          return true;
+        } else {
+          return false;
+        }
+      };
     return (
         <View style={styles.container}>
         <View style={styles.header}>
@@ -92,13 +107,16 @@ export default function LogInFirst({navigation}) {
                     placeholder="Nhập ngày sinh"
                     placeholderTextColor='gray'
                     editable={false}
-                    onChangeText={(text) => {setbirthday(text)}}
+                    onChangeText={(text) => {
+                        setbirthday(text)}
+                    }
                 />
                 <TouchableOpacity
                     style={{marginTop:15}}
                     onPress={() => {
                         if (icon==='close') {
                             setbirthday("");
+                            sethidebtn(false);
                             seticon("calendar");
                         } else {
                             showDatePicker();
@@ -112,7 +130,6 @@ export default function LogInFirst({navigation}) {
                         />
                 </TouchableOpacity>
             </TouchableOpacity>
-            
             <View style={styles.gender}>
                 <RadioButton
                     value="true"
@@ -128,7 +145,7 @@ export default function LogInFirst({navigation}) {
                 /><Text style={styles.text}>Nữ</Text>
             </View>
             
-            <TouchableOpacity style={styles.button} >
+            <TouchableOpacity style={hidebtn?styles.button:styles.buttonhide} disabled={!hidebtn}>
                 <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
                 Cập nhật
                 </Text>
@@ -223,6 +240,19 @@ const styles = StyleSheet.create({
         color: "white",
         alignItems: "center",
         backgroundColor: "#0091ff",
+        height: 50,
+        width: 200,
+        fontSize: 25,
+        borderColor: "#0091ff",
+        marginTop: 30,
+        borderRadius: 100,
+        alignSelf: "center",
+      },
+      buttonhide: {
+        paddingTop: 9,
+        color: "white",
+        alignItems: "center",
+        backgroundColor: "#7EC0EE",
         height: 50,
         width: 200,
         fontSize: 25,
