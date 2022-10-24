@@ -59,3 +59,27 @@
     color: $main-color;
     font-size: 2rem;
 }
+
+//Modal
+.wrapper-modal {
+    width: 550px;
+    padding: 10px 20px;
+}
+
+.header-modal {
+    margin-bottom: 10px;
+}
+
+.avatar-w {
+    @include flex(center, center);
+}
+
+.avatar {
+    img {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        overflow: hidden;
+        object-fit: cover;
+    }
+}

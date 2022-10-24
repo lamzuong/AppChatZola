@@ -12,9 +12,12 @@ import ConfirmPassword from './pages/ConfirmPassword/ConfirmPassword';
 import Navigation from './pages/Navigation/Navigation';
 import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
+import Loading from './components/Loading/Loading';
+import LoginFirst from './pages/LoginFirst/LoginFirst';
 
 function App() {
     const { user } = useContext(AuthContext);
+
     return (
         <Router>
             <Routes>
@@ -26,6 +29,7 @@ function App() {
                             {user ? (
                                 <>
                                     <Navigation />
+
                                     <div className="page">
                                         <Home />
                                     </div>

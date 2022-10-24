@@ -8,7 +8,7 @@ import { isEmail, isFullName, isPassword, isRePassword, isUsername } from '../..
 import axiosClient from '../../api/axiosClient';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import * as ReactBootStrap from 'react-bootstrap';
+
 import Loading from '../../components/Loading/Loading';
 import { Fragment } from 'react';
 
