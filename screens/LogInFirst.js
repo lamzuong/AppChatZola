@@ -14,8 +14,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import axiosCilent from "../api/axiosClient";
+import { AuthContext } from "../context/AuthContext";
 
 export default function LogInFirst({ navigation }) {
+  const { user } = React.useContext(AuthContext);
+
   const [name, setname] = useState("Anya");
   const [birthday, setbirthday] = useState("");
   const [checked, setChecked] = useState(true);
@@ -59,6 +63,17 @@ export default function LogInFirst({ navigation }) {
       return false;
     }
   };
+
+  const handleUpdateUser = async (id, birthdate, gender, fullNameOld, birthdateOld, genderOld, imgOld) => {
+    const loginFirst = false;
+    try {
+      await axiosCilent.put("/zola/users/", { id, birthdate, gender, fullNameOld, birthdateOld, genderOld, imgOld, loginFirst });
+      navigation.navigate("Home");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -78,8 +93,10 @@ export default function LogInFirst({ navigation }) {
 
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Home");
-          }}
+            handleUpdateUser(user.id, null, null, user.fullName, user.birthdate, user.gender, user.img)
+
+          }
+          }
         >
           <Text style={styles.textHeader}>Bỏ qua</Text>
         </TouchableOpacity>
@@ -170,6 +187,11 @@ export default function LogInFirst({ navigation }) {
       <TouchableOpacity
         style={hidebtn ? styles.button : styles.buttonhide}
         disabled={!hidebtn}
+        onPress={() => {
+          handleUpdateUser(user.id, birthday, checked, user.fullName, user.birthdate, user.gender, user.img)
+          console.log(birthday, checked);
+        }
+        }
       >
         <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
           Cập nhật
