@@ -109,7 +109,9 @@ export default function UpdateProfile({ navigation, route }) {
         genderOld,
         imgOld,
       });
-      navigation.navigate("Profile");
+
+      navigation.navigate("Home");
+      //   navigation.jumpTo("Home");
     } catch (err) {
       console.log(err);
     }
@@ -271,7 +273,6 @@ export default function UpdateProfile({ navigation, route }) {
           Cập nhật
         </Text>
       </TouchableOpacity>
-
       <View>
         {/* <Text>{text}</Text>
                 <Button title="Show Date Picker" onPress={showDatePicker} /> */}

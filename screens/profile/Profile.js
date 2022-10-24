@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -16,7 +16,7 @@ import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Profile({ navigation }) {
-  const { user } = React.useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState({});
   useEffect(() => {
     const getInfoUser = async () => {
@@ -27,8 +27,9 @@ export default function Profile({ navigation }) {
         console.log(error);
       }
     };
+    console.log(new Date());
     getInfoUser();
-  }, [user?.id]);
+  }, []);
   const [userName, setuserName] = useState("Anya");
   const [avatar, setavatar] = useState(
     "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
