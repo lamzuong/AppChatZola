@@ -17,7 +17,18 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function Profile({ navigation }) {
   const { user } = React.useContext(AuthContext);
-
+  const [currentUser, setCurrentUser] = useState({});
+  useEffect(() => {
+    const getInfoUser = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/users/" + user?.id);
+        setCurrentUser(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getInfoUser();
+  }, [user?.id]);
   const [userName, setuserName] = useState("Anya");
   const [avatar, setavatar] = useState(
     "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
@@ -25,9 +36,9 @@ export default function Profile({ navigation }) {
   const [birthday, setBirthday] = useState("");
   const [gender, setgender] = useState("");
   const [email, setemail] = useState("abc123@gmail.com");
-  
-  const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
+
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
 
   async function resetpass() {
     navigation.navigate("ResetPassword");
@@ -38,28 +49,22 @@ export default function Profile({ navigation }) {
   }
 
   async function logout() {
-    Alert.alert(
-      "Cảnh báo",
-      "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?",
-      [
-        {
-          text: "Ở lại",
-          style: "cancel",
+    Alert.alert("Cảnh báo", "Bạn có chắc chắn muốn đăng xuất khỏi tài khoản?", [
+      {
+        text: "Ở lại",
+        style: "cancel",
+      },
+      {
+        text: "Đăng xuất",
+        onPress: () => {
+          navigation.navigate("Welcome");
         },
-        {
-          text: "Đăng xuất",
-          onPress: () => {
-            navigation.navigate("Welcome");
-          },
-        },
-      ]
-    );
-    
+      },
+    ]);
   }
 
   // const currentUser = AuthContext.getCurrentUser;
-  
-  
+
   return (
     <SafeAreaView>
       <View style={styles.header}>
@@ -72,9 +77,15 @@ export default function Profile({ navigation }) {
           <View style={styles.containerUser}>
             <View style={styles.infoUser}>
               <TouchableOpacity>
-                <Image source={{ uri: user?.img ? user.img : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png" }} 
-                        style={styles.AvatarURL}></Image>
-                
+                <Image
+                  source={{
+                    uri: currentUser?.img
+                      ? currentUser.img
+                      : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
+                  }}
+                  style={styles.AvatarURL}
+                ></Image>
+
                 <Ionicons
                   name="camera-reverse-outline"
                   size={28}
@@ -82,11 +93,11 @@ export default function Profile({ navigation }) {
                   style={styles.cam}
                 />
               </TouchableOpacity>
-              
+
               <TextInput
                 editable={false}
                 style={styles.inputUser}
-                value={user.fullName}
+                value={currentUser.fullName}
                 onChangeText={(text) => {
                   setuserName(text);
                 }}
@@ -97,7 +108,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Email:</Text>
             <TextInput
               style={styles.input}
-              value={user.email}
+              value={currentUser.email}
               editable={false}
               onChangeText={(text) => {
                 setemail(text);
@@ -106,7 +117,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Giới tính:</Text>
             <TextInput
               style={styles.input}
-              value={user?.gender == true ? "Nam" : "Nữ"}
+              value={currentUser?.gender == false ? "Nam" : "Nữ"}
               editable={false}
               onChangeText={(text) => {
                 setgender(text);
@@ -116,7 +127,11 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Ngày sinh:</Text>
             <TextInput
               style={styles.input}
-              value={user?.birthdate != null ? user.birthdate : "1/1/2000"}
+              value={
+                currentUser?.birthdate != null
+                  ? currentUser.birthdate
+                  : "1/1/2000"
+              }
               editable={false}
               onChangeText={(text) => {
                 setBirthday(text);
@@ -137,14 +152,11 @@ export default function Profile({ navigation }) {
                 Đổi mật khẩu
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.buttonOut} onPress = {logout}>
-              <Text
-                style={{ fontSize: 20, color: "red", fontWeight: "bold" }}
-              >
+            <TouchableOpacity style={styles.buttonOut} onPress={logout}>
+              <Text style={{ fontSize: 20, color: "red", fontWeight: "bold" }}>
                 Đăng xuất
               </Text>
             </TouchableOpacity>
-
           </View>
         </View>
       </ScrollView>
@@ -201,7 +213,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     position: "absolute",
     alignSelf: "center",
-    bottom: -12
+    bottom: -12,
   },
 
   inputUser: {
@@ -258,5 +270,4 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
   },
-  
 });
