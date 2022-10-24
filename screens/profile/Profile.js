@@ -22,8 +22,8 @@ export default function Profile({ navigation }) {
   const [avatar, setavatar] = useState(
     "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
   );
-  const [birthday, setBirthday] = useState("10/10/2000");
-  const [gender, setgender] = useState("Nam");
+  const [birthday, setBirthday] = useState("");
+  const [gender, setgender] = useState("");
   const [email, setemail] = useState("abc123@gmail.com");
   
   const [date, setDate] = useState(new Date())
@@ -106,7 +106,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Giới tính:</Text>
             <TextInput
               style={styles.input}
-              value={user?.gender ? user.gender : 'Nam'}
+              value={user?.gender == true ? "Nam" : "Nữ"}
               editable={false}
               onChangeText={(text) => {
                 setgender(text);
@@ -116,7 +116,7 @@ export default function Profile({ navigation }) {
             <Text style={styles.text}>Ngày sinh:</Text>
             <TextInput
               style={styles.input}
-              value={user?.birthdate ? user.birthdate : '01/01/2000'}
+              value={user?.birthdate != null ? user.birthdate : "1/1/2000"}
               editable={false}
               onChangeText={(text) => {
                 setBirthday(text);

@@ -92,7 +92,7 @@ export default function App() {
               title: "Thông tin cá nhân",
               headerTintColor: "white",
               headerStyle: { backgroundColor: "#0091ff" },
-              headerShown: true,
+              headerShown: false,
             }}
           ></Stack.Screen>
           <Stack.Screen name="Rooms" component={Rooms} />

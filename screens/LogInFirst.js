@@ -64,10 +64,10 @@ export default function LogInFirst({ navigation }) {
     }
   };
 
-  const handleUpdateUser = async (id, birthdate, gender, fullNameOld, birthdateOld, genderOld, imgOld) => {
+  const handleUpdateUser = async (id, birthdate, gender, img ,fullNameOld, birthdateOld, genderOld, imgOld) => {
     const loginFirst = false;
     try {
-      await axiosCilent.put("/zola/users/", { id, birthdate, gender, fullNameOld, birthdateOld, genderOld, imgOld, loginFirst });
+      await axiosCilent.put("/zola/users/", { id, birthdate, gender, img,fullNameOld, birthdateOld, genderOld, imgOld, loginFirst });
       navigation.navigate("Home");
     } catch (err) {
       console.log(err);
@@ -93,7 +93,7 @@ export default function LogInFirst({ navigation }) {
 
         <TouchableOpacity
           onPress={() => {
-            handleUpdateUser(user.id, null, null, user.fullName, user.birthdate, user.gender, user.img)
+            handleUpdateUser(user.id, null, null, null ,user.fullName, user.birthdate, user.gender, user.img)
 
           }
           }
@@ -188,7 +188,7 @@ export default function LogInFirst({ navigation }) {
         style={hidebtn ? styles.button : styles.buttonhide}
         disabled={!hidebtn}
         onPress={() => {
-          handleUpdateUser(user.id, birthday, checked, user.fullName, user.birthdate, user.gender, user.img)
+          handleUpdateUser(user.id, birthday, checked, null,user.fullName, user.birthdate, user.gender, user.img)
           console.log(birthday, checked);
         }
         }
@@ -204,6 +204,7 @@ export default function LogInFirst({ navigation }) {
         <DateTimePickerModal
           isVisible={isDatePickerVisible}
           mode="date"
+          date={new Date(2000,1,1)}
           onConfirm={handleConfirm}
           onCancel={hideDatePicker}
         />
