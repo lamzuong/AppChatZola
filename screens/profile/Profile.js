@@ -45,7 +45,7 @@ export default function Profile({ navigation }) {
   }
 
   async function updateProfile() {
-    navigation.navigate("UpdateProfile");
+    navigation.navigate("UpdateProfile", { user: currentUser });
   }
 
   async function logout() {
