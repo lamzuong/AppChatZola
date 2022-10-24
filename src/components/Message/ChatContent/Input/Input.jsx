@@ -35,7 +35,7 @@ const Input = (props) => {
     };
     return (
         <div className={cx('wrapper')}>
-            <form className={cx('container')}>
+            <div className={cx('container')}>
                 <div className={cx('chatContent')}>
                     {!chatContent && (
                         <>
@@ -53,13 +53,13 @@ const Input = (props) => {
                     onChange={(e) => setChatContent(e.target.value)}
                     className={cx('input')}
                     placeholder="Message"
-                    onKeyPress={(event) => {
-                        if (event.key === 'enter') {
-                            console.log(event.key);
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                            handleSendMessage();
                         }
                     }}
                 />
-            </form>
+            </div>
             <div className={cx('button')} onClick={handleSendMessage}>
                 <i className="bx bxl-telegram" style={{ color: '#0091ff' }}></i>
             </div>

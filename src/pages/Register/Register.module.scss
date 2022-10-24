@@ -32,7 +32,7 @@
 
 .body {
     background-color: #fff;
-    min-width: 400px;
+    width: 400px;
     border-radius: 2px;
     box-shadow: 0 8px 24px rgb(21 48 142 /14%);
 }
@@ -60,6 +60,37 @@
 }
 
 .btn-register {
+    height: 44px;
+    line-height: 44px;
+    padding: 0 20px;
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: #0190f3;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+        background-color: #0184e0;
+    }
+}
+
+// Modal
+
+.wrapper-modal {
+    width: 350px;
+    padding: 10px 20px;
+}
+.content-modal {
+    display: flex;
+    align-items: center;
+}
+.text-confirm {
+    margin: 10px 0;
+    margin-left: 10px;
+}
+.btn-confirm-mail {
     height: 44px;
     line-height: 44px;
     padding: 0 20px;

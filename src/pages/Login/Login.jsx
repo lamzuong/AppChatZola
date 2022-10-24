@@ -1,10 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useState, useRef } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import styles from './Login.module.scss';
-import { useState, useRef } from 'react';
 import Input from '../../components/Input/Input';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
