@@ -103,7 +103,7 @@ export default function LogInFirst({ navigation }) {
               navigation.goBack();
             }}
           >
-            <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
+            <Ionicons name="md-arrow-back-sharp" size={30} color="white" />
           </TouchableOpacity>
           <Text style={[styles.textHeader, { marginLeft: 20 }]}>
             Cập nhật thông tin

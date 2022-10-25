@@ -1,4 +1,7 @@
 import React from "react";
+import {
+  Button,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
@@ -41,7 +44,7 @@ export default function App() {
               title: "Đăng nhập",
               headerTintColor: "white",
               headerStyle: { backgroundColor: "#0091ff" },
-              headerShown: true,
+              headerShown: false,
             }}
           ></Stack.Screen>
           <Stack.Screen

@@ -45,13 +45,22 @@ export default function Login({ navigation }) {
         }
       } catch (error) {
         dispatch({ type: "LOGIN_FAILURE" });
-        Alert.alert("Cảnh báo", "Username hoặc mật khẩu không đúng!", [
-          {
-            text: "Xác nhận",
-            style: "cancel",
-          },
-        ]);
-        console.log(error);
+        if (error.response.data==="Incorrect username or password.") {
+          Alert.alert("Cảnh báo", "Username hoặc mật khẩu không đúng!", [
+            {
+              text: "Xác nhận",
+              style: "cancel",
+            },
+          ]);
+        } else if(error.response.data==="User is not confirmed.") {
+          Alert.alert("Cảnh báo", "Tài khoản của bạn chưa được xác thực qua Email, vui lòng truy cập địa chỉ Email đã đăng ký để xác thực trước khi đăng nhập!", [
+            {
+              text: "Xác nhận",
+              style: "cancel",
+            },
+          ]);
+        }
+        console.log(error.response.data);
       }
     };
     login();
@@ -78,6 +87,21 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            style={styles.iconBack}
+            onPress={() => {
+              navigation.navigate("Welcome");
+            }}
+          >
+            <Ionicons name="md-arrow-back-sharp" size={30} color="white" />
+          </TouchableOpacity>
+          <Text style={[styles.textHeader, { marginLeft: 20 }]}>
+            Đăng nhập
+          </Text>
+        </View>
+      </View>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.login}>
         Vui lòng nhập username và mật khẩu để đăng nhập.
@@ -105,7 +129,7 @@ export default function Login({ navigation }) {
             }
             setemail(text);
           }}
-          // keyboardType="email-address"
+        // keyboardType="email-address"
         />
         {email && (
           <TouchableOpacity
@@ -278,5 +302,27 @@ const styles = StyleSheet.create({
     height: 30,
     alignSelf: "center",
     marginTop: 13,
+  },
+  header: {
+    width: "100%",
+    padding: 10,
+    paddingHorizontal: 15,
+    backgroundColor: "rgb(0,145,255)",
+    flexDirection: "row",
+    height: 60,
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  textHeader: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "white",
+  },
+  iconBack: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 1,
   },
 });
