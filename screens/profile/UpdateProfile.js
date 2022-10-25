@@ -9,6 +9,7 @@ import {
   Button,
   Platform,
   Pressable,
+  BackHandler,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
@@ -115,7 +116,19 @@ export default function UpdateProfile({ navigation, route }) {
       console.log(err);
     }
   };
-
+  //======Button Back=======
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
+  //==========
   return (
     <View style={styles.container}>
       <View style={styles.infoUser}>

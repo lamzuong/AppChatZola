@@ -36,6 +36,7 @@ export default function Login({ navigation }) {
           email,
           password,
         });
+        console.log(res);
         dispatch({ type: "LOGIN_SUCCESS", payload: res });
         if (res?.loginFirst == true) {
           navigation.navigate("LogInFirst");
@@ -50,9 +51,9 @@ export default function Login({ navigation }) {
             style: "cancel",
           },
         ]);
+        console.log(error);
       }
     };
-
     login();
   }
 
