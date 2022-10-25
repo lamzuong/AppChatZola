@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Modal from 'react-modal';
+
 import classNames from 'classnames/bind';
 import ChatList from './ChatList/ChatList';
 import ChatDetails from './ChatDetails/ChatDetails';
@@ -12,8 +11,6 @@ import axiosCilent from '../../api/axiosClient';
 import MessUser from './ChatContent/Mess/MessUser';
 import Input from './ChatContent/Input/Input';
 import noAvatar from '../../assets/noAvatar.png';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera, faHand } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -229,33 +226,6 @@ const Message = (props) => {
                 )}
             </div>
             {currentChat ? <ChatDetails img={img} name={name} currentChat={currentChat} /> : null}
-            <Modal isOpen={true} style={customStyles} ariaHideApp={false}>
-                <div className={cx('wrapper-modal')}>
-                    <div className={cx('header-modal')}>
-                        Chào mừng bạn đến với <span style={{ color: '#0190f3' }}>Zola</span> hãy cập nhật đầy đủ thông
-                        tin
-                    </div>
-                    <div className={cx('body-modal')}>
-                        <div className={cx('avatar-w')} for="upload-photo">
-                            <div className={cx('avatar')}>
-                                <FontAwesomeIcon
-                                    icon={faCamera}
-                                    className={cx('icon-loading')}
-                                    style={{ color: '#888', fontSize: '25' }}
-                                />
-                                <img
-                                    src="https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg"
-                                    alt=""
-                                    for="upload-photo"
-                                />
-                            </div>
-                        </div>
-
-                        <input type="file" id="upload-photo" style={{ display: 'none' }} />
-                    </div>
-                    <button className={cx('btn-confirm-mail')}>Xác nhận</button>
-                </div>
-            </Modal>
         </div>
     );
 };
