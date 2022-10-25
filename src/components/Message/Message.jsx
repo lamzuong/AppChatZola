@@ -229,7 +229,7 @@ const Message = (props) => {
                 )}
             </div>
             {currentChat ? <ChatDetails img={img} name={name} currentChat={currentChat} /> : null}
-            <Modal isOpen={true} style={customStyles} ariaHideApp={false}>
+            <Modal isOpen={false} style={customStyles} ariaHideApp={false}>
                 <div className={cx('wrapper-modal')}>
                     <div className={cx('header-modal')}>
                         Chào mừng bạn đến với <span style={{ color: '#0190f3' }}>Zola</span> hãy cập nhật đầy đủ thông
