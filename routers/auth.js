@@ -16,7 +16,7 @@ const poolData = {
 };
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
+// register
 router.post('/register' ,(req, res) => {
     const {username, email, password, fullName} = req.body;
 
@@ -42,7 +42,6 @@ router.post('/register' ,(req, res) => {
         if (err) {
             return res.status(500).send("Loi1: "+err);
         }
-        // res.status(200).json(result.userSub);
         const params = {
             TableName: tableName,
             Item: {
@@ -69,7 +68,7 @@ router.post('/register' ,(req, res) => {
         })
     });
 })
-
+// login
 router.post('/login', (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -105,9 +104,30 @@ router.post('/login', (req, res) => {
             })
         },
         onFailure: function(err) {
-            res.status(500).send(err.message || JSON.stringify(err));
+            res.send(err.message || JSON.stringify(err));
         }
     })
 })
+// // forgetPassword 
+// router.post('/forgotPassword', (req, res) => {
+//     const {email, verificationCode, newPassword} = req.body;
 
+//     var userData = {
+//         Username: email,
+//         Pool: userPool,
+//     };
+//     var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+    
+//     cognitoUser.forgotPassword({
+//         onSuccess: function(result) {
+//             console.log('Result: ' + result);
+//         },
+//         onFailure: function(err) {
+//             console.log('Err: ' + err);
+//         },
+//         inputVerificationCode() {
+//             // cognitoUser.confirmPassword(verificationCode, newPassword, this);
+//         }
+//     })
+// })
 module.exports = router;
