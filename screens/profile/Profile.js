@@ -15,9 +15,17 @@ import { Ionicons } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function Profile({ navigation }) {
+export default function Profile({ navigation, route }) {
   const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState({});
+
+  const [rerender, setRerender] = useState(false);
+  useEffect(() => {
+    if (route.params != null) {
+      setRerender(route.params.rerender);
+    }
+  });
+
   useEffect(() => {
     const getInfoUser = async () => {
       try {
@@ -29,7 +37,7 @@ export default function Profile({ navigation }) {
     };
     console.log(new Date());
     getInfoUser();
-  }, []);
+  }, [rerender]);
   const [userName, setuserName] = useState("Anya");
   const [avatar, setavatar] = useState(
     "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
@@ -45,8 +53,11 @@ export default function Profile({ navigation }) {
     navigation.navigate("ResetPassword");
   }
 
-  async function updateProfile() {
-    navigation.navigate("UpdateProfile", { user: currentUser });
+  function updateProfile() {
+    navigation.navigate("UpdateProfile", {
+      user: currentUser,
+      rerender: rerender,
+    });
   }
 
   async function logout() {

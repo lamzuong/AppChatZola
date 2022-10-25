@@ -43,7 +43,7 @@ export default function Home() {
   }, []);
   return (
     <Tab.Navigator
-      initialRouteName="Rooms"
+      // initialRouteName="Rooms"
       screenOptions={{
         tabBarActiveTintColor: "#0091ff",
         tabBarInactiveTintColor: "#0091ff",
@@ -118,7 +118,7 @@ export default function Home() {
         }}
       />
       <Tab.Screen
-        name="Thông tin cá nhân"
+        name="Profile"
         component={Profile}
         options={{
           headerTintColor: "white",

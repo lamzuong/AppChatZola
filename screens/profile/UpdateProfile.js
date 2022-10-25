@@ -19,7 +19,7 @@ import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function UpdateProfile({ navigation, route }) {
-  let { user } = route.params;
+  let { user, rerender } = route.params;
   //   const { user } = React.useContext(AuthContext);
 
   const [name, setname] = useState(user.fullName);
@@ -110,8 +110,7 @@ export default function UpdateProfile({ navigation, route }) {
         imgOld,
       });
 
-      navigation.navigate("Home");
-      //   navigation.jumpTo("Home");
+      navigation.navigate("Profile", { rerender: !rerender });
     } catch (err) {
       console.log(err);
     }

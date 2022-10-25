@@ -85,17 +85,6 @@ export default function App() {
               headerShown: true,
             }}
           ></Stack.Screen>
-          <Stack.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              title: "Thông tin cá nhân",
-              headerTintColor: "white",
-              headerStyle: { backgroundColor: "#0091ff" },
-              headerShown: false,
-            }}
-          ></Stack.Screen>
-          <Stack.Screen name="Rooms" component={Rooms} />
           <Stack.Screen name="ChatRoom" component={ChatRoom} />
           <Stack.Screen
             name="ListMemberGroup"
@@ -132,7 +121,7 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: true,
             }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="UpdateProfile"
             component={UpdateProfile}
@@ -142,7 +131,7 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: true,
             }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="ForgetPassword"
             component={ForgetPassword}
@@ -152,7 +141,7 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: true,
             }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="RecoverPassword"
             component={RecoverPassword}
@@ -162,7 +151,7 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: true,
             }}
-          ></Stack.Screen>
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContextProvider>
