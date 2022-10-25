@@ -104,7 +104,7 @@ router.post('/login', (req, res) => {
             })
         },
         onFailure: function(err) {
-            res.send(err.message || JSON.stringify(err));
+            res.status(500).send(err.message || JSON.stringify(err));
         }
     })
 })

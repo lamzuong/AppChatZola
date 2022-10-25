@@ -78,24 +78,55 @@ router.post('/', upload.single('img'), (req, res) => {
     })
 });
 
-router.get('/:conversationID', (req, res) => {
-    const { conversationID } = req.params;
-    var params = {
-        ExpressionAttributeValues: {
-            ':id': conversationID,
-        },
-        ExpressionAttributeNames: { '#conversationID': 'conversationID' },
-        FilterExpression: 'contains(#conversationID , :id)',
-        TableName: tableName,
-    };
-    docClient.scan(params, (err, data) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send('Loi' + err);
-        } else {
-            return res.status(200).json(data.Items);
+router.get('/:conversationID',async (req, res) => {
+    try{
+        //get list conversation
+        const { conversationID } = req.params;
+        var params = {
+            ExpressionAttributeValues: {
+                ':id': conversationID,
+            },
+            ExpressionAttributeNames: { '#conversationID': 'conversationID' },
+            FilterExpression: 'contains(#conversationID , :id)',
+            TableName: tableName,
+        };
+        let data = await docClient.scan(params).promise();
+        const listMessage = data.Items;
+        
+
+        //get list sender
+        var listSender = listMessage.map( el => el.sender );
+        var listSenderKhongTrung = []
+        for (var i = 0; i < listSender.length; i++) 
+            if (!listSenderKhongTrung.includes(listSender[i])) 
+                listSenderKhongTrung.push(listSender[i])
+        
+        //get infor user from list sender
+        var listUserInfo=[];
+        for (var j = 0; j < listSenderKhongTrung.length; j++) {
+            const paramsuser = {
+                TableName: "user",
+                Key: {
+                    id : listSenderKhongTrung[j]
+                }
+            };
+            let data2 = await docClient.get(paramsuser).promise();
+            listUserInfo.push(data2.Item);
         }
-    });
+
+        //set infor user for mess
+        let listMessageImg =[];
+        listMessage.forEach(m =>{
+            const usertemp = listUserInfo.find(u => u.id === m.sender)
+            let messtemp = m;
+            messtemp["infoSender"] = {imageSender: usertemp.img, fullName: usertemp.fullName};
+            listMessageImg.push(messtemp);
+        })
+        return res.status(200).json(listMessageImg);
+    }
+    catch(e){
+        return res.status(500).send('Loi' + err);
+    }  
 });
 
 module.exports = router;
