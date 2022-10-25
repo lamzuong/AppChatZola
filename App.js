@@ -7,7 +7,6 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import SignUp from "./screens/SignUp";
 import Welcome from "./screens/Welcome";
-import Rooms from "./screens/chat/Rooms";
 import ChatRoom from "./screens/chat/ChatRoom";
 import ChatInfo from "./screens/chat/ChatInfo";
 import ChatInfoGroup from "./screens/chat/ChatInfoGroup";
@@ -15,14 +14,9 @@ import ListMemberGroup from "./screens/chat/ListMemberGroup";
 import FileMediaGroup from "./screens/chat/FileMediaGroup";
 import AddFriend from "./screens/friend/AddFriend";
 import AddGroup from "./screens/friend/AddGroup";
-import Directory from "./screens/friend/Directory";
-import GroupFriends from "./screens/friend/GroupFriends";
-import Profile from "./screens/profile/Profile";
 import ResetPassword from "./screens/profile/ResetPassword";
 import UpdateProfile from "./screens/profile/UpdateProfile";
-import ConfirmEmailForget from "./screens/ConfirmEmailForget";
 import ForgetPassword from "./screens/ForgetPassword";
-import RecoverPassword from "./screens/RecoverPassword";
 import { AuthContextProvider } from "./context/AuthContext";
 
 const Stack = createNativeStackNavigator();
@@ -75,16 +69,6 @@ export default function App() {
               headerShown: false,
             }}
           ></Stack.Screen>
-          <Stack.Screen
-            name="ConfirmEmailForget"
-            component={ConfirmEmailForget}
-            options={{
-              title: "Nhập mã xác thực",
-              headerTintColor: "white",
-              headerStyle: { backgroundColor: "#0091ff" },
-              headerShown: true,
-            }}
-          ></Stack.Screen>
           <Stack.Screen name="ChatRoom" component={ChatRoom} />
           <Stack.Screen
             name="ListMemberGroup"
@@ -135,16 +119,6 @@ export default function App() {
           <Stack.Screen
             name="ForgetPassword"
             component={ForgetPassword}
-            options={{
-              title: "Lấy lại mật khẩu",
-              headerTintColor: "white",
-              headerStyle: { backgroundColor: "#0091ff" },
-              headerShown: true,
-            }}
-          />
-          <Stack.Screen
-            name="RecoverPassword"
-            component={RecoverPassword}
             options={{
               title: "Lấy lại mật khẩu",
               headerTintColor: "white",
