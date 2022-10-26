@@ -11,6 +11,7 @@ import {
   Modal,
   Pressable,
   Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,15 +27,15 @@ import * as ImagePicker from "expo-image-picker";
 export default function LogInFirst({ navigation }) {
   const { user } = React.useContext(AuthContext);
 
-  const [birthday, setbirthday] = useState("");
+  const [birthday, setbirthday] = useState("1/1/2000");
   const [checked, setChecked] = useState(true);
   const [avatar, setavatar] = useState(
     "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png"
   );
 
-  const [icon, seticon] = useState("calendar");
+  const [icon, seticon] = useState("close");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [hidebtn, sethidebtn] = useState(false);
+  const [hidebtn, sethidebtn] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
   const showDatePicker = () => {
@@ -138,46 +139,63 @@ export default function LogInFirst({ navigation }) {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TouchableOpacity
-              styles={{ width: "100%", flexDirection: "row" }}
-              onPress={() => {
-                showImagePicker();
-              }}
-            >
-              <FontAwesome name="image" size={24} color="black" />
-              <Text
-                style={{
-                  fontSize: 20,
-                  paddingVertical: 10,
-                }}
-              >
-                Chọn ảnh từ thư viện
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              styles={{ width: "100%", flexDirection: "row" }}
-              onPress={() => {
-                openCamera();
-              }}
-            >
-              <AntDesign name="camera" size={24} color="black" />
-              <Text
-                style={{
-                  fontSize: 20,
-                  paddingVertical: 10,
-                }}
-              >
-                Chụp ảnh
-              </Text>
-            </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    showImagePicker();
+                  }}
+                >
+                  <FontAwesome name="image" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    showImagePicker();
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    Chọn ảnh từ thư viện
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    openCamera();
+                  }}
+                >
+                  <AntDesign name="camera" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    openCamera();
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    Chụp ảnh
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
       <View style={styles.header}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -198,8 +216,8 @@ export default function LogInFirst({ navigation }) {
           onPress={() => {
             handleUpdateUser(
               user.id,
-              null,
-              null,
+              "1/1/2000",
+              true,
               null,
               user.fullName,
               user.birthdate,
@@ -429,7 +447,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    marginTop: -170,
   },
   modalView: {
     width: "70%",
@@ -446,6 +464,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    borderRadius: 10,
   },
   //====================
 });

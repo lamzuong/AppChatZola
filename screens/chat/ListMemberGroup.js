@@ -10,6 +10,7 @@ import {
   Alert,
   StyleSheet,
   Dimensions,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -103,55 +104,57 @@ const ListMem = (props) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalViewInfo}>
-            <View style={styles.contentModal}>
-              <Image
-                source={{
-                  uri: img,
-                }}
-                style={styles.imgAvaModal}
-              />
-              <Text style={styles.nameModal}>{name}</Text>
-              {inListFr ? (
-                <View style={{ flexDirection: "row" }}>
-                  <TouchableOpacity
-                    style={[styles.btnAddFr, { marginRight: 10 }]}
-                  >
-                    <Text style={styles.txtAddFr}>Chấp nhận</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.btnCancelAddFr, { marginLeft: 10 }]}
-                  >
-                    <Text style={styles.txtCancelAddFr}>Xóa lời mời</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View>
-                  {addFr ? (
+        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalViewInfo}>
+              <View style={styles.contentModal}>
+                <Image
+                  source={{
+                    uri: img,
+                  }}
+                  style={styles.imgAvaModal}
+                />
+                <Text style={styles.nameModal}>{name}</Text>
+                {inListFr ? (
+                  <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
-                      style={styles.btnCancelAddFr}
-                      onPress={() => {
-                        setAddFr(!addFr);
-                      }}
+                      style={[styles.btnAddFr, { marginRight: 10 }]}
                     >
-                      <Text style={styles.txtCancelAddFr}>Hủy lời mời</Text>
+                      <Text style={styles.txtAddFr}>Chấp nhận</Text>
                     </TouchableOpacity>
-                  ) : (
                     <TouchableOpacity
-                      style={styles.btnAddFr}
-                      onPress={() => {
-                        setAddFr(!addFr);
-                      }}
+                      style={[styles.btnCancelAddFr, { marginLeft: 10 }]}
                     >
-                      <Text style={styles.txtAddFr}>Kết bạn</Text>
+                      <Text style={styles.txtCancelAddFr}>Xóa lời mời</Text>
                     </TouchableOpacity>
-                  )}
-                </View>
-              )}
+                  </View>
+                ) : (
+                  <View>
+                    {addFr ? (
+                      <TouchableOpacity
+                        style={styles.btnCancelAddFr}
+                        onPress={() => {
+                          setAddFr(!addFr);
+                        }}
+                      >
+                        <Text style={styles.txtCancelAddFr}>Hủy lời mời</Text>
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        style={styles.btnAddFr}
+                        onPress={() => {
+                          setAddFr(!addFr);
+                        }}
+                      >
+                        <Text style={styles.txtAddFr}>Kết bạn</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
       {props.members.id == props.currentUser.id ? null : (
         <View style={styles.itemContainer}>

@@ -9,17 +9,21 @@ import {
   ScrollView,
   Button,
   Alert,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
-
+import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 export default function Profile({ navigation, route }) {
   const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState({});
-
   const [rerender, setRerender] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   useEffect(() => {
     if (route.params != null) {
       setRerender(route.params.rerender);
@@ -74,9 +78,52 @@ export default function Profile({ navigation, route }) {
       },
     ]);
   }
+  //=======getGalleryImageCamera======
+  const [imagesSelected, setImagesSelected] = useState([]);
+  const arrShowImages = [];
+  const showImagePicker = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 1,
+    });
+    if (result.selected) {
+      const arr = result.selected;
+      for (let i = 0; i < arr.length; i++) {
+        const element = arr[i].uri;
+        arrShowImages.push(element);
+        setImagesSelected(arrShowImages);
+      }
+      console.log(arrShowImages);
+      console.log(1);
+    } else if (!result.selected) {
+      arrShowImages.push(result.uri);
+      setImagesSelected(arrShowImages);
+      console.log(arrShowImages);
+      console.log(2);
+    }
+  };
 
-  // const currentUser = AuthContext.getCurrentUser;
-
+  const [imageCamera, setImageCamera] = useState("");
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync();
+    if (!result.cancelled) {
+      setImageCamera(result.uri);
+      console.log(result.uri);
+    }
+  };
+  //==================
   return (
     <SafeAreaView>
       <View style={styles.header}>
@@ -86,9 +133,71 @@ export default function Profile({ navigation, route }) {
       </View>
       <ScrollView>
         <View style={styles.container}>
+        <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+      >
+        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    showImagePicker();
+                  }}
+                >
+                  <FontAwesome name="image" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    showImagePicker();
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    Chọn ảnh từ thư viện
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flexDirection: "row" }}>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    openCamera();
+                  }}
+                >
+                  <AntDesign name="camera" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  styles={{ width: "100%" }}
+                  onPress={() => {
+                    openCamera();
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    Chụp ảnh
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
           <View style={styles.containerUser}>
             <View style={styles.infoUser}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <Image
                   source={{
                     uri: currentUser?.img
@@ -282,4 +391,29 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: "center",
   },
+  //=======Modal========
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: -150,
+  },
+  modalView: {
+    width: "70%",
+    // margin: 20,
+    backgroundColor: "white",
+    // borderRadius: 20,
+    // padding: 35,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderRadius: 10,
+  },
+  //====================
 });
