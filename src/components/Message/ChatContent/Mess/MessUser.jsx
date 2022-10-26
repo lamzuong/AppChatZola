@@ -9,18 +9,6 @@ import axiosCilent from '../../../../api/axiosClient';
 const cx = classNames.bind(styles);
 
 const MessUser = (props) => {
-    const [user, setUser] = useState(null);
-    useEffect(() => {
-        const getInfoFriends = async () => {
-            try {
-                const res = await axiosCilent.get('/zola/users/' + props.sender);
-                setUser(res);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        getInfoFriends();
-    }, [props.sender]);
     function timeSince(date) {
         var seconds = Math.floor((new Date() - date) / 1000);
 
@@ -50,10 +38,10 @@ const MessUser = (props) => {
     return (
         <div className={cx('message', props.group ? 'group' : '', props.own ? 'own' : '')}>
             <div className={cx('messImg')}>
-                <img src={user?.img ? user.img : noAvatar} alt="" />
+                <img src={props.sender?.imageSender ? props.sender.imageSender : noAvatar} alt="" />
             </div>
             <div className={cx('messright')}>
-                <div className={cx('messName')}>{props.group ? user?.fullName : '  '}</div>
+                <div className={cx('messName')}>{props.group ? props.sender.fullName : '  '}</div>
                 {props.mess.mess.length === 0 ? <></> : <div className={cx('messText')}>{props.mess.mess}</div>}
                 {props.mess.file_url ? (
                     <div className={cx('messFile')}>

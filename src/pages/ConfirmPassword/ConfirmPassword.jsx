@@ -19,6 +19,7 @@ const customStyles = {
 };
 const ConfirmPassword = (props) => {
     const [code, setCode] = useState('');
+    const handleConfirm = () => {};
 
     return (
         <div className={cx('wrapper')}>
@@ -38,7 +39,9 @@ const ConfirmPassword = (props) => {
                         <Input type="password" placeholder="Mật khẩu mới" icon={<i class="bx bxs-lock"></i>} />
                         <Input type="password" placeholder="Xác nhận mật khẩu" icon={<i class="bx bxs-lock"></i>} />
                         <div style={{ padding: '4px' }}></div>
-                        <button className={cx('btn-confirm')}>Xác nhận</button>
+                        <button className={cx('btn-confirm')} onClick={handleConfirm}>
+                            Xác nhận
+                        </button>
                     </div>
                 </div>
             </div>

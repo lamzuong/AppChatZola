@@ -10,14 +10,19 @@ import Register from './pages/Register/Register';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import ConfirmPassword from './pages/ConfirmPassword/ConfirmPassword';
 import Navigation from './pages/Navigation/Navigation';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { AuthContext } from './context/AuthContext';
 import Loading from './components/Loading/Loading';
 import LoginFirst from './pages/LoginFirst/LoginFirst';
 
 function App() {
     const { user } = useContext(AuthContext);
-
+    // console.log(user, user !== null);
+    // const now = new Date();
+    // console.log('1: ' + localStorage.getItem('expiry'));
+    // setInterval(() => {
+    //     console.log(now.getTime());
+    // }, 3000);
     return (
         <Router>
             <Routes>

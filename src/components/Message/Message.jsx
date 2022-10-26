@@ -214,7 +214,7 @@ const Message = (props) => {
                                     <MessUser
                                         own={m.sender === user.id}
                                         mess={m}
-                                        sender={m.sender}
+                                        sender={m.infoSender}
                                         group={currentChat.members.length > 2}
                                     />
                                 </div>

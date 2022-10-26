@@ -12,7 +12,6 @@ const cx = classNames.bind(styles);
 const Conversation = (props) => {
     const { user } = useContext(AuthContext);
     const [userChat, setUserChat] = useState(null);
-    const [role, setRole] = useState(null);
     const [mess, setMess] = useState([]);
     useEffect(() => {
         const friendID = props.conversation.members.find((m) => m !== props.currentUser.id);
@@ -39,22 +38,22 @@ const Conversation = (props) => {
     }, [props.conversation.id, props.rerender]);
     mess.sort((a, b) => a.date - b.date);
     let img = '';
+    let nameLast = '';
     let name = '';
+    const rs = mess[mess?.length - 1]?.sender === user.id;
+    let nameShow = mess[mess.length - 1]?.infoSender.fullName.split(' ').slice(-1);
+    const messLast = mess[mess.length - 1]?.mess ? mess[mess.length - 1].mess : '[Hình ảnh]';
     if (props.conversation.members.length > 2) {
         img = props.conversation.avatarGroup;
         name = props.conversation.groupName;
+        nameLast = rs ? 'Bạn: ' : `${nameShow}: `;
     } else {
         img = userChat?.img ? userChat.img : noAvatar;
         name = userChat?.fullName;
+        nameLast = rs ? 'Bạn: ' : '';
     }
-
-    let nameLast = '';
-    const rs = mess[mess.length - 1]?.sender === user.id;
-    //let nameShow = mess[mess.length - 1]?.sender.fullName.split(' ').slice(-1);
-    nameLast = rs ? 'Bạn: ' : '';
-    // console.log(m.sender?.fullName);
-    const messLast = mess[mess.length - 1]?.mess;
     const last = nameLast + messLast;
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('avatar')}>
