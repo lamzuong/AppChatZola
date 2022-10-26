@@ -49,9 +49,9 @@ router.post('/register' ,(req, res) => {
                 username,
                 fullName,
                 email,
-                birthdate: '',
-                img: '',
-                gender: '',
+                birthdate: '01/01/2000',
+                img: 'https://d370tx6r1rzpl2.cloudfront.net/3be3043e-9640-4196-9f55-09005615a13c1666757079883.png',
+                gender: true,
                 friends: [],
                 loginFirst: true
             }
