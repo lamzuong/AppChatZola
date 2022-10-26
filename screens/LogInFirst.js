@@ -8,19 +8,24 @@ import {
   TextInput,
   Button,
   Platform,
+  Modal,
+  Pressable,
+  Alert,
 } from "react-native";
 import { RadioButton } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import axiosCilent from "../api/axiosClient";
 import { AuthContext } from "../context/AuthContext";
+import * as ImagePicker from "expo-image-picker";
 
 export default function LogInFirst({ navigation }) {
   const { user } = React.useContext(AuthContext);
 
-  const [name, setname] = useState("Anya");
   const [birthday, setbirthday] = useState("");
   const [checked, setChecked] = useState(true);
   const [avatar, setavatar] = useState(
@@ -28,12 +33,9 @@ export default function LogInFirst({ navigation }) {
   );
 
   const [icon, seticon] = useState("calendar");
-
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  const [errorDob, seterrorDob] = useState(false);
-  const [hideErrorDob, sethideErrorDob] = useState(false);
   const [hidebtn, sethidebtn] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -53,14 +55,6 @@ export default function LogInFirst({ navigation }) {
       seticon("close");
       sethidebtn(true);
       hideDatePicker();
-    }
-  };
-
-  const isEmpty = (str) => {
-    if (str.trim().length === 0) {
-      return true;
-    } else {
-      return false;
     }
   };
 
@@ -92,9 +86,99 @@ export default function LogInFirst({ navigation }) {
       console.log(err);
     }
   };
+  //=======getGalleryImageCamera======
+  const [imagesSelected, setImagesSelected] = useState([]);
+  const arrShowImages = [];
+  const showImagePicker = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 1,
+    });
+    if (result.selected) {
+      const arr = result.selected;
+      for (let i = 0; i < arr.length; i++) {
+        const element = arr[i].uri;
+        arrShowImages.push(element);
+        setImagesSelected(arrShowImages);
+      }
+      console.log(arrShowImages);
+      console.log(1);
+    } else if (!result.selected) {
+      arrShowImages.push(result.uri);
+      setImagesSelected(arrShowImages);
+      console.log(arrShowImages);
+      console.log(2);
+    }
+  };
 
+  const [imageCamera, setImageCamera] = useState("");
+  const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+    const result = await ImagePicker.launchCameraAsync();
+    if (!result.cancelled) {
+      setImageCamera(result.uri);
+      console.log(result.uri);
+    }
+  };
+  //==================
   return (
     <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              styles={{ width: "100%", flexDirection: "row" }}
+              onPress={() => {
+                showImagePicker();
+              }}
+            >
+              <FontAwesome name="image" size={24} color="black" />
+              <Text
+                style={{
+                  fontSize: 20,
+                  paddingVertical: 10,
+                }}
+              >
+                Chọn ảnh từ thư viện
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              styles={{ width: "100%", flexDirection: "row" }}
+              onPress={() => {
+                openCamera();
+              }}
+            >
+              <AntDesign name="camera" size={24} color="black" />
+              <Text
+                style={{
+                  fontSize: 20,
+                  paddingVertical: 10,
+                }}
+              >
+                Chụp ảnh
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.header}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity
@@ -128,8 +212,8 @@ export default function LogInFirst({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={styles.infoUser}>
-        <TouchableOpacity>
-          <Image source={{ uri: avatar }} style={styles.AvatarURL}></Image>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+          <Image source={{ uri: avatar }} style={styles.avatarURL}></Image>
           <Ionicons
             name="camera-reverse-outline"
             size={28}
@@ -138,25 +222,6 @@ export default function LogInFirst({ navigation }) {
           />
         </TouchableOpacity>
       </View>
-      {/* <View  style={styles.input}>
-                <TextInput 
-                    style={{ fontSize: 18, color: "black", width: "90%" }}
-                    value={name}
-                    placeholder="Nhập tên đầy đủ"
-                    placeholderTextColor='gray'
-                    onChangeText={(text) => {setname(text)}}
-                />
-                {name && (
-                    <TouchableOpacity
-                    style={{marginTop:15}}
-                    onPress={() => {
-                        setname("");
-                    }}
-                    >
-                    <MaterialIcons name="clear" size={24} color="black" />
-                    </TouchableOpacity>
-                )}
-            </View> */}
       <TouchableOpacity
         style={styles.input}
         onPress={() => {
@@ -256,7 +321,7 @@ const styles = StyleSheet.create({
     elevation: 1,
     margin: 20,
   },
-  AvatarURL: {
+  avatarURL: {
     borderColor: "gray",
     borderWidth: 1,
     width: 170,
@@ -359,4 +424,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: 20,
   },
+  //=======Modal========
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    width: "70%",
+    // margin: 20,
+    backgroundColor: "white",
+    // borderRadius: 20,
+    // padding: 35,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  //====================
 });

@@ -24,8 +24,9 @@ export default function AddFriend({ navigation }, props) {
 
     return () => backHandler.remove();
   }, []);
+  //==========================
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.iconBack}
@@ -41,6 +42,10 @@ export default function AddFriend({ navigation }, props) {
   );
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
   header: {
     width: "100%",
     padding: 10,

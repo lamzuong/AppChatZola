@@ -26,6 +26,7 @@ export default function SearchBar(props) {
         placeholderTextColor="rgb(124,189,255)"
         value={appearX}
         onChangeText={(appearX) => setAppearX(appearX)}
+        autoFocus={true}
       />
 
       {appearX && (
