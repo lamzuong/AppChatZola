@@ -32,8 +32,14 @@ const LoginFirst = (props) => {
     const { user } = useContext(AuthContext);
 
     const [birthday, setBirthday] = useState(user.birthday);
+
     const [checkedGender, setCheckedGender] = useState(true);
     const [value, onChange] = useState(new Date());
+    const [dateString, setDateString] = useState(
+        value.getDate() + '/' + parseInt(value.getMonth() + 1) + '/' + value.getFullYear(),
+    );
+    console.log(dateString);
+    //setDateString(value.getDate() + '/' + parseInt(value.getMonth()) + 1 + '/' + value.getFullYear());
     const [avatar, setAvatar] = useState();
 
     useEffect(() => {
@@ -47,7 +53,14 @@ const LoginFirst = (props) => {
         file.preview = URL.createObjectURL(file);
         setAvatar(file);
     };
-    avatar && console.log(avatar.name, checkedGender);
+    const handleChangeDate = (e) => {
+        onChange(e);
+        setDateString(e.getDate() + '/' + parseInt(e.getMonth() + 1) + '/' + e.getFullYear());
+    };
+    avatar && console.log(avatar.name);
+    console.log(checkedGender);
+
+    console.log(dateString);
 
     const handleUpdate = () => {};
 
@@ -100,7 +113,7 @@ const LoginFirst = (props) => {
 
                             <div>
                                 <DatePicker
-                                    onChange={onChange}
+                                    onChange={(e) => handleChangeDate(e)}
                                     value={value}
                                     className={cx('custom-date-picker')}
                                     selected={value}

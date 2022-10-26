@@ -87,7 +87,7 @@ function App() {
                 <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/forgot-password/confirm" element={<ConfirmPassword />} />
+
                 <Route path="/first-login" element={<LoginFirst />} />
             </Routes>
         </Router>
