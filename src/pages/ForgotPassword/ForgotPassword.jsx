@@ -2,10 +2,11 @@ import styles from './ForgotPassword.module.scss';
 import Modal from 'react-modal';
 import { useState } from 'react';
 import Input from '../../components/Input/Input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
+
 const customStyles = {
     content: {
         padding: '0',
@@ -20,6 +21,11 @@ const customStyles = {
 const ForgotPassword = (props) => {
     const [email, setEmail] = useState('');
     const [stage, setStage] = useState(1);
+    const [code, setCode] = useState('');
+    const [password, setPassword] = useState('');
+    const [rePassword, setRePassword] = useState('');
+    const navigate = useNavigate();
+
     Modal.setAppElement('#root');
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
@@ -59,19 +65,17 @@ const ForgotPassword = (props) => {
     };
 
     const handleConfirm = (event) => {
-        getUser().forgotPassword({
+        getUser().confirmPassword(code, password, {
             onSuccess: (data) => {
                 console.log('onSuccess:', data);
+                navigate('/login');
             },
             onFailure: (err) => {
                 console.error('onFailure:', err);
             },
-            inputVerificationCode: (data) => {
-                console.log('Input code:', data);
-                setStage(2);
-            },
         });
     };
+    console.log(code, password, rePassword);
 
     return (
         <div className={cx('wrapper')}>
@@ -100,16 +104,15 @@ const ForgotPassword = (props) => {
                                         icon={<i className="bx bxs-envelope"></i>}
                                         data={setEmail}
                                     />
-
                                     <div style={{ padding: '4px' }}></div>
                                     <button className={cx('btn-login')} onClick={openModal}>
                                         Tiếp tục
                                     </button>
                                     <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal}>
-                                        <div className={cx('wrapper-modal')}>
-                                            <div className={cx('header-modal')}>
+                                        <div className={cx('wrapper-tt')}>
+                                            <div className={cx('header-modal-tt')}>
                                                 <span>Zola-Xác nhận</span>
-                                                <i class="bx bx-x" onClick={closeModal}></i>
+                                                <i className="bx bx-x" onClick={closeModal}></i>
                                             </div>
                                             <div className={cx('body-modal')}>
                                                 <span>Xác nhận email:</span>
@@ -120,13 +123,9 @@ const ForgotPassword = (props) => {
                                                 </p>
                                             </div>
                                             <div className={cx('footer-modal')}>
-                                                <Link
-                                                    to={'/forgot-password/confirm'}
-                                                    className={cx('btn-confirm')}
-                                                    onClick={sendCode}
-                                                >
+                                                <button className={cx('btn-confirm')} onClick={sendCode}>
                                                     Xác nhận
-                                                </Link>
+                                                </button>
                                             </div>
                                         </div>
                                     </Modal>
@@ -142,31 +141,38 @@ const ForgotPassword = (props) => {
                 </>
             ) : (
                 <>
-                    <div className={cx('header')}>
+                    <div className={cx('header-send')}>
                         <h1>
                             <a style={{ cursor: 'auto' }}></a>
                         </h1>
                         <h2>Khôi phục mật khẩu Zola</h2>
                     </div>
-                    <div className={cx('body')}>
-                        <div className={cx('content')}>
-                            <div className={cx('title')}>
+                    <div className={cx('body-send')}>
+                        <div className={cx('content-send')}>
+                            <div className={cx('title-send')}>
                                 <h2>Nhập mã xác thực tại đây</h2>
                             </div>
-                            <div className={cx('form-code')}>
+                            <div className={cx('form-code-send')}>
                                 <Input
                                     type="text"
                                     placeholder="Nhập mã xác thực tại đây"
                                     icon={<i class="bx bx-key"></i>}
+                                    data={setCode}
                                 />
-                                <Input type="password" placeholder="Mật khẩu mới" icon={<i class="bx bxs-lock"></i>} />
+                                <Input
+                                    type="password"
+                                    placeholder="Mật khẩu mới"
+                                    icon={<i class="bx bxs-lock"></i>}
+                                    data={setPassword}
+                                />
                                 <Input
                                     type="password"
                                     placeholder="Xác nhận mật khẩu"
                                     icon={<i class="bx bxs-lock"></i>}
+                                    data={setRePassword}
                                 />
                                 <div style={{ padding: '4px' }}></div>
-                                <button className={cx('btn-confirm')} onClick={handleConfirm}>
+                                <button className={cx('btn-confirm-send')} onClick={handleConfirm}>
                                     Xác nhận
                                 </button>
                             </div>

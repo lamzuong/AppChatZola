@@ -8,11 +8,10 @@ import Friends from './pages/Friends';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
-import ConfirmPassword from './pages/ConfirmPassword/ConfirmPassword';
 import Navigation from './pages/Navigation/Navigation';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from './context/AuthContext';
-import Loading from './components/Loading/Loading';
+
 import LoginFirst from './pages/LoginFirst/LoginFirst';
 
 function App() {
@@ -32,13 +31,17 @@ function App() {
                     element={
                         <div className="wrapper">
                             {user ? (
-                                <>
-                                    <Navigation />
+                                user.loginFirst === false ? (
+                                    <>
+                                        <Navigation />
 
-                                    <div className="page">
-                                        <Home />
-                                    </div>
-                                </>
+                                        <div className="page">
+                                            <Home />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <LoginFirst />
+                                )
                             ) : (
                                 <Navigate to="/login" replace />
                             )}
@@ -88,7 +91,8 @@ function App() {
                 <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/forgot-password/confirm" element={<ConfirmPassword />} />
+
+                <Route path="/first-login" element={<LoginFirst />} />
             </Routes>
         </Router>
     );

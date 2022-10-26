@@ -1,0 +1,147 @@
+@use '../../scss/' as *;
+
+.wrapper {
+    margin: 0 auto;
+    height: 100%;
+    width: 100%;
+    background-color: #0184e0;
+    position: relative;
+}
+
+.infor {
+    padding-top: 20px;
+    width: 700px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @include flex(center, flex-start);
+    flex-direction: column;
+    background-color: #f5f5f5;
+    flex: 2;
+
+    .a {
+        margin-left: -75%;
+    }
+
+    .avatar {
+        width: 90%;
+        height: 25%;
+        background-color: #fff;
+        @include flex(center, center);
+        flex-direction: column;
+    }
+
+    .ava {
+        padding: 10px 0;
+
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        img {
+            height: 100px;
+            width: 100px;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    }
+
+    .iconcam-w {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border-radius: 50%;
+    }
+
+    .icon-camera {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+    }
+
+    .detail {
+        width: 90%;
+        padding: 20px 16px;
+        background-color: #fff;
+        @include flex(unset, space-around);
+
+        margin: 5% 0 5% 0;
+    }
+}
+
+.label {
+    display: inline-block;
+    min-width: 80px;
+    color: #72808e;
+}
+
+.text-info {
+    color: #000;
+}
+
+.btn-update-info {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 8px 8px;
+    border: none;
+    outline: none;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: normal;
+    cursor: pointer;
+}
+
+.wrapper-modal {
+    width: 400px;
+}
+
+.header-modal {
+    padding: 0 8px 0 16px;
+    display: flex;
+    height: 48px;
+    min-height: 48px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.desc-ipt-chang-name {
+    font-size: 12px;
+}
+
+.change-info {
+    width: 100%;
+    margin-top: 10px;
+    padding: 0 8px 0 16px;
+}
+
+.footer-body {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: row-reverse;
+}
+
+.btn-confirm {
+    height: 40px;
+    width: 100%;
+    border-radius: 4px;
+    line-height: normal;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: normal;
+    line-height: 38px;
+    border: none;
+    outline: none;
+    background-color: #0068ff;
+    color: #fff;
+    cursor: pointer;
+    &:hover {
+        background-color: #0184e0;
+    }
+}
