@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
-import { Link } from 'react-router-dom';
+
 import classNames from 'classnames/bind';
 import styles from './LoginFirst.module.scss';
 import { AuthContext } from '../../context/AuthContext';
 import { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCameraRetro, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCameraRetro } from '@fortawesome/free-solid-svg-icons';
 import noAvatar from '../../assets/noAvatar.png';
-// import { Calendar } from 'react-calendar';
-// import 'react-calendar/dist/Calendar.css';
 import DatePicker from 'react-date-picker';
-
 import 'react-datepicker/dist/react-datepicker.css';
-import Wellcome from '../../components/Confetti/Confetti';
+import Wellcome from '../../components/Conf/Confetti';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -30,25 +28,28 @@ const genders = [
 
 const LoginFirst = (props) => {
     Modal.setAppElement('#root');
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const openModal = () => {
-        setModalIsOpen(true);
-    };
 
-    const closeModal = () => {
-        setModalIsOpen(false);
-    };
     const { user } = useContext(AuthContext);
 
-    const [nameDisplay, setNameDisplay] = useState(user.fullName);
-    const [gender, setGender] = useState(user.gender);
     const [birthday, setBirthday] = useState(user.birthday);
-    const [checkGender, setCheckGender] = useState(gender);
+    const [checkedGender, setCheckedGender] = useState(true);
     const [value, onChange] = useState(new Date());
+    const [avatar, setAvatar] = useState();
 
-    const handleUpdate = () => {
-        console.log(nameDisplay, gender, birthday);
+    useEffect(() => {
+        return () => {
+            avatar && URL.revokeObjectURL(avatar.preview);
+        };
+    }, [avatar]);
+
+    const handleReviewAvatar = (e) => {
+        const file = e.target.files[0];
+        file.preview = URL.createObjectURL(file);
+        setAvatar(file);
     };
+    avatar && console.log(avatar.name, checkedGender);
+
+    const handleUpdate = () => {};
 
     return (
         <div className={cx('wrapper')}>
@@ -56,8 +57,12 @@ const LoginFirst = (props) => {
             <div className={cx('infor')}>
                 <div className={cx('avatar')}>
                     <div className={cx('ava')}>
-                        <label for="update-avatar">
-                            <img src={user.img ? user.img : noAvatar} alt="phuc" />
+                        <label htmlFor="update-avatar">
+                            {avatar ? (
+                                <img src={avatar.preview} alt="vuong" />
+                            ) : (
+                                <img src={user.img ? user.img : noAvatar} alt="phuc" />
+                            )}
                             <div className={cx('iconcam-w')}>
                                 <FontAwesomeIcon
                                     icon={faCameraRetro}
@@ -69,7 +74,7 @@ const LoginFirst = (props) => {
                     </div>
                 </div>
 
-                <input type="file" style={{ display: 'none' }} id="update-avatar" />
+                <input type="file" style={{ display: 'none' }} id="update-avatar" onChange={handleReviewAvatar} />
                 <div className={cx('detail')}>
                     <div className={cx('change-info')}>
                         <h3>Thông tin cá nhân</h3>
@@ -81,8 +86,8 @@ const LoginFirst = (props) => {
                                         <div style={{ display: 'inline-block', marginRight: 20 }} key={g.id}>
                                             <input
                                                 type="radio"
-                                                onChange={() => setCheckGender(g.id === 1 ? true : false)}
-                                                checked={checkGender === (g.id === 1 ? true : false)} //checkGender === g.name
+                                                onChange={() => setCheckedGender(g.id === 1 ? false : true)}
+                                                checked={checkedGender === (g.id === 1 ? false : true)} //checkGender === g.name
                                             />
                                             <span style={{ marginLeft: 10 }}>{g.name}</span>
                                         </div>

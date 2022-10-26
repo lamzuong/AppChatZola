@@ -54,7 +54,14 @@ const MessUser = (props) => {
             </div>
             <div className={cx('messright')}>
                 <div className={cx('messName')}>{props.group ? user?.fullName : '  '}</div>
-                <div className={cx('messText')}>{props.mess.mess}</div>
+                {props.mess.mess.length === 0 ? <></> : <div className={cx('messText')}>{props.mess.mess}</div>}
+                {props.mess.file_url ? (
+                    <div className={cx('messFile')}>
+                        <img src={props.mess.file_url} alt="" />
+                    </div>
+                ) : (
+                    <></>
+                )}
                 <div className={cx('messBot')}>{timeSince(new Date(props.mess.date))}</div>
             </div>
         </div>

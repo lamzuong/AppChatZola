@@ -54,8 +54,13 @@ const Login = (props) => {
                 setLoading(false);
             } catch (error) {
                 dispatch({ type: 'LOGIN_FAILURE' });
-                setErr('Tên tài khoản hoặc mật khẩu không chính xác');
-                setLoading(false);
+                if (error.response.data === 'Incorrect username or password.') {
+                    setErr('Tên tài khoản, mật khẩu không chính xác');
+                    setLoading(false);
+                } else if (error.response.data === 'User is not confirmed.') {
+                    setErr('Vô xác thực mail cho t!!!');
+                    setLoading(false);
+                }
             }
         };
         login();

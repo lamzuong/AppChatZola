@@ -10,14 +10,15 @@ const cx = classNames.bind(styles);
 const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
     const [rerender, setRerender] = useState(false);
+    const [image, setImage] = useState(null);
     const handleSendMessage = async (e) => {
-        const message = {
-            conversationID: props.params,
-            sender: props.user.id,
-            mess: chatContent,
-        };
+        const formData = new FormData();
+        formData.append('img', image);
+        formData.append('conversationID', props.params);
+        formData.append('sender', props.user.id);
+        formData.append('mess', chatContent ? chatContent : '');
         try {
-            await axiosCilent.post('/zola/message', message);
+            await axiosCilent.post('/zola/message', formData);
             setChatContent('');
             setRerender(!rerender);
             sendData(rerender);
@@ -25,22 +26,28 @@ const Input = (props) => {
             console.log(err);
         }
     };
-    // const handleKeyDown = (event) => {
-    //     if (event.key === 'Enter') {
-    //         console.log(event);
-    //     }
-    // };
     const sendData = (data) => {
         props.parentCb(data);
     };
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('container')}>
+            <form className={cx('container')} enctype="multipart/form-data">
                 <div className={cx('chatContent')}>
                     {!chatContent && (
                         <>
                             <i className="bx bx-paperclip"></i>
-                            <i className="bx bxs-image"></i>
+                            <label for="image">
+                                <i className="bx bxs-image"></i>
+                            </label>
+                            <input
+                                type="file"
+                                id="image"
+                                name="img"
+                                accept="image/*"
+                                multiple
+                                style={{ display: 'none' }}
+                                onChange={(e) => setImage(e.target.files[0])}
+                            />
                             <i className="bx bxs-file-gif"></i>
                             <i className="bx bxs-sticker"></i>
                         </>
@@ -59,7 +66,7 @@ const Input = (props) => {
                         }
                     }}
                 />
-            </div>
+            </form>
             <div className={cx('button')} onClick={handleSendMessage}>
                 <i className="bx bxl-telegram" style={{ color: '#0091ff' }}></i>
             </div>

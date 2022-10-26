@@ -49,11 +49,12 @@ const Conversation = (props) => {
     }
 
     let nameLast = '';
-    const rs = mess[mess.length - 1]?.sender.id === user.id;
+    const rs = mess[mess.length - 1]?.sender === user.id;
     //let nameShow = mess[mess.length - 1]?.sender.fullName.split(' ').slice(-1);
-    //nameLast = rs ? 'Bạn' : nameShow;
+    nameLast = rs ? 'Bạn: ' : '';
     // console.log(m.sender?.fullName);
     const messLast = mess[mess.length - 1]?.mess;
+    const last = nameLast + messLast;
     return (
         <div className={cx('wrapper')}>
             <div className={cx('avatar')}>
@@ -64,9 +65,7 @@ const Conversation = (props) => {
                 <h4 className={cx('name')}>
                     <span>{name}</span>
                 </h4>
-                <div className={cx('mess')}>
-                    {messLast?.length > 30 ? `${nameLast}${messLast?.slice(0, 15)}...` : `${nameLast}${messLast}`}
-                </div>
+                <div className={cx('mess')}>{messLast?.length > 30 ? `${last.slice(0, 20)}...` : `${last}`}</div>
             </div>
         </div>
     );
