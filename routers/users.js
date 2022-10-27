@@ -20,7 +20,7 @@ const storage = multer.memoryStorage({
 });
 
 const checkFileType = (file, cb) => {
-    const fileTypes = /jpeg|jpg|png|gif/;
+    const fileTypes = /jpeg|jpg|png|gif|jfif/;
 
     const extname = fileTypes.test(path.extname(file?.originalname).toLowerCase());
     const mineType = fileTypes.test(file?.mimetype);
@@ -50,6 +50,59 @@ router.put('/', upload.single('avatar'), (req, res) => {
             Bucket: 'zola-chat',
             Key: filePath,
             Body: req.file.buffer
+        }
+        s3.upload(uploadS3, (err, data) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(data);
+            }
+        })
+    }
+    // update Dynamo
+    const params = {
+        TableName: 'user',
+        Key: {
+            id
+        },               
+        UpdateExpression: 'SET #fullName=:fullName, #birthdate =:birthdate, #gender=:gender, #img=:img, #loginFirst=:loginFirst',
+        ExpressionAttributeNames: {//COLUMN NAME 
+            '#fullName': 'fullName',
+            '#birthdate': 'birthdate',
+            '#gender': 'gender',
+            '#img': 'img',
+            '#loginFirst': 'loginFirst'
+        },
+        ExpressionAttributeValues: {
+            ':fullName': fullName ? fullName : fullNameOld,
+            ':birthdate': birthdate ? birthdate : birthdateOld,
+            ':gender': gender !== null ? gender==='true' : genderOld==='true',
+            ':img': img ? `${CLOUD_FRONT_URL}${filePath}` : imgOld,
+            ':loginFirst': false
+        }
+    };
+    console.log(params.ExpressionAttributeValues);
+    docClient.update(params, (err, data) => {
+        if(err) {
+            return res.status(500).send("Loi "+err)
+        }
+        return res.status(200).json(data)
+    })
+})
+
+//Update User mobile
+router.put('/mobile', (req, res) => {
+    const {id, birthdate, gender, fullName, fullNameOld, birthdateOld, genderOld, imgOld} = req.body;
+    // luu vo S3
+    if(!img) {  
+    }else {
+        var buffer = Buffer.from(req.body.base64)
+        const fileType = req.body.fileType
+        var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+        const uploadS3 = {
+            Bucket: 'zola-chat',
+            Key: filePath,
+            Body: buffer
         }
         s3.upload(uploadS3, (err, data) => {
             if (err) {

@@ -1,6 +1,5 @@
 const AWS = require("aws-sdk")
 const router = require('express').Router();
-const dotenv = require('dotenv');
 const multer = require('multer');
 const { v4: uuid } = require('uuid');
 const path = require('path');
