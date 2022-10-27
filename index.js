@@ -1,10 +1,13 @@
-const express = require('express')
+const express = require('express');
 
 const app = express();
+
+app.use(express.json({ limit: '30mb', extended: true }));
+app.use(express.urlencoded({ limit: '30mb', extended: true, parameterLimit: 50000 }));
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-var cors = require('cors')
+var cors = require('cors');
 
 app.use(cors());
 const authRoute = require('./routers/auth');
@@ -22,10 +25,9 @@ app.use('/zola/conversation', conversationRoute);
 app.use('/zola/message', messageRoute);
 
 app.use('/', (req, res) => {
-    res.send("Hello")
-})
+    res.send('Hello');
+});
 
 app.listen(8000, () => {
     console.log('Backend is running');
-})
- 
+});
