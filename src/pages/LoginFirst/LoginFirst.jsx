@@ -74,7 +74,7 @@ const LoginFirst = (props) => {
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
 
-            navigate('/'); //cho nay chinh lai cho vo trang home nha
+            navigate('/');
         } catch (err) {
             console.log(err);
         }

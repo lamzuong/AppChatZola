@@ -11,6 +11,9 @@ import axiosCilent from '../../api/axiosClient';
 import MessUser from './ChatContent/Mess/MessUser';
 import Input from './ChatContent/Input/Input';
 import noAvatar from '../../assets/noAvatar.png';
+import { io } from 'socket.io-client';
+
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -132,7 +135,6 @@ const Message = (props) => {
     let cbChild1 = (childData) => {
         setRerender(childData);
     };
-    console.log(user);
 
     useEffect(() => {
         const getMess = async () => {
@@ -174,7 +176,18 @@ const Message = (props) => {
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [message]);
+    }, [message, rerender]);
+    useEffect(() => {
+        socket.on('server-send-to-client', (data) => {
+            let conversationIDChat;
+            try {
+                conversationIDChat = currentChat.id;
+                if (data.conversationID === conversationIDChat && data.sender !== user.id) {
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
+    });
     return (
         <div className={cx('wrapper')}>
             <ChatList data={mess} conversation={conversation} rerender={rerender} parentCb={cbChild} />
