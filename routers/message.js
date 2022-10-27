@@ -39,41 +39,45 @@ const upload = multer({
 
 router.post('/', upload.single('img'), (req, res) => {
     const {conversationID, sender, mess} = req.body
-    const image = req.file.originalname.split('.')
-    const fileType = image[image.length - 1]
-    const filePath = `${uuid() + Date.now().toString()}.${fileType}`;
-// luu vo S3
-    const uploadS3 = {
-        Bucket: 'zola-chat',
-        Key: filePath,
-        Body: req.file.buffer
-    }
-    s3.upload(uploadS3, (err, data) => {
-        if (err) {
-            console.log(err);
-            return res.send("Loi")
-        } else {
-            // luu vo Dynamo
-            const params = {
-                TableName: tableName,
-                Item: {
-                    id: uuid(),
-                    conversationID,
-                    sender,
-                    mess,
-                    file_url: `${CLOUD_FRONT_URL}${filePath}`,
-                    date: new Date().getTime(),
-                },
-            };
-            docClient.put(params, (err, data) => {
-                if (err) {
-                    return res.status(500).json('Loi: ' + err);
-                }
+    const img = req.file;
+    // luu vo S3
+    if (!img) {
+    } else {
+        const image = req.file.originalname.split('.');
+        const fileType = image[image.length - 1];
+        var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+        const uploadS3 = {
+            Bucket: 'zola-chat',
+            Key: filePath,
+            Body: req.file.buffer,
+        };
+        s3.upload(uploadS3, (err, data) => {
+            if (err) {
+                console.log(err);
+            } else {
                 console.log(data);
-                return res.status(200).json(data);
-            });
+            }
+        });
+    }
+    // luu vo dynamo
+    const params = {
+        TableName: tableName,
+        Item: {
+            id: uuid(),
+            conversationID,
+            sender,
+            mess,
+            file_url: img ? `${CLOUD_FRONT_URL}${filePath}` : '',
+            date: new Date().getTime(),
+        },
+    };
+    docClient.put(params, (err, data) => {
+        if (err) {
+            return res.status(500).json('Loi: ' + err);
         }
-    })
+        console.log(data);
+        return res.status(200).json(data);
+    });
 });
 
 router.get('/:conversationID',async (req, res) => {
@@ -123,7 +127,7 @@ router.get('/:conversationID',async (req, res) => {
         return res.status(200).json(listMessageImg);
     }
     catch(e){
-        return res.status(500).send('Loi' + err);
+        return res.status(500).send('Loi' + e);
     }  
 });
 

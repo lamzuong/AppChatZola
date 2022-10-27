@@ -28,6 +28,24 @@ app.use('/', (req, res) => {
     res.send('Hello');
 });
 
-app.listen(8000, () => {
-    console.log('Backend is running');
+var server = require("http").Server(app);
+const io = require("socket.io")(server,{
+  cors: {
+    origin: "https://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
 });
+
+io.on("connection", (socket) => {
+    socket.on('send-to-server', (data) => {
+      // socket.emit("user-chat", data); //Gửi chính mình
+      // socket.broadcast.emit("user-chat", data); //Gửi tất cả trừ chính mình
+      io.emit("server-send-to-client", data); //Gửi tất cả
+     
+    });
+});
+
+server.listen(8000, () => {
+    console.log('Backend is running');
+})

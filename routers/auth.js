@@ -108,26 +108,21 @@ router.post('/login', (req, res) => {
         }
     })
 })
-// // forgetPassword 
-// router.post('/forgotPassword', (req, res) => {
-//     const {email, verificationCode, newPassword} = req.body;
+// changePassword 
+router.post('/changePassword', (req, res) => {
+    const {email, oldPassword, newPassword} = req.body;
 
-//     var userData = {
-//         Username: email,
-//         Pool: userPool,
-//     };
-//     var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+    var userData = {
+        Username: email,
+        Pool: userPool,
+    };
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
     
-//     cognitoUser.forgotPassword({
-//         onSuccess: function(result) {
-//             console.log('Result: ' + result);
-//         },
-//         onFailure: function(err) {
-//             console.log('Err: ' + err);
-//         },
-//         inputVerificationCode() {
-//             // cognitoUser.confirmPassword(verificationCode, newPassword, this);
-//         }
-//     })
-// })
+    cognitoUser.changePassword(oldPassword, newPassword, (err, data) => {
+        if(err) {
+            return res.send("Loi" + err)
+        }
+        return res.send(data)
+    })
+})
 module.exports = router;
