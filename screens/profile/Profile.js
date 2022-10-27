@@ -39,7 +39,6 @@ export default function Profile({ navigation, route }) {
         console.log(error);
       }
     };
-    console.log(new Date());
     getInfoUser();
   }, [rerender]);
   const [userName, setuserName] = useState("Anya");
@@ -79,8 +78,7 @@ export default function Profile({ navigation, route }) {
     ]);
   }
   //=======getGalleryImageCamera======
-  const [imagesSelected, setImagesSelected] = useState([]);
-  const arrShowImages = [];
+  const [imageSelected, setImageSelected] = useState("");
   const showImagePicker = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -88,39 +86,66 @@ export default function Profile({ navigation, route }) {
       alert("You've refused to allow this appp to access your photos!");
       return;
     }
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       quality: 1,
+      base64: true,
     });
-    if (result.selected) {
-      const arr = result.selected;
-      for (let i = 0; i < arr.length; i++) {
-        const element = arr[i].uri;
-        arrShowImages.push(element);
-        setImagesSelected(arrShowImages);
+    if (!result.cancelled) {
+      setImageSelected(result.uri);
+      let imageBase64 = `data:image/jpeg;base64,${result.base64}`;
+      const image = result.uri.split(".");
+      const fileType = image[image.length - 1];
+      try {
+        await axiosCilent.put("/zola/users/mobile", {
+          id: currentUser.id,
+          birthdate: currentUser.birthdate,
+          gender: currentUser.gender,
+          fullNameOld: currentUser.fullName,
+          genderOld: currentUser.gender,
+          imgOld: currentUser.img,
+          birthdateOld: currentUser.birthdate,
+          base64: imageBase64,
+          fileType: fileType,
+        });
+      } catch (err) {
+        console.log(err);
       }
-      console.log(arrShowImages);
-      console.log(1);
-    } else if (!result.selected) {
-      arrShowImages.push(result.uri);
-      setImagesSelected(arrShowImages);
-      console.log(arrShowImages);
-      console.log(2);
+      setRerender(!rerender);
     }
   };
 
-  const [imageCamera, setImageCamera] = useState("");
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
       alert("You've refused to allow this appp to access your camera!");
       return;
     }
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      base64: true,
+    });
     if (!result.cancelled) {
-      setImageCamera(result.uri);
-      console.log(result.uri);
+      setImageSelected(result.uri);
+      let imageBase64 = `data:image/jpeg;base64,${result.base64}`;
+      const image = result.uri.split(".");
+      const fileType = image[image.length - 1];
+      try {
+        await axiosCilent.put("/zola/users/mobile", {
+          id: currentUser.id,
+          birthdate: currentUser.birthdate,
+          gender: currentUser.gender,
+          fullNameOld: currentUser.fullName,
+          genderOld: currentUser.gender,
+          imgOld: currentUser.img,
+          birthdateOld: currentUser.birthdate,
+          base64: imageBase64,
+          fileType: fileType,
+        });
+      } catch (err) {
+        console.log(err);
+      }
+      setRerender(!rerender);
     }
   };
   //==================
@@ -133,68 +158,74 @@ export default function Profile({ navigation, route }) {
       </View>
       <ScrollView>
         <View style={styles.container}>
-        <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-      >
-        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    showImagePicker();
-                  }}
-                >
-                  <FontAwesome name="image" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    showImagePicker();
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      paddingVertical: 10,
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+          >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TouchableOpacity
+                    style={{ flexDirection: "row" }}
+                    onPress={() => {
+                      showImagePicker();
+                      setModalVisible(!modalVisible);
                     }}
                   >
-                    Chọn ảnh từ thư viện
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    openCamera();
-                  }}
-                >
-                  <AntDesign name="camera" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    openCamera();
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 20,
-                      paddingVertical: 10,
+                    <View styles={{ width: "100%" }}>
+                      <FontAwesome
+                        name="image"
+                        size={25}
+                        color="black"
+                        style={{ margin: 10, marginTop: 12 }}
+                      />
+                    </View>
+                    <View styles={{ width: "100%" }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          paddingVertical: 10,
+                        }}
+                      >
+                        Chọn ảnh từ thư viện
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ flexDirection: "row" }}
+                    onPress={() => {
+                      openCamera();
+                      setModalVisible(!modalVisible);
                     }}
                   >
-                    Chụp ảnh
-                  </Text>
-                </TouchableOpacity>
+                    <View styles={{ width: "100%" }}>
+                      <AntDesign
+                        name="camera"
+                        size={25}
+                        color="black"
+                        style={{ margin: 10, marginTop: 12 }}
+                      />
+                    </View>
+                    <View styles={{ width: "100%" }}>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          paddingVertical: 10,
+                        }}
+                      >
+                        Chụp ảnh
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+            </TouchableWithoutFeedback>
+          </Modal>
           <View style={styles.containerUser}>
             <View style={styles.infoUser}>
               <TouchableOpacity onPress={() => setModalVisible(true)}>

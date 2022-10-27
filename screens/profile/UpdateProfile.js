@@ -103,22 +103,48 @@ export default function UpdateProfile({ navigation, route }) {
     genderOld,
     imgOld
   ) => {
-    try {
-      await axiosCilent.put("/zola/users/", {
-        id,
-        fullName,
-        birthdate,
-        gender,
-        img,
-        fullNameOld,
-        birthdateOld,
-        genderOld,
-        imgOld,
-      });
+    if (img != "" && typeof img != "undefined") {
+      const loginFirst = false;
+      let imageBase64 = `data:image/jpeg;base64,${imageSend.base64}`;
+      const image = imageSend.uri.split(".");
+      const fileType = image[image.length - 1];
 
-      navigation.navigate("Profile", { rerender: !rerender });
-    } catch (err) {
-      console.log(err);
+      try {
+        await axiosCilent.put("/zola/users/mobile", {
+          id: id,
+          birthdate: birthdate,
+          gender: gender,
+          fullName: fullName,
+          fullNameOld: fullNameOld,
+          genderOld: genderOld,
+          imgOld: imgOld,
+          birthdateOld: birthdateOld,
+          base64: imageBase64,
+          fileType: fileType,
+          loginFirst: loginFirst,
+        });
+        navigation.navigate("Profile", { rerender: !rerender });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      const loginFirst = false;
+      try {
+        await axiosCilent.put("/zola/users/mobile", {
+          id: id,
+          birthdate: birthdate,
+          gender: gender,
+          fullName: fullName,
+          fullNameOld: fullNameOld,
+          genderOld: genderOld,
+          imgOld: imgOld,
+          birthdateOld: birthdateOld,
+          loginFirst: loginFirst,
+        });
+        navigation.navigate("Profile", { rerender: !rerender });
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   //======Button Back=======
@@ -133,10 +159,9 @@ export default function UpdateProfile({ navigation, route }) {
     );
     return () => backHandler.remove();
   }, []);
-  //==========
   //=======getGalleryImageCamera======
-  const [imagesSelected, setImagesSelected] = useState([]);
-  const arrShowImages = [];
+  const [imageSelected, setImageSelected] = useState("");
+  const [imageSend, setImageSend] = useState("");
   const showImagePicker = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -144,67 +169,59 @@ export default function UpdateProfile({ navigation, route }) {
       alert("You've refused to allow this appp to access your photos!");
       return;
     }
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       quality: 1,
+      base64: true,
     });
-    if (result.selected) {
-      const arr = result.selected;
-      for (let i = 0; i < arr.length; i++) {
-        const element = arr[i].uri;
-        arrShowImages.push(element);
-        setImagesSelected(arrShowImages);
-      }
-      console.log(arrShowImages);
-      console.log(1);
-    } else if (!result.selected) {
-      arrShowImages.push(result.uri);
-      setImagesSelected(arrShowImages);
-      console.log(arrShowImages);
-      console.log(2);
+    if (!result.cancelled) {
+      setImageSelected(result.uri);
+      setImageSend(result);
     }
   };
 
-  const [imageCamera, setImageCamera] = useState("");
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
       alert("You've refused to allow this appp to access your camera!");
       return;
     }
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      base64: true,
+    });
     if (!result.cancelled) {
-      setImageCamera(result.uri);
-      console.log(result.uri);
+      setImageSelected(result.uri);
+      setImageSend(result);
     }
   };
   //==================
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-      >
-        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    showImagePicker();
-                  }}
-                >
-                  <FontAwesome name="image" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    showImagePicker();
-                  }}
-                >
+              <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                  showImagePicker();
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View styles={{ width: "100%" }}>
+                  <FontAwesome
+                    name="image"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View styles={{ width: "100%" }}>
                   <Text
                     style={{
                       fontSize: 20,
@@ -213,23 +230,24 @@ export default function UpdateProfile({ navigation, route }) {
                   >
                     Chọn ảnh từ thư viện
                   </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    openCamera();
-                  }}
-                >
-                  <AntDesign name="camera" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    openCamera();
-                  }}
-                >
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                  openCamera();
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View styles={{ width: "100%" }}>
+                  <AntDesign
+                    name="camera"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View styles={{ width: "100%" }}>
                   <Text
                     style={{
                       fontSize: 20,
@@ -238,8 +256,8 @@ export default function UpdateProfile({ navigation, route }) {
                   >
                     Chụp ảnh
                   </Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -248,7 +266,9 @@ export default function UpdateProfile({ navigation, route }) {
         <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Image
             source={{
-              uri: user?.img
+              uri: imageSelected
+                ? imageSelected
+                : user.img
                 ? user.img
                 : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
             }}
@@ -386,7 +406,7 @@ export default function UpdateProfile({ navigation, route }) {
             name,
             birthday,
             checked,
-            null,
+            imageSend.uri,
             user.fullName,
             user.birthdate,
             user.gender,

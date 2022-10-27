@@ -36,7 +36,6 @@ export default function Login({ navigation }) {
           email,
           password,
         });
-        console.log(res);
         dispatch({ type: "LOGIN_SUCCESS", payload: res });
         if (res?.loginFirst == true) {
           navigation.navigate("LogInFirst");
@@ -45,20 +44,24 @@ export default function Login({ navigation }) {
         }
       } catch (error) {
         dispatch({ type: "LOGIN_FAILURE" });
-        if (error.response.data==="Incorrect username or password.") {
+        if (error.response.data === "Incorrect username or password.") {
           Alert.alert("Cảnh báo", "Username hoặc mật khẩu không đúng!", [
             {
               text: "Xác nhận",
               style: "cancel",
             },
           ]);
-        } else if(error.response.data==="User is not confirmed.") {
-          Alert.alert("Cảnh báo", "Tài khoản của bạn chưa được xác thực qua Email, vui lòng truy cập địa chỉ Email đã đăng ký để xác thực trước khi đăng nhập!", [
-            {
-              text: "Xác nhận",
-              style: "cancel",
-            },
-          ]);
+        } else if (error.response.data === "User is not confirmed.") {
+          Alert.alert(
+            "Cảnh báo",
+            "Tài khoản của bạn chưa được xác thực qua Email, vui lòng truy cập địa chỉ Email đã đăng ký để xác thực trước khi đăng nhập!",
+            [
+              {
+                text: "Xác nhận",
+                style: "cancel",
+              },
+            ]
+          );
         }
         console.log(error.response.data);
       }
@@ -97,9 +100,7 @@ export default function Login({ navigation }) {
           >
             <Ionicons name="md-arrow-back-sharp" size={30} color="white" />
           </TouchableOpacity>
-          <Text style={[styles.textHeader, { marginLeft: 20 }]}>
-            Đăng nhập
-          </Text>
+          <Text style={[styles.textHeader, { marginLeft: 20 }]}>Đăng nhập</Text>
         </View>
       </View>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
@@ -129,7 +130,7 @@ export default function Login({ navigation }) {
             }
             setemail(text);
           }}
-        // keyboardType="email-address"
+          // keyboardType="email-address"
         />
         {email && (
           <TouchableOpacity

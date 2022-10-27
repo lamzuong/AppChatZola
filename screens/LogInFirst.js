@@ -25,7 +25,7 @@ import { AuthContext } from "../context/AuthContext";
 import * as ImagePicker from "expo-image-picker";
 
 export default function LogInFirst({ navigation }) {
-  const { user } = React.useContext(AuthContext);
+  const { user, dispatch } = React.useContext(AuthContext);
 
   const [birthday, setbirthday] = useState("1/1/2000");
   const [checked, setChecked] = useState(true);
@@ -59,7 +59,7 @@ export default function LogInFirst({ navigation }) {
     }
   };
 
-  const handleUpdateUser = async (
+  const updateUser = async (
     id,
     birthdate,
     gender,
@@ -69,27 +69,51 @@ export default function LogInFirst({ navigation }) {
     genderOld,
     imgOld
   ) => {
-    const loginFirst = false;
-    try {
-      await axiosCilent.put("/zola/users/", {
-        id,
-        birthdate,
-        gender,
-        img,
-        fullNameOld,
-        birthdateOld,
-        genderOld,
-        imgOld,
-        loginFirst,
-      });
-      navigation.navigate("Home");
-    } catch (err) {
-      console.log(err);
+    if (img != "" && typeof img != "undefined") {
+      const loginFirst = false;
+      let imageBase64 = `data:image/jpeg;base64,${imageSend.base64}`;
+      const image = imageSend.uri.split(".");
+      const fileType = image[image.length - 1];
+
+      try {
+        await axiosCilent.put("/zola/users/mobile", {
+          id: id,
+          birthdate: birthdate,
+          gender: gender,
+          fullNameOld: fullNameOld,
+          genderOld: genderOld,
+          imgOld: imgOld,
+          birthdateOld: birthdateOld,
+          base64: imageBase64,
+          fileType: fileType,
+          loginFirst: loginFirst,
+        });
+        navigation.navigate("Home");
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      const loginFirst = false;
+      try {
+        await axiosCilent.put("/zola/users/mobile", {
+          id: id,
+          birthdate: birthdate,
+          gender: gender,
+          fullNameOld: fullNameOld,
+          genderOld: genderOld,
+          imgOld: imgOld,
+          birthdateOld: birthdateOld,
+          loginFirst: loginFirst,
+        });
+        navigation.navigate("Home");
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
   //=======getGalleryImageCamera======
-  const [imagesSelected, setImagesSelected] = useState([]);
-  const arrShowImages = [];
+  const [imageSelected, setImageSelected] = useState("");
+  const [imageSend, setImageSend] = useState("");
   const showImagePicker = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -97,67 +121,59 @@ export default function LogInFirst({ navigation }) {
       alert("You've refused to allow this appp to access your photos!");
       return;
     }
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       quality: 1,
+      base64: true,
     });
-    if (result.selected) {
-      const arr = result.selected;
-      for (let i = 0; i < arr.length; i++) {
-        const element = arr[i].uri;
-        arrShowImages.push(element);
-        setImagesSelected(arrShowImages);
-      }
-      console.log(arrShowImages);
-      console.log(1);
-    } else if (!result.selected) {
-      arrShowImages.push(result.uri);
-      setImagesSelected(arrShowImages);
-      console.log(arrShowImages);
-      console.log(2);
+    if (!result.cancelled) {
+      setImageSelected(result.uri);
+      setImageSend(result);
     }
   };
 
-  const [imageCamera, setImageCamera] = useState("");
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
       alert("You've refused to allow this appp to access your camera!");
       return;
     }
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      base64: true,
+    });
     if (!result.cancelled) {
-      setImageCamera(result.uri);
-      console.log(result.uri);
+      setImageSelected(result.uri);
+      setImageSend(result);
     }
   };
   //==================
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-      >
-        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    showImagePicker();
-                  }}
-                >
-                  <FontAwesome name="image" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    showImagePicker();
-                  }}
-                >
+              <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                  showImagePicker();
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View styles={{ width: "100%" }}>
+                  <FontAwesome
+                    name="image"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View styles={{ width: "100%" }}>
                   <Text
                     style={{
                       fontSize: 20,
@@ -166,23 +182,24 @@ export default function LogInFirst({ navigation }) {
                   >
                     Chọn ảnh từ thư viện
                   </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    openCamera();
-                  }}
-                >
-                  <AntDesign name="camera" size={25} color="black" style={{ margin: 10, marginTop: 12 }} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  styles={{ width: "100%" }}
-                  onPress={() => {
-                    openCamera();
-                  }}
-                >
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                  openCamera();
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View styles={{ width: "100%" }}>
+                  <AntDesign
+                    name="camera"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View styles={{ width: "100%" }}>
                   <Text
                     style={{
                       fontSize: 20,
@@ -191,8 +208,8 @@ export default function LogInFirst({ navigation }) {
                   >
                     Chụp ảnh
                   </Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -214,11 +231,11 @@ export default function LogInFirst({ navigation }) {
 
         <TouchableOpacity
           onPress={() => {
-            handleUpdateUser(
+            updateUser(
               user.id,
               "1/1/2000",
               true,
-              null,
+              "",
               user.fullName,
               user.birthdate,
               user.gender,
@@ -231,7 +248,10 @@ export default function LogInFirst({ navigation }) {
       </View>
       <View style={styles.infoUser}>
         <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <Image source={{ uri: avatar }} style={styles.avatarURL}></Image>
+          <Image
+            source={{ uri: imageSelected == "" ? avatar : imageSelected }}
+            style={styles.avatarURL}
+          ></Image>
           <Ionicons
             name="camera-reverse-outline"
             size={28}
@@ -297,11 +317,11 @@ export default function LogInFirst({ navigation }) {
         style={hidebtn ? styles.button : styles.buttonhide}
         disabled={!hidebtn}
         onPress={() => {
-          handleUpdateUser(
+          updateUser(
             user.id,
             birthday,
             checked,
-            null,
+            imageSend.uri,
             user.fullName,
             user.birthdate,
             user.gender,
