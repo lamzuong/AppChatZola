@@ -132,6 +132,7 @@ const Message = (props) => {
     let cbChild1 = (childData) => {
         setRerender(childData);
     };
+    console.log(user);
 
     useEffect(() => {
         const getMess = async () => {

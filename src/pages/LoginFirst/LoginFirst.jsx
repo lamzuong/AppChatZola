@@ -31,9 +31,9 @@ const genders = [
 const LoginFirst = (props) => {
     Modal.setAppElement('#root');
 
-    const { user } = useContext(AuthContext);
+    const { user, dispatch } = useContext(AuthContext);
     const [birthday, setBirthday] = useState(user.birthday);
-    const [checkedGender, setCheckedGender] = useState(true);
+    const [checkedGender, setCheckedGender] = useState(false);
     const [value, onChange] = useState(new Date());
     const [dateString, setDateString] = useState(
         value.getDate() + '/' + parseInt(value.getMonth() + 1) + '/' + value.getFullYear(),
@@ -68,12 +68,18 @@ const LoginFirst = (props) => {
         formData.append('fullNameOld', user.fullName);
         formData.append('imgOld', user.img);
         try {
+            console.log('lll');
             await axiosCilent.put('/zola/users', formData);
-            // navigate('/'); cho nay chinh lai cho vo trang home nha
+
+            const res = await axiosCilent.get(`/zola/users/${user.id}`);
+            dispatch({ type: 'LOGIN_SUCCESS', payload: res });
+
+            navigate('/'); //cho nay chinh lai cho vo trang home nha
         } catch (err) {
             console.log(err);
         }
     };
+    console.log(avatar);
     return (
         <div className={cx('wrapper')}>
             <Wellcome />
