@@ -134,7 +134,7 @@ router.put('/mobile', (req, res) => {
         ExpressionAttributeValues: {
             ':fullName': fullName ? fullName : fullNameOld,
             ':birthdate': birthdate ? birthdate : birthdateOld,
-            ':gender': gender !== null ? gender === 'true' : genderOld === 'true',
+            ':gender': gender !== null ? gender === true : genderOld === true,
             ':img': req.body.base64 && req.body.fileType ? `${CLOUD_FRONT_URL}${filePath}` : imgOld,
             ':loginFirst': false,
         },
