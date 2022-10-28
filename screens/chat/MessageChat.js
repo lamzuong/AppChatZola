@@ -13,25 +13,11 @@ import { AuthContext } from "../../context/AuthContext";
 export default function MessageChat(props) {
   const { user } = useContext(AuthContext);
 
-  const title = props.title;
   const time = props.time;
   const group = props.group;
-  const sender = props.sender;
-  const owner = sender == user.id;
-
-  const [userSend, setUserSend] = useState(null);
-  useEffect(() => {
-    const getInfoFriends = async () => {
-      try {
-        const res = await axiosCilent.get("/zola/users/" + sender);
-        setUserSend(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getInfoFriends();
-  }, [sender]);
-  let nameShow = userSend?.fullName.split(" ").slice(-1);
+  const item = props.item;
+  const owner = item.sender == user.id;
+  let nameShow = item.infoSender.fullName.split(" ").slice(-1);
   //====getTime=====
   function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
@@ -71,8 +57,8 @@ export default function MessageChat(props) {
       <View style={owner ? styles.styleOwner : styles.styleFriend}>
         <Image
           source={{
-            uri: userSend?.img
-              ? userSend.img
+            uri: item.infoSender.imageSender
+              ? item.infoSender.imageSender
               : "https://res.cloudinary.com/dicpaduof/image/upload/v1665828418/noAvatar_c27pgy.png",
           }}
           style={owner ? null : styles.imageAva}
@@ -96,7 +82,7 @@ export default function MessageChat(props) {
             }}
           >
             <Text style={owner ? styles.txtMessOwner : styles.txtMess}>
-              {title}
+              {item.mess}
             </Text>
           </Pressable>
         )}

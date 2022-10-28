@@ -21,8 +21,35 @@ import MessageChat from "./MessageChat";
 import * as ImagePicker from "expo-image-picker";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
+import { io } from "socket.io-client";
 
+// const socket = io.connect("http://localhost:8000", {
+//   transports: ["websocket"],
+// });
 export default function ChatRoom({ route }) {
+  //   useEffect(() => {
+  //     socket.on('server-send-to-client', (data) => {
+  //         let conversationIDChat;
+  //         try {
+  //             conversationIDChat = currentChat.id;
+  //             if (data.conversationID == conversationIDChat && data.sender != user.id) {
+  //                 setRerender(!rerender);
+  //                 // const getMess = async () => {
+  //                 //     try {
+  //                 //         const res = await axiosCilent.get('/zola/message/' + props.params);
+  //                 //         console.log('socket1 ' + i++);
+  //                 //         setMessage(res);
+  //                 //     } catch (error) {
+  //                 //         console.log(error);
+  //                 //     }
+  //                 // };
+  //                 // getMess();
+  //                 // console.log('socket2 ' + j++);
+  //             }
+  //         } catch (error) {}
+  //     });
+  // });
+  //=============================
   let { nickname, avatar, conversation } = route.params;
   const navigation = useNavigation();
   //======edit name header chat if it too long====
@@ -122,6 +149,11 @@ export default function ChatRoom({ route }) {
       };
       try {
         await axiosCilent.post("/zola/message", message);
+        // socket.emit("send-to-server", {
+        //   mess: valueInput,
+        //   senderId: user.id,
+        //   conversationID: conversation.id,
+        // });
         setValueInput("");
         setRerender(!rerender);
       } catch (err) {
@@ -148,6 +180,7 @@ export default function ChatRoom({ route }) {
     return () => backHandler.remove();
   }, []);
   //==========
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -196,10 +229,9 @@ export default function ChatRoom({ route }) {
         data={message.reverse()}
         renderItem={({ item }) => (
           <MessageChat
-            title={item.mess}
             time={item.date}
             group={conversation.members.length > 2}
-            sender={item.sender}
+            item={item}
           />
         )}
         keyExtractor={(item, index) => index}

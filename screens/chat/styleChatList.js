@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 5,
     color: "grey",
-    maxWidth: 300,
+    maxWidth: "70%",
     maxHeight: 25,
   },
 });
