@@ -16,7 +16,7 @@ const nav = [
 ];
 
 const Navigation = () => {
-    const { user } = useContext(AuthContext);
+    const { user, dispatch } = useContext(AuthContext);
     const { pathname } = useLocation();
     const active = nav.findIndex((e) => e.path === pathname);
     return (
@@ -29,7 +29,17 @@ const Navigation = () => {
                 </div>
                 <ul className={cx('nav')}>
                     {nav.map((element, i) => (
-                        <li key={i} className={cx(i === active ? 'active' : '')}>
+                        <li
+                            key={i}
+                            className={cx(i === active ? 'active' : '')}
+                            onClick={() => {
+                                if (element.path === '/login') {
+                                    localStorage.removeItem('user');
+                                    localStorage.removeItem('expiry');
+                                    dispatch({ type: 'LOGIN_SUCCESS', payload: null });
+                                }
+                            }}
+                        >
                             <Link to={element.path}>{element.display}</Link>
                         </li>
                     ))}

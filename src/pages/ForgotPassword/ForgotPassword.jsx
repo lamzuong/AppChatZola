@@ -49,25 +49,19 @@ const ForgotPassword = (props) => {
             Pool: pool,
         });
     };
-    const sendCode = (event) => {
+    const sendCode = () => {
         getUser().forgotPassword({
-            onSuccess: (data) => {
-                console.log('onSuccess:', data);
-            },
-            onFailure: (err) => {
-                console.error('onFailure:', err);
-            },
+            onSuccess: (data) => {},
+            onFailure: (err) => {},
             inputVerificationCode: (data) => {
-                console.log('Input code:', data);
                 setStage(2);
             },
         });
     };
 
-    const handleConfirm = (event) => {
+    const handleConfirm = () => {
         getUser().confirmPassword(code, password, {
             onSuccess: (data) => {
-                console.log('onSuccess:', data);
                 navigate('/login');
             },
             onFailure: (err) => {
@@ -75,16 +69,14 @@ const ForgotPassword = (props) => {
             },
         });
     };
-    console.log(code, password, rePassword);
+    console.log(code);
 
     return (
         <div className={cx('wrapper')}>
             {stage === 1 ? (
                 <>
                     <div className={cx('header')}>
-                        <h1>
-                            <a style={{ cursor: 'auto' }}></a>
-                        </h1>
+                        <h1 className={cx('title-name-app')}>Zola</h1>
                         <h2>
                             Khôi phục mật khẩu Zola
                             <br />
@@ -124,7 +116,7 @@ const ForgotPassword = (props) => {
                                             </div>
                                             <div className={cx('footer-modal')}>
                                                 <button className={cx('btn-confirm')} onClick={sendCode}>
-                                                    Xác nhận
+                                                    Tiếp tục
                                                 </button>
                                             </div>
                                         </div>
@@ -142,9 +134,7 @@ const ForgotPassword = (props) => {
             ) : (
                 <>
                     <div className={cx('header-send')}>
-                        <h1>
-                            <a style={{ cursor: 'auto' }}></a>
-                        </h1>
+                        <h1 className={cx('title-name-app')}>Zola</h1>
                         <h2>Khôi phục mật khẩu Zola</h2>
                     </div>
                     <div className={cx('body-send')}>

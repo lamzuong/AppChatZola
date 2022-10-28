@@ -55,10 +55,10 @@ const Login = (props) => {
             } catch (error) {
                 dispatch({ type: 'LOGIN_FAILURE' });
                 if (error.response.data === 'Incorrect username or password.') {
-                    setErr('Tên tài khoản, mật khẩu không chính xác');
+                    setErr('Tên tài khoản hoặc mật khẩu không chính xác!');
                     setLoading(false);
                 } else if (error.response.data === 'User is not confirmed.') {
-                    setErr('Vô xác thực mail cho t!!!');
+                    setErr('Tài khoản của bạn chưa được xác thực!');
                     setLoading(false);
                 }
             }

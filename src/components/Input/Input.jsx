@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './Input.module.scss';
 import isEmail from '../../ulities/Validations';
 
@@ -17,10 +17,12 @@ const Input = ({
     const [txtIpt, setTxtIpt] = useState('');
     const [init, setInit] = useState(false);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         setInit(!init);
+        setTxtIpt('');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    console.log(txtIpt);
 
     return (
         <div className={cx('wrapper')}>
