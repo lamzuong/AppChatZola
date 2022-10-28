@@ -17,7 +17,7 @@ const Input = ({
     const [txtIpt, setTxtIpt] = useState('');
     const [init, setInit] = useState(false);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         setInit(!init);
     }, []);
 

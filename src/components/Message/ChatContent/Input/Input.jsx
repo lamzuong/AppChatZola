@@ -4,6 +4,9 @@ import classNames from 'classnames/bind';
 import styles from './Input.module.scss';
 import { useState } from 'react';
 import axiosCilent from '../../../../api/axiosClient';
+import { io } from 'socket.io-client';
+
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +22,11 @@ const Input = (props) => {
         formData.append('mess', chatContent ? chatContent : '');
         try {
             await axiosCilent.post('/zola/message', formData);
+            socket.emit('send-to-server', {
+                mess: chatContent,
+                senderId: props.user.id,
+                conversationID: props.params,
+            });
             setChatContent('');
             setRerender(!rerender);
             sendData(rerender);

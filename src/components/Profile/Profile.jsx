@@ -69,11 +69,11 @@ const Profile = (props) => {
                     </div>
                     <div>
                         <span className={cx('label')}>Giới tính:</span>
-                        <span className={cx('text-info')}>{user.gender}</span>
+                        <span className={cx('text-info')}>{user.gender ? 'Nữ' : 'Nam'}</span>
                     </div>
                     <div>
                         <span className={cx('label')}>Ngày sinh:</span>
-                        <span className={cx('text-info')}>{user.birthday}</span>
+                        <span className={cx('text-info')}>{user.birthdate}</span>
                     </div>
 
                     <button className={cx('btn-update-info')} onClick={openModal}>
@@ -166,13 +166,12 @@ const Profile = (props) => {
             </div>
             <div className={cx('show')}>
                 <div className={cx('ava')}>
-                    <img src="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg" alt="phuc" />
-                    <span>Hoang Phuc</span>
+                    <img src={user.img} alt="phuc" />
                 </div>
-                <span>Hey, Hoang Phuc</span>
-                <h4>Please select a chat to start messageing.</h4>
+                <span>{`Chào ${user.fullName}`}</span>
+                <h4>Hãy vào chat để trò chuyện cùng bạn bè.</h4>
                 <Link to="/" style={{ color: 'blue' }}>
-                    Click here to chat with us!
+                    Nhấn vào đây để chat!
                 </Link>
             </div>
         </div>
