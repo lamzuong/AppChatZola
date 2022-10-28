@@ -33,7 +33,7 @@ export default function ForgetPassword({ navigation }) {
   const [hideErrorPassword, sethideErrorPassword] = useState(false);
   const [errorRepassword, seterrorRepassword] = useState("Lỗi");
   const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
-  const [hidebtn, sethidebtn] = useState(false);
+  const [hidebtn, sethidebtn] = useState(true);
   const validateEmail = (email) => {
     var re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
     return re.test(email);
@@ -61,6 +61,15 @@ export default function ForgetPassword({ navigation }) {
       return false;
     }
   };
+
+  const hideBtnSignup = (code, password, repassword) => {
+    if (isEmpty(code) || isEmpty(password) || isEmpty(repassword)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   const poolData = {
     UserPoolId: "ap-southeast-1_cvABWaWG8",
     ClientId: "ro3jpgd83rfom7v4h1cqsg719",
@@ -180,6 +189,7 @@ export default function ForgetPassword({ navigation }) {
           text: "Xác nhận",
           onPress: () => {
             sendCode();
+            sethidebtn(true);
           },
         },
       ]
@@ -203,13 +213,16 @@ export default function ForgetPassword({ navigation }) {
                 if (isEmpty(text)) {
                   sethideErrorEmail(true);
                   seterrorEmail("Địa chỉ email không được rỗng.");
+                  sethidebtn(true);
                 } else {
                   if (!validateEmail(text)) {
                     sethideErrorEmail(true);
                     seterrorEmail("Địa chỉ email không hợp lệ.");
+                    sethidebtn(true);
                   } else {
                     seterrorEmail("");
                     sethideErrorEmail(false);
+                    sethidebtn(false);
                   }
                 }
                 setEmail(text);
@@ -223,6 +236,7 @@ export default function ForgetPassword({ navigation }) {
                   setEmail("");
                   sethideErrorEmail(true);
                   seterrorEmail("Địa chỉ email không được rỗng.");
+                  sethidebtn(true);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -247,6 +261,7 @@ export default function ForgetPassword({ navigation }) {
                 if (isEmpty(text)) {
                   setHideErrorCode(true);
                   setErrorCode("Mã xác thực không được rỗng.");
+                  sethidebtn(false);
                 } else {
                   if (!validateCode(text)) {
                     setHideErrorCode(true);
@@ -254,6 +269,11 @@ export default function ForgetPassword({ navigation }) {
                   } else {
                     setErrorCode("");
                     setHideErrorCode(false);
+                    if (hideBtnSignup(code,password, confirmPassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
                 setCode(text);
@@ -264,6 +284,9 @@ export default function ForgetPassword({ navigation }) {
                 style={{ marginTop: 15 }}
                 onPress={() => {
                   setCode("");
+                  setHideErrorCode(true);
+                  setErrorCode("Code không được rỗng.");
+                  sethidebtn(true);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -281,17 +304,21 @@ export default function ForgetPassword({ navigation }) {
                 if (isEmpty(text)) {
                   sethideErrorPassword(true);
                   seterrorPassword("Mật khẩu không được rỗng.");
-                  sethidebtn(false);
+                  sethidebtn(true);
                 } else {
                   if (!validatePassword(text)) {
                     sethideErrorPassword(true);
                     seterrorPassword(
                       "Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 kỹ tự."
                     );
-                    sethidebtn(false);
                   } else {
                     seterrorPassword("");
                     sethideErrorPassword(false);
+                    if (hideBtnSignup(code,password, confirmPassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
                 setPassword(text);
@@ -328,6 +355,7 @@ export default function ForgetPassword({ navigation }) {
                   seticon("eye-outline");
                   sethideErrorPassword(true);
                   seterrorPassword("Mật khẩu không được rỗng.");
+                  sethidebtn(true);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -347,6 +375,7 @@ export default function ForgetPassword({ navigation }) {
                 if (isEmpty(text)) {
                   sethideErrorRepassword(true);
                   seterrorRepassword("Nhập lại mật khẩu không được rỗng.");
+                  sethidebtn(true);
                 } else {
                   if (!validateRepassword(password, text)) {
                     sethideErrorRepassword(true);
@@ -354,6 +383,11 @@ export default function ForgetPassword({ navigation }) {
                   } else {
                     seterrorRepassword("");
                     sethideErrorRepassword(false);
+                    if (hideBtnSignup(code,password, confirmPassword)) {
+                      sethidebtn(true);
+                    } else {
+                      sethidebtn(false);
+                    }
                   }
                 }
                 setConfirmPassword(text);
@@ -390,6 +424,7 @@ export default function ForgetPassword({ navigation }) {
                   seticon1("eye-outline");
                   sethideErrorRepassword(true);
                   seterrorRepassword("Nhập lại mật khẩu không được rỗng.");
+                  sethidebtn(true);
                 }}
               >
                 <MaterialIcons name="clear" size={24} color="black" />
@@ -402,7 +437,8 @@ export default function ForgetPassword({ navigation }) {
         </View>
       )}
       <TouchableOpacity
-        style={styles.button}
+        disabled={hidebtn}
+        style={!hidebtn ? styles.button : styles.buttonhide}
         onPress={() => {
           stage == 1 ? conFirm() : resetPassword();
         }}
@@ -450,6 +486,18 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#0091ff",
+    borderRadius: 100,
+    height: 55,
+    width: 55,
+    flex: 1,
+    alignSelf: "flex-end",
+    margin: 15,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  buttonhide: {
+    backgroundColor: "#7EC0EE",
     borderRadius: 100,
     height: 55,
     width: 55,
