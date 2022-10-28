@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './Input.module.scss';
 import isEmail from '../../ulities/Validations';
 
@@ -19,7 +19,6 @@ const Input = ({
 
     useEffect(() => {
         setInit(!init);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

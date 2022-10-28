@@ -5,6 +5,7 @@ import Input from '../../components/Input/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import { CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 import classNames from 'classnames/bind';
+import { isEmail, isPassword, isRePassword } from '../../ulities/Validations';
 const cx = classNames.bind(styles);
 
 const customStyles = {
@@ -20,11 +21,15 @@ const customStyles = {
 };
 const ForgotPassword = (props) => {
     const [email, setEmail] = useState('');
+    const [errEmail, setErrEmail] = useState('');
     const [stage, setStage] = useState(1);
     const [code, setCode] = useState('');
     const [password, setPassword] = useState('');
+    const [errPassword, setErrPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
+    const [errRePassword, setErrRePassword] = useState('');
     const navigate = useNavigate();
+    console.log(code);
 
     Modal.setAppElement('#root');
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -34,6 +39,26 @@ const ForgotPassword = (props) => {
 
     const closeModal = () => {
         setModalIsOpen(false);
+    };
+
+    const _isEmail = async (stringEmail, standard) => {
+        if (stringEmail.length === 0) {
+            return 'Email không được để trống!';
+        } else {
+            if (standard.test(stringEmail) === false) {
+                return 'Email không đúng định dạng!';
+            } else {
+                return true;
+            }
+        }
+    };
+
+    const handleContinue = async () => {
+        let errEm = await _isEmail(email, /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/);
+        setErrEmail(errEm);
+        if (errEm === true) {
+            openModal();
+        } else return;
     };
 
     const poolData = {
@@ -65,15 +90,24 @@ const ForgotPassword = (props) => {
     };
 
     const handleConfirm = (event) => {
-        getUser().confirmPassword(code, password, {
-            onSuccess: (data) => {
-                console.log('onSuccess:', data);
-                navigate('/login');
-            },
-            onFailure: (err) => {
-                console.error('onFailure:', err);
-            },
-        });
+        let errPw = isPassword(
+            password,
+            /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/,
+        );
+        let errRp = isRePassword(rePassword, password);
+        setErrPassword(errPw);
+        setErrRePassword(errRp);
+        if (errPassword === true && errRePassword === true) {
+            getUser().confirmPassword(code, password, {
+                onSuccess: (data) => {
+                    console.log('onSuccess:', data);
+                    navigate('/login');
+                },
+                onFailure: (err) => {
+                    console.error('onFailure:', err);
+                },
+            });
+        } else return;
     };
     console.log(code, password, rePassword);
 
@@ -104,8 +138,11 @@ const ForgotPassword = (props) => {
                                         icon={<i className="bx bxs-envelope"></i>}
                                         data={setEmail}
                                     />
+                                    {errEmail.length > 0 && (
+                                        <span style={{ color: 'red', fontSize: 12 }}>{errEmail}</span>
+                                    )}
                                     <div style={{ padding: '4px' }}></div>
-                                    <button className={cx('btn-login')} onClick={openModal}>
+                                    <button className={cx('btn-login')} onClick={handleContinue}>
                                         Tiếp tục
                                     </button>
                                     <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal}>
@@ -153,25 +190,43 @@ const ForgotPassword = (props) => {
                                 <h2>Nhập mã xác thực tại đây</h2>
                             </div>
                             <div className={cx('form-code-send')}>
-                                <Input
-                                    type="text"
-                                    placeholder="Nhập mã xác thực tại đây"
-                                    icon={<i class="bx bx-key"></i>}
-                                    data={setCode}
-                                />
+                                <div className={cx('wrapper-ipt')}>
+                                    <div className={cx('form-control')}>
+                                        <i className="bx bx-key"></i>
+                                        <input
+                                            value={code}
+                                            type="text"
+                                            className={cx('ipt')}
+                                            placeholder="Nhập mã xác thực tại đây"
+                                            onChange={(e) => setCode(e.target.value)}
+                                        />
+                                        <br />
+                                    </div>
+                                </div>
+                                {code.length === 0 && (
+                                    <span style={{ color: 'red', fontSize: 12 }}>Mã xác thực không được để trống!</span>
+                                )}
+
                                 <Input
                                     type="password"
                                     placeholder="Mật khẩu mới"
                                     icon={<i class="bx bxs-lock"></i>}
                                     data={setPassword}
                                 />
+                                {errPassword.length > 0 && (
+                                    <span style={{ color: 'red', fontSize: 12 }}>{errPassword}</span>
+                                )}
                                 <Input
                                     type="password"
                                     placeholder="Xác nhận mật khẩu"
                                     icon={<i class="bx bxs-lock"></i>}
                                     data={setRePassword}
                                 />
+                                {errRePassword.length > 0 && (
+                                    <span style={{ color: 'red', fontSize: 12 }}>{errRePassword}</span>
+                                )}
                                 <div style={{ padding: '4px' }}></div>
+
                                 <button className={cx('btn-confirm-send')} onClick={handleConfirm}>
                                     Xác nhận
                                 </button>
