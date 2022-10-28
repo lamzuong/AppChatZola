@@ -50,7 +50,7 @@ router.post('/register' ,(req, res) => {
                 fullName,
                 email,
                 birthdate: '01/01/2000',
-                img: 'https://d370tx6r1rzpl2.cloudfront.net/3be3043e-9640-4196-9f55-09005615a13c1666757079883.png',
+                img: 'https://d370tx6r1rzpl2.cloudfront.net/9f7a09e8-24c7-46e0-82aa-01fd28a1a50d1666923758284.png',
                 gender: true,
                 friends: [],
                 loginFirst: true
