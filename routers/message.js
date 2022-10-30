@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk")
+const AWS = require('aws-sdk');
 const router = require('express').Router();
 const multer = require('multer');
 const { v4: uuid } = require('uuid');
@@ -6,17 +6,17 @@ const path = require('path');
 const docClient = require('../db.config');
 
 const tableName = 'message';
-const CLOUD_FRONT_URL = 'https://d370tx6r1rzpl2.cloudfront.net/'
+const CLOUD_FRONT_URL = 'https://d370tx6r1rzpl2.cloudfront.net/';
 
 const s3 = new AWS.S3({
     accessKeyId: 'AKIA34KECLYEL2WGGHN2',
     secretAccessKey: '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',
-})
+});
 
 const storage = multer.memoryStorage({
     destination(req, file, callback) {
-        callback(null, '')
-    }
+        callback(null, '');
+    },
 });
 
 const checkFileType = (file, cb) => {
@@ -27,19 +27,19 @@ const checkFileType = (file, cb) => {
     if (extname && mineType) {
         return cb(null, true);
     }
-    return cb("Error");
-}
+    return cb('Error');
+};
 const upload = multer({
     storage,
     limits: { fileSize: 2000000 },
     fileFilter(req, file, cb) {
-        checkFileType(file, cb)
-    }
-})
+        checkFileType(file, cb);
+    },
+});
 
 // Send mess listImg web
 router.post('/', upload.array('imgs', 20), (req, res) => {
-    const {conversationID, sender, mess} = req.body
+    const { conversationID, sender, mess } = req.body;
     const img = req.files;
     // luu vo S3
     var img_url = [];
@@ -56,9 +56,9 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             };
             s3.upload(uploadS3, (err, data) => {
                 if (err) {
-                    console.log("Loi s3: " + err);
+                    console.log('Loi s3: ' + err);
                 } else {
-                    console.log("S3 thanh cong");
+                    console.log('S3 thanh cong');
                 }
             });
             img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
@@ -80,17 +80,16 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
         if (err) {
             console.log('Loi: ' + err);
         }
-        console.log("thanh cong");
+        console.log('thanh cong');
     });
     // Luu vo images conversation
-    if(img.length > 0) {
+    if (img.length > 0) {
         const imagesConversation = {
             TableName: 'conversation',
             Key: {
                 id: conversationID,
             },
-            UpdateExpression:
-                'SET #images=:images',
+            UpdateExpression: 'SET #images=list_append(#images,:images)',
             ExpressionAttributeNames: {
                 //COLUMN NAME
                 '#images': 'images',
@@ -103,8 +102,8 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             if (err) {
                 return res.status(500).json('Loi: ' + err);
             }
-            console.log("thanh cong convesation");
-            return res.status(200).json("Gui thanh cong");
+            console.log('thanh cong convesation');
+            return res.status(200).json('Gui thanh cong');
         });
     }
 });
@@ -114,22 +113,22 @@ router.post('/mobile', (req, res) => {
     const { conversationID, sender, mess, listImg } = req.body;
     var img_url = []; //create list
     // luu vo S3
-    if(!img_url) {  
-    }else {
+    if (listImg.length <= 0) {
+    } else {
         for (let i = 0; i < listImg.length; i++) {
-            var buffer = Buffer.from(listImg[i].base64)
-            const fileType = listImg[i].fileType
+            var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+            const fileType = listImg[i].fileType;
             var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
             const uploadS3 = {
                 Bucket: 'zola-chat',
                 Key: filePath,
-                Body: buffer
-            }
+                Body: buffer,
+            };
             s3.upload(uploadS3, (err, data) => {
                 if (err) {
-                    console.log("Loi s3: " + err);
+                    console.log('Loi s3: ' + err);
                 } else {
-                    console.log("upload S3 thanh cong");
+                    console.log('upload S3 thanh cong');
                 }
             });
             img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
@@ -143,7 +142,7 @@ router.post('/mobile', (req, res) => {
             conversationID,
             sender,
             mess,
-            img_url: img_url ? img_url : '',
+            img_url: listImg.length > 0 ? img_url : '',
             date: new Date().getTime(),
         },
     };
@@ -151,14 +150,38 @@ router.post('/mobile', (req, res) => {
         if (err) {
             return res.status(500).json('Loi: ' + err);
         }
-        console.log("thanh cong");
-        return res.status(200).json("Gui thanh cong");
+        console.log('thanh cong');
+        return res.status(200).json('Gui thanh cong');
     });
-})
+    // Luu vo images conversation
+    if (listImg.length > 0) {
+        const imagesConversation = {
+            TableName: 'conversation',
+            Key: {
+                id: conversationID,
+            },
+            UpdateExpression: 'SET #images=list_append(#images,:images)',
+            ExpressionAttributeNames: {
+                //COLUMN NAME
+                '#images': 'images',
+            },
+            ExpressionAttributeValues: {
+                ':images': img_url,
+            },
+        };
+        docClient.update(imagesConversation, (err, data) => {
+            if (err) {
+                return res.status(500).json('Loi: ' + err);
+            }
+            console.log('thanh cong convesation');
+            return res.status(200).json('Gui thanh cong');
+        });
+    }
+});
 
 // Get mess of conversation
-router.get('/:conversationID',async (req, res) => {
-    try{
+router.get('/:conversationID', async (req, res) => {
+    try {
         //get list conversation
         const { conversationID } = req.params;
         var params = {
@@ -171,41 +194,38 @@ router.get('/:conversationID',async (req, res) => {
         };
         let data = await docClient.scan(params).promise();
         const listMessage = data.Items;
-        
 
         //get list sender
-        var listSender = listMessage.map( el => el.sender );
-        var listSenderKhongTrung = []
-        for (var i = 0; i < listSender.length; i++) 
-            if (!listSenderKhongTrung.includes(listSender[i])) 
-                listSenderKhongTrung.push(listSender[i])
-        
+        var listSender = listMessage.map((el) => el.sender);
+        var listSenderKhongTrung = [];
+        for (var i = 0; i < listSender.length; i++)
+            if (!listSenderKhongTrung.includes(listSender[i])) listSenderKhongTrung.push(listSender[i]);
+
         //get infor user from list sender
-        var listUserInfo=[];
+        var listUserInfo = [];
         for (var j = 0; j < listSenderKhongTrung.length; j++) {
             const paramsuser = {
-                TableName: "user",
+                TableName: 'user',
                 Key: {
-                    id : listSenderKhongTrung[j]
-                }
+                    id: listSenderKhongTrung[j],
+                },
             };
             let data2 = await docClient.get(paramsuser).promise();
             listUserInfo.push(data2.Item);
         }
 
         //set infor user for mess
-        let listMessageImg =[];
-        listMessage.forEach(m =>{
-            const usertemp = listUserInfo.find(u => u.id === m.sender)
+        let listMessageImg = [];
+        listMessage.forEach((m) => {
+            const usertemp = listUserInfo.find((u) => u.id === m.sender);
             let messtemp = m;
-            messtemp["infoSender"] = {imageSender: usertemp.img, fullName: usertemp.fullName};
+            messtemp['infoSender'] = { imageSender: usertemp.img, fullName: usertemp.fullName };
             listMessageImg.push(messtemp);
-        })
+        });
         return res.status(200).json(listMessageImg);
-    }
-    catch(e){
+    } catch (e) {
         return res.status(500).send('Loi' + e);
-    }  
+    }
 });
 
 module.exports = router;

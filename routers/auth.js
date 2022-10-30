@@ -1,7 +1,7 @@
-const AWS  = require("aws-sdk");
+const AWS = require('aws-sdk');
 const router = require('express').Router();
 const dotenv = require('dotenv');
-const docClient = require("../db.config.js")
+const docClient = require('../db.config.js');
 
 var AmazonCognitoIdentity = require('amazon-cognito-identity-js');
 
@@ -12,13 +12,14 @@ const tableName = 'user';
 
 const poolData = {
     UserPoolId: process.env.USER_POOL_ID,
-    ClientId: process.env.CLINET_ID
+    ClientId: process.env.CLINET_ID,
 };
 
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 // register
-router.post('/register' ,(req, res) => {
-    const { email, password, fullName} = req.body;
+router.post('/register', (req, res) => {
+    const { email, password, fullName } = req.body;
+    const username = email.split('@')[0];
 
     var attributeList = [];
 
@@ -29,24 +30,23 @@ router.post('/register' ,(req, res) => {
 
     var dataPersonalName = {
         Name: 'name',
-        Value: email,
+        Value: username,
     };
-    
+
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
     var attributePersonalName = new AmazonCognitoIdentity.CognitoUserAttribute(dataPersonalName);
 
     attributeList.push(attributePersonalName);
     attributeList.push(attributeEmail);
 
-    userPool.signUp(email, password, attributeList, null, function(err, result) {
+    userPool.signUp(username, password, attributeList, null, function (err, result) {
         if (err) {
-            return res.status(500).send("Loi1: "+err);
+            return res.status(500).send('Loi1: ' + err);
         }
         const params = {
             TableName: tableName,
             Item: {
                 id: result.userSub,
-                username,
                 fullName,
                 email,
                 birthdate: '01/01/2000',
@@ -55,21 +55,20 @@ router.post('/register' ,(req, res) => {
                 friends: [],
                 listSender: [],
                 listReceiver: [],
-                loginFirst: true
-            }
+                loginFirst: true,
+            },
         };
         docClient.put(params, (err, data) => {
-            if(err) {
+            if (err) {
                 console.log(err);
-                return res.status(500).send("Loi"+err);
-            }
-            else{
+                return res.status(500).send('Loi' + err);
+            } else {
                 console.log(data);
-                return res.status(200).send("Thanh cong");
+                return res.status(200).send('Thanh cong');
             }
-        })
+        });
     });
-})
+});
 // login
 router.post('/login', (req, res) => {
     const email = req.body.email;
@@ -79,52 +78,50 @@ router.post('/login', (req, res) => {
         Username: email,
         Password: password,
     };
-    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
-        authenticationData
-    );
-    
-    var userData = {
-        Username: email,
-        Pool: userPool,
-    };
-    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    
-    cognitoUser.authenticateUser(authenticationDetails, {
-        onSuccess: function(result) {
-            var accessToken = result;
-            const params = {
-                TableName: tableName,
-                Key:{
-                    id: accessToken.getIdToken().payload.sub
-                }
-            }
-            docClient.get(params,(err, data) => {
-                if(err) {
-                    res.status(500).send("dang nhap khong thanh cong");
-                }
-                res.status(200).json(data.Item)
-            })
-        },
-        onFailure: function(err) {
-            res.status(500).send(err.message || JSON.stringify(err));
-        }
-    })
-})
-// changePassword 
-router.post('/changePassword', (req, res) => {
-    const {email, oldPassword, newPassword} = req.body;
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
 
     var userData = {
         Username: email,
         Pool: userPool,
     };
     var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    
+
+    cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+            var accessToken = result;
+            const params = {
+                TableName: tableName,
+                Key: {
+                    id: accessToken.getIdToken().payload.sub,
+                },
+            };
+            docClient.get(params, (err, data) => {
+                if (err) {
+                    res.status(500).send('dang nhap khong thanh cong');
+                }
+                res.status(200).json(data.Item);
+            });
+        },
+        onFailure: function (err) {
+            res.status(500).send(err.message || JSON.stringify(err));
+        },
+    });
+});
+// changePassword
+router.post('/changePassword', (req, res) => {
+    const { email, oldPassword, newPassword } = req.body;
+
+    var userData = {
+        Username: email,
+        Pool: userPool,
+    };
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+
     cognitoUser.changePassword(oldPassword, newPassword, (err, data) => {
-        if(err) {
-            return res.send("Loi" + err)
+        if (err) {
+            return res.send('Loi' + err);
         }
-        return res.send(data)
-    })
-})
+        return res.send(data);
+    });
+});
 module.exports = router;

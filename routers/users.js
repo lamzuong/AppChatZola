@@ -181,7 +181,7 @@ router.get('/', (req, res) => {
 
 //Request add friends
 router.put('/friends', (req, res) => {
-    const {userId, friendId, listSender} = req.body;
+    const { userId, friendId, listSender } = req.body;
     const getUser = {
         TableName: tableName,
         Key: {
@@ -195,17 +195,15 @@ router.put('/friends', (req, res) => {
             const paramsUser = {
                 TableName: 'user',
                 Key: {
-                    id: userId
-                },               
+                    id: userId,
+                },
                 UpdateExpression: 'SET #listSender =:listSender',
                 ExpressionAttributeNames: {
-                    '#listSender': 'listSender' //COLUMN NAME       
+                    '#listSender': 'listSender', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
-                    ':listSender': [
-                        ...listSender, friendId
-                    ],
-                }
+                    ':listSender': [...listSender, friendId],
+                },
             };
             docClient.update(paramsUser, (err, data) => {
                 if (err) {
@@ -213,35 +211,33 @@ router.put('/friends', (req, res) => {
                 } else {
                     console.log(data);
                 }
-            })
+            });
             const paramsFriend = {
                 TableName: 'user',
                 Key: {
-                    id: friendId
-                },               
+                    id: friendId,
+                },
                 UpdateExpression: 'SET #listReceiver =:listReceiver',
                 ExpressionAttributeNames: {
-                    '#listReceiver': 'listReceiver' //COLUMN NAME       
+                    '#listReceiver': 'listReceiver', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
-                    ':listReceiver': [
-                        ...data.Item.listReceiver, userId
-                    ],
-                }
+                    ':listReceiver': [...data.Item.listReceiver, userId],
+                },
             };
             docClient.update(paramsFriend, (err, data) => {
-                if(err) {
-                    return res.send("Loi2: " + err)
+                if (err) {
+                    return res.send('Loi2: ' + err);
                 }
-                return res.send("Success")
-            })
+                return res.send('Success');
+            });
         }
     });
-})
+});
 
-// Accept friends 
+// Accept friends
 router.put('/acceptFriend', (req, res) => {
-    const {userId, friendId, listReceiver, friends} = req.body;
+    const { userId, friendId, listReceiver, friends } = req.body;
     const getUser = {
         TableName: tableName,
         Key: {
@@ -253,21 +249,21 @@ router.put('/acceptFriend', (req, res) => {
             console.log('Loi: ' + err);
         } else {
             // Update user
-            var listReceiverOfUser = listReceiver.filter(item => item !== friendId);
+            var listReceiverOfUser = listReceiver.filter((item) => item !== friendId);
             const paramsUser = {
                 TableName: 'user',
                 Key: {
-                    id: userId
-                },               
+                    id: userId,
+                },
                 UpdateExpression: 'SET #listReceiver =:listReceiver, #friends =:friends',
                 ExpressionAttributeNames: {
                     '#listReceiver': 'listReceiver',
-                    '#friends': 'friends' //COLUMN NAME       
+                    '#friends': 'friends', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':listReceiver': listReceiverOfUser,
                     ':friends': [...friends, friendId],
-                }
+                },
             };
             docClient.update(paramsUser, (err, data) => {
                 if (err) {
@@ -275,37 +271,37 @@ router.put('/acceptFriend', (req, res) => {
                 } else {
                     console.log(data);
                 }
-            })
+            });
             // Update friendUser
-            var listSenderOfFriend = data.Item.listSender.filter(item => item !== userId);
+            var listSenderOfFriend = data.Item.listSender.filter((item) => item !== userId);
             const paramsFriend = {
                 TableName: 'user',
                 Key: {
-                    id: friendId
-                },               
+                    id: friendId,
+                },
                 UpdateExpression: 'SET #listSender =:listSender, #friends =:friends',
                 ExpressionAttributeNames: {
                     '#listSender': 'listSender',
-                    '#friends': 'friends' //COLUMN NAME       
+                    '#friends': 'friends', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':listSender': listSenderOfFriend,
                     ':friends': [...data.Item.friends, userId],
-                }
+                },
             };
             docClient.update(paramsFriend, (err, data) => {
-                if(err) {
-                    return res.send("Loi2: " + err)
+                if (err) {
+                    return res.send('Loi2: ' + err);
                 }
-                return res.send("Success")
-            })
+                return res.send('Success');
+            });
         }
     });
-})
+});
 
-// Deny friends 
+// Deny friends
 router.put('/denyFriend', (req, res) => {
-    const {userId, friendId, listReceiver} = req.body;
+    const { userId, friendId, listReceiver } = req.body;
     const getUser = {
         TableName: tableName,
         Key: {
@@ -317,19 +313,19 @@ router.put('/denyFriend', (req, res) => {
             console.log('Loi: ' + err);
         } else {
             // Update user
-            var listReceiverOfUser = listReceiver.filter(item => item !== friendId);
+            var listReceiverOfUser = listReceiver.filter((item) => item !== friendId);
             const paramsUser = {
                 TableName: 'user',
                 Key: {
-                    id: userId
-                },               
+                    id: userId,
+                },
                 UpdateExpression: 'SET #listReceiver =:listReceiver',
                 ExpressionAttributeNames: {
-                    '#listReceiver': 'listReceiver' //COLUMN NAME       
+                    '#listReceiver': 'listReceiver', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':listReceiver': listReceiverOfUser,
-                }
+                },
             };
             docClient.update(paramsUser, (err, data) => {
                 if (err) {
@@ -337,35 +333,35 @@ router.put('/denyFriend', (req, res) => {
                 } else {
                     console.log(data);
                 }
-            })
+            });
             // Update friendUser
-            var listSenderOfFriend = data.Item.listSender.filter(item => item !== userId);
+            var listSenderOfFriend = data.Item.listSender.filter((item) => item !== userId);
             const paramsFriend = {
                 TableName: 'user',
                 Key: {
-                    id: friendId
-                },               
+                    id: friendId,
+                },
                 UpdateExpression: 'SET #listSender =:listSender',
                 ExpressionAttributeNames: {
-                    '#listSender': 'listSender'//COLUMN NAME       
+                    '#listSender': 'listSender', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':listSender': listSenderOfFriend,
-                }
+                },
             };
             docClient.update(paramsFriend, (err, data) => {
-                if(err) {
-                    return res.send("Loi2: " + err)
+                if (err) {
+                    return res.send('Loi2: ' + err);
                 }
-                return res.send("Success")
-            })
+                return res.send('Success');
+            });
         }
     });
-})
+});
 
-// Cancel request 
+// Cancel request
 router.put('/cancelFriend', (req, res) => {
-    const {userId, friendId, listSender} = req.body;
+    const { userId, friendId, listSender } = req.body;
     const getUser = {
         TableName: tableName,
         Key: {
@@ -377,19 +373,19 @@ router.put('/cancelFriend', (req, res) => {
             console.log('Loi: ' + err);
         } else {
             // Update user
-            var listSenderOfUser = listSender.filter(item => item !== friendId);
+            var listSenderOfUser = listSender.filter((item) => item !== friendId);
             const paramsUser = {
                 TableName: 'user',
                 Key: {
-                    id: userId
-                },               
+                    id: userId,
+                },
                 UpdateExpression: 'SET #listSender =:listSender',
                 ExpressionAttributeNames: {
-                    '#listSender': 'listSender' //COLUMN NAME       
+                    '#listSender': 'listSender', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':listSender': listSenderOfUser,
-                }
+                },
             };
             docClient.update(paramsUser, (err, data) => {
                 if (err) {
@@ -397,35 +393,35 @@ router.put('/cancelFriend', (req, res) => {
                 } else {
                     console.log(data);
                 }
-            })
+            });
             // Update friendUser
-            var listReceiverOfFriends = data.Item.listReceiver.filter(item => item !== userId);
+            var listReceiverOfFriends = data.Item.listReceiver.filter((item) => item !== userId);
             const paramsFriend = {
                 TableName: 'user',
                 Key: {
-                    id: friendId
-                },               
+                    id: friendId,
+                },
                 UpdateExpression: 'SET #listReceiver =:listReceiver',
                 ExpressionAttributeNames: {
-                    '#listReceiver': 'listReceiver'//COLUMN NAME       
+                    '#listReceiver': 'listReceiver', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':listReceiver': listReceiverOfFriends,
-                }
+                },
             };
             docClient.update(paramsFriend, (err, data) => {
-                if(err) {
-                    return res.send("Loi2: " + err)
+                if (err) {
+                    return res.send('Loi2: ' + err);
                 }
-                return res.send("Success")
-            })
+                return res.send('Success');
+            });
         }
     });
-})
+});
 
 // Delete friends
 router.put('/deleteFriend', (req, res) => {
-    const {userId, friendId, friends} = req.body;
+    const { userId, friendId, friends } = req.body;
     const getUser = {
         TableName: tableName,
         Key: {
@@ -437,19 +433,19 @@ router.put('/deleteFriend', (req, res) => {
             console.log('Loi: ' + err);
         } else {
             // Update user
-            var listFriendOfUser = friends.filter(item => item !== friendId);
+            var listFriendOfUser = friends.filter((item) => item !== friendId);
             const paramsUser = {
                 TableName: 'user',
                 Key: {
-                    id: userId
-                },               
+                    id: userId,
+                },
                 UpdateExpression: 'SET #friends =:friends',
                 ExpressionAttributeNames: {
-                    '#friends': 'friends' //COLUMN NAME       
+                    '#friends': 'friends', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':friends': listFriendOfUser,
-                }
+                },
             };
             docClient.update(paramsUser, (err, data) => {
                 if (err) {
@@ -457,31 +453,31 @@ router.put('/deleteFriend', (req, res) => {
                 } else {
                     console.log(data);
                 }
-            })
+            });
             // Update friendUser
-            var listFriendOfFriend = data.Item.listSender.filter(item => item !== userId);
+            var listFriendOfFriend = data.Item.listSender.filter((item) => item !== userId);
             const paramsFriend = {
                 TableName: 'user',
                 Key: {
-                    id: friendId
-                },               
+                    id: friendId,
+                },
                 UpdateExpression: 'SET #friends =:friends',
                 ExpressionAttributeNames: {
-                    '#friends': 'friends' //COLUMN NAME       
+                    '#friends': 'friends', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
                     ':friends': listFriendOfFriend,
-                }
+                },
             };
             docClient.update(paramsFriend, (err, data) => {
-                if(err) {
-                    return res.send("Loi2: " + err)
+                if (err) {
+                    return res.send('Loi2: ' + err);
                 }
-                return res.send("Success")
-            })
+                return res.send('Success');
+            });
         }
     });
-})
+});
 
 // Search with fullName or email
 router.get('/search/:name', (req, res) => {
