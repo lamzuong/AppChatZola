@@ -18,7 +18,7 @@ const poolData = {
 var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 // register
 router.post('/register' ,(req, res) => {
-    const {username, email, password, fullName} = req.body;
+    const { email, password, fullName} = req.body;
 
     var attributeList = [];
 
@@ -29,7 +29,7 @@ router.post('/register' ,(req, res) => {
 
     var dataPersonalName = {
         Name: 'name',
-        Value: username,
+        Value: email,
     };
     
     var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
@@ -38,7 +38,7 @@ router.post('/register' ,(req, res) => {
     attributeList.push(attributePersonalName);
     attributeList.push(attributeEmail);
 
-    userPool.signUp(username, password, attributeList, null, function(err, result) {
+    userPool.signUp(email, password, attributeList, null, function(err, result) {
         if (err) {
             return res.status(500).send("Loi1: "+err);
         }
@@ -53,6 +53,8 @@ router.post('/register' ,(req, res) => {
                 img: 'https://d370tx6r1rzpl2.cloudfront.net/9f7a09e8-24c7-46e0-82aa-01fd28a1a50d1666923758284.png',
                 gender: true,
                 friends: [],
+                listSender: [],
+                listReceiver: [],
                 loginFirst: true
             }
         };

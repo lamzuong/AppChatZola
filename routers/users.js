@@ -83,7 +83,6 @@ router.put('/', upload.single('avatar'), (req, res) => {
             ':loginFirst': false,
         },
     };
-    console.log(params.ExpressionAttributeValues);
     docClient.update(params, (err, data) => {
         if (err) {
             return res.status(500).send('Loi ' + err);

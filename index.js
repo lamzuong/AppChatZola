@@ -2,8 +2,8 @@ const express = require('express');
 
 const app = express();
 
-app.use(express.json({ limit: '30mb', extended: true }));
-app.use(express.urlencoded({ limit: '30mb', extended: true, parameterLimit: 50000 }));
+app.use(express.json({ limit: '50mb', extended: true }));
+app.use(express.urlencoded({ limit: '50mb', extended: true, parameterLimit: 500000 }));
 const helmet = require('helmet');
 const dotenv = require('dotenv');
 const morgan = require('morgan');

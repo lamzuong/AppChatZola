@@ -43,7 +43,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
     const img = req.files;
     // luu vo S3
     var img_url = [];
-    if (!img) {
+    if (img.length <= 0) {
     } else {
         for (let i = 0; i < img.length; i++) {
             const image = img[i].originalname.split('.');
@@ -56,7 +56,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             };
             s3.upload(uploadS3, (err, data) => {
                 if (err) {
-                    console.log(err);
+                    console.log("Loi s3: " + err);
                 } else {
                     console.log("S3 thanh cong");
                 }
@@ -64,7 +64,6 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
         }
     }
-    console.log(img_url);
     // luu vo dynamo
     const params = {
         TableName: tableName,
@@ -73,17 +72,41 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             conversationID,
             sender,
             mess,
-            img_url: img ? img_url : '',
+            img_url: img.length > 0 ? img_url : '',
             date: new Date().getTime(),
         },
     };
     docClient.put(params, (err, data) => {
         if (err) {
-            return res.status(500).json('Loi: ' + err);
+            console.log('Loi: ' + err);
         }
         console.log("thanh cong");
-        return res.status(200).json("Gui thanh cong");
     });
+    // Luu vo images conversation
+    if(img.length > 0) {
+        const imagesConversation = {
+            TableName: 'conversation',
+            Key: {
+                id: conversationID,
+            },
+            UpdateExpression:
+                'SET #images=:images',
+            ExpressionAttributeNames: {
+                //COLUMN NAME
+                '#images': 'images',
+            },
+            ExpressionAttributeValues: {
+                ':images': img_url,
+            },
+        };
+        docClient.update(imagesConversation, (err, data) => {
+            if (err) {
+                return res.status(500).json('Loi: ' + err);
+            }
+            console.log("thanh cong convesation");
+            return res.status(200).json("Gui thanh cong");
+        });
+    }
 });
 
 // Send mess listImg mobile
@@ -104,7 +127,7 @@ router.post('/mobile', (req, res) => {
             }
             s3.upload(uploadS3, (err, data) => {
                 if (err) {
-                    console.log(err);
+                    console.log("Loi s3: " + err);
                 } else {
                     console.log("upload S3 thanh cong");
                 }
