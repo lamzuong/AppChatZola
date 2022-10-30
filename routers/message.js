@@ -37,6 +37,7 @@ const upload = multer({
     }
 })
 
+// Send mess listImg web
 router.post('/', upload.array('imgs', 20), (req, res) => {
     const {conversationID, sender, mess} = req.body
     const img = req.files;
@@ -85,7 +86,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
     });
 });
 
-//Update User mobile
+// Send mess listImg mobile
 router.post('/mobile', (req, res) => {
     const { conversationID, sender, mess, listImg } = req.body;
     var img_url = []; //create list
@@ -132,6 +133,7 @@ router.post('/mobile', (req, res) => {
     });
 })
 
+// Get mess of conversation
 router.get('/:conversationID',async (req, res) => {
     try{
         //get list conversation
