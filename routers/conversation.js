@@ -37,27 +37,6 @@ router.post('/', (req, res) => {
             return res.status(500).json("Loi: "+err);
         }
         return res.status(200).json(data)
-        // const paramsUser = {
-        //     TableName: 'user',
-        //     Key: {
-        //         id: req.body.id
-        //     },               
-        //     UpdateExpression: 'SET #listMess =:val',
-        //     ExpressionAttributeNames: {
-        //         '#listMess': 'listMess' //COLUMN NAME       
-        //     },
-        //     ExpressionAttributeValues: {
-        //         ':val': [
-        //             ...req.body.listMess, id
-        //         ],
-        //     }
-        // };
-        // docClient.update(paramsUser, (err, data) => {
-        //     if(err) {
-        //         return res.status(500).send("Loi "+err)
-        //     }
-        //     return res.status(200).json(data)
-        // })
     })
 })
 

@@ -37,28 +37,33 @@ const upload = multer({
     }
 })
 
-router.post('/', upload.single('img'), (req, res) => {
+router.post('/', upload.array('imgs', 20), (req, res) => {
     const {conversationID, sender, mess} = req.body
-    const img = req.file;
+    const img = req.files;
     // luu vo S3
+    var img_url = [];
     if (!img) {
     } else {
-        const image = req.file.originalname.split('.');
-        const fileType = image[image.length - 1];
-        var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
-        const uploadS3 = {
-            Bucket: 'zola-chat',
-            Key: filePath,
-            Body: req.file.buffer,
-        };
-        s3.upload(uploadS3, (err, data) => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(data);
-            }
-        });
+        for (let i = 0; i < img.length; i++) {
+            const image = img[i].originalname.split('.');
+            const fileType = image[image.length - 1];
+            var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+            const uploadS3 = {
+                Bucket: 'zola-chat',
+                Key: filePath,
+                Body: img[i].buffer,
+            };
+            s3.upload(uploadS3, (err, data) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("S3 thanh cong");
+                }
+            });
+            img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
+        }
     }
+    console.log(img_url);
     // luu vo dynamo
     const params = {
         TableName: tableName,
@@ -67,7 +72,7 @@ router.post('/', upload.single('img'), (req, res) => {
             conversationID,
             sender,
             mess,
-            file_url: img ? `${CLOUD_FRONT_URL}${filePath}` : '',
+            img_url: img ? img_url : '',
             date: new Date().getTime(),
         },
     };
@@ -75,10 +80,57 @@ router.post('/', upload.single('img'), (req, res) => {
         if (err) {
             return res.status(500).json('Loi: ' + err);
         }
-        console.log(data);
-        return res.status(200).json(data);
+        console.log("thanh cong");
+        return res.status(200).json("Gui thanh cong");
     });
 });
+
+//Update User mobile
+router.post('/mobile', (req, res) => {
+    const { conversationID, sender, mess, listImg } = req.body;
+    var img_url = []; //create list
+    // luu vo S3
+    if(!img_url) {  
+    }else {
+        for (let i = 0; i < listImg.length; i++) {
+            var buffer = Buffer.from(listImg[i].base64)
+            const fileType = listImg[i].fileType
+            var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+            const uploadS3 = {
+                Bucket: 'zola-chat',
+                Key: filePath,
+                Body: buffer
+            }
+            s3.upload(uploadS3, (err, data) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log("upload S3 thanh cong");
+                }
+            });
+            img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
+        }
+    }
+    // update Dynamo
+    const params = {
+        TableName: tableName,
+        Item: {
+            id: uuid(),
+            conversationID,
+            sender,
+            mess,
+            img_url: img_url ? img_url : '',
+            date: new Date().getTime(),
+        },
+    };
+    docClient.put(params, (err, data) => {
+        if (err) {
+            return res.status(500).json('Loi: ' + err);
+        }
+        console.log("thanh cong");
+        return res.status(200).json("Gui thanh cong");
+    });
+})
 
 router.get('/:conversationID',async (req, res) => {
     try{
