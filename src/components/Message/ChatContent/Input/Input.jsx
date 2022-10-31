@@ -15,19 +15,29 @@ const cx = classNames.bind(styles);
 const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
     const [rerender, setRerender] = useState(false);
+<<<<<<< HEAD
     const [showEmojis, setShowEmojis] = useState(false);
     const [image, setImage] = useState(null);
+=======
+    const [image, setImage] = useState([]);
+
+    const handleMultiFile = (e) => {
+        setImage(e.target.files);
+    };
+
+>>>>>>> c0b133f4f92bac477d3b40aa98c128fe72ce3982
     const handleSendMessage = async (e) => {
         setShowEmojis(false);
         const formData = new FormData();
-        formData.append('img', image);
+        for (let i = 0; i < image.length; i++) {
+            formData.append('imgs', image[i]);
+        }
         formData.append('conversationID', props.params);
         formData.append('sender', props.user.id);
         formData.append('mess', chatContent ? chatContent : '');
         try {
             await axiosCilent.post('/zola/message', formData);
             socket.emit('send-to-server', {
-                mess: chatContent,
                 senderId: props.user.id,
                 conversationID: props.params,
             });
@@ -43,7 +53,7 @@ const Input = (props) => {
     };
     return (
         <div className={cx('wrapper')}>
-            <form className={cx('container')} enctype="multipart/form-data">
+            <form className={cx('container')} encType="multipart/form-data">
                 <div className={cx('chatContent')}>
                     {!chatContent && (
                         <>
@@ -54,11 +64,11 @@ const Input = (props) => {
                             <input
                                 type="file"
                                 id="image"
-                                name="img"
+                                name="imgs"
                                 accept="image/*"
                                 multiple
                                 style={{ display: 'none' }}
-                                onChange={(e) => setImage(e.target.files[0])}
+                                onChange={(e) => handleMultiFile(e)}
                             />
                             <i className="bx bxs-file-gif"></i>
                         </>
