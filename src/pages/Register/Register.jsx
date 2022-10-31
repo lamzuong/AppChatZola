@@ -3,14 +3,16 @@ import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import styles from './Register.module.scss';
 import Input from '../../components/Input/Input';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { isEmail, isFullName, isPassword, isRePassword, isUsername } from '../../ulities/Validations';
 import axiosClient from '../../api/axiosClient';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { AuthContext } from '../../context/AuthContext';
 
 import Loading from '../../components/Loading/Loading';
 import { Fragment } from 'react';
+import { useRef } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -27,6 +29,7 @@ const customStyles = {
 };
 
 const Register = (props) => {
+    const { error, dispatch } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [errEmail, setErrEmail] = useState('');
@@ -38,8 +41,10 @@ const Register = (props) => {
     const [errPassword, setErrPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
     const [errRePassword, setErrRePassword] = useState('');
-
     const navigate = useNavigate();
+
+    let timerId = useRef();
+
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const openModal = () => {
@@ -48,7 +53,7 @@ const Register = (props) => {
 
     const closeModal = () => {
         setModalIsOpen(false);
-        navigate('/login');
+        // navigate('/login');
     };
 
     const user = { email, username, password, fullName };
@@ -86,7 +91,27 @@ const Register = (props) => {
     const handleRegister = async (e) => {
         console.log('1');
         let result = await register();
-        if (result === true) openModal();
+        if (result === true) {
+            openModal();
+            setLoading(true);
+            timerId.current = setInterval(async () => {
+                const login = async () => {
+                    dispatch({ type: 'LOGIN_START' });
+                    let userCredential = { email, password };
+                    try {
+                        setLoading(true);
+                        const res = await axiosClient.post('/zola/auth/login', userCredential);
+                        dispatch({ type: 'LOGIN_SUCCESS', payload: res });
+
+                        clearInterval(timerId.current);
+                        navigate('/');
+                    } catch (error) {
+                        dispatch({ type: 'LOGIN_FAILURE' });
+                    }
+                };
+                login();
+            }, 1000);
+        }
     };
 
     //console.log('vuong@gmail.com'.match('/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/'));

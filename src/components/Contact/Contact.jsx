@@ -6,6 +6,7 @@ import style from './Contact.module.scss';
 import AccountItem from '../AccountItem/AccountItem';
 import { useState } from 'react';
 import Input from '../Input/Input';
+import Letter from './Letter/Letter';
 
 const cx = classNames.bind(style);
 const customStyles = {
@@ -216,6 +217,26 @@ const Contact = (props) => {
                     {activeId === 1
                         ? user.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)
                         : group.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)}
+                </div>
+            </div>
+            <div className={cx('box-3')}>
+                <div className={cx('header-3')}>
+                    <div className={cx('icon')}>
+                        <i className="bx bxs-user-plus" style={{ color: 'rgba(255,255,255)' }}></i>
+                    </div>
+                    <h4>Danh sách kết bạn</h4>
+                </div>
+                <div className={cx('body-3')}>
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
+                    <Letter />
                 </div>
             </div>
         </div>

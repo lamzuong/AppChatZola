@@ -1,0 +1,105 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+    span {
+        color: #000;
+        font-size: 25px;
+        font-weight: bold;
+    }
+}
+
+.ava {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+
+    img {
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+
+.btn-add-frend {
+    margin-top: 10px;
+    border-radius: 4px;
+    width: 100%;
+    height: 35px;
+    background-color: #0190f3;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    &:hover {
+        background-color: #0184e0;
+        cursor: pointer;
+    }
+}
+
+.btn-cancle-frend {
+    margin-top: 10px;
+    border-radius: 4px;
+    width: 100%;
+    height: 35px;
+    outline: none;
+    color: #0068ff;
+    background-color: #fff;
+    border: 1px solid #0068ff;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+        background-color: #e5efff;
+    }
+}
+
+.btns {
+    display: flex;
+    margin-top: 10px;
+}
+
+.btn-frend {
+    border-radius: 4px;
+    width: 120px;
+    height: 35px;
+    outline: none;
+    color: #0068ff;
+    background-color: #fff;
+    border: 1px solid #0068ff;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 4px;
+    &:hover {
+        background-color: #e5efff;
+    }
+}
+
+.btn-chat {
+    border-radius: 4px;
+    width: 120px;
+    height: 35px;
+    outline: none;
+    color: #fff;
+    background-color: #0190f3;
+    border: 1px solid #0068ff;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 4px;
+    margin-left: 10px;
+
+    &:hover {
+        background-color: #0184e0;
+        cursor: pointer;
+    }
+}

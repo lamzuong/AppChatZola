@@ -88,20 +88,19 @@ const LoginFirst = (props) => {
                 <h3>Hãy cập nhật thông tin cá nhân của mình một tí nào!</h3>
                 <div className={cx('avatar')}>
                     <div className={cx('ava')}>
-                        <label htmlFor="update-avatar">
-                            {avatar ? (
-                                <img src={avatar.preview} alt="vuong" />
-                            ) : (
-                                <img src={user.img ? user.img : noAvatar} alt="phuc" />
-                            )}
-                            <div className={cx('iconcam-w')}>
-                                <FontAwesomeIcon
-                                    icon={faCameraRetro}
-                                    className={cx('icon-camera')}
-                                    style={{ color: '#666', fontSize: '20' }}
-                                />
-                            </div>
-                        </label>
+                        {avatar ? (
+                            <img src={avatar.preview} alt="vuong" />
+                        ) : (
+                            <img src={user.img ? user.img : noAvatar} alt="phuc" />
+                        )}
+                        <div className={cx('iconcam-w')}>
+                            <FontAwesomeIcon
+                                icon={faCameraRetro}
+                                className={cx('icon-camera')}
+                                style={{ color: '#666', fontSize: '20' }}
+                            />
+                        </div>{' '}
+                        <label htmlFor="update-avatar"></label>
                     </div>
                 </div>
 

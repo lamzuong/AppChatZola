@@ -53,3 +53,29 @@
     font-size: 2rem;
     cursor: pointer;
 }
+
+//tippy
+.wrapper-icons {
+    border-radius: 5px;
+    background-color: #fff;
+    width: 340px;
+    height: 420px;
+    border-radius: 5px;
+    margin-bottom: 16px;
+    border: 1px solid #e5e7eb;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.icons {
+    // display: flex;
+    // flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto;
+}
+
+.icon {
+    font-size: 24px;
+    cursor: pointer;
+    margin-left: 8px;
+}

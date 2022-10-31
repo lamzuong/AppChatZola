@@ -1,0 +1,55 @@
+.wrapper {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+}
+.info {
+    display: flex;
+    span {
+        color: #000;
+        font-weight: bold;
+        margin-left: 20px;
+    }
+    align-items: center;
+}
+.ava {
+    width: 72px;
+    height: 72px;
+    font-size: 36px;
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+}
+.btns {
+    margin-right: 10px;
+}
+
+.btn-reject,
+.btn-allow {
+    height: 32px;
+    min-width: 32px;
+    padding: 0 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn-reject {
+    border: 1px solid red;
+    background-color: #fff;
+    color: red;
+}
+
+.btn-allow {
+    border: none;
+    outline: none;
+    background-color: #0068ff;
+    color: #fff;
+    font-weight: bold;
+    margin-left: 8px;
+}
