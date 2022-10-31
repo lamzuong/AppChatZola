@@ -43,9 +43,13 @@ const MessUser = (props) => {
             <div className={cx('messright')}>
                 <div className={cx('messName')}>{props.group ? props.sender.fullName : '  '}</div>
                 {props.mess.mess.length === 0 ? <></> : <div className={cx('messText')}>{props.mess.mess}</div>}
-                {props.mess.file_url ? (
-                    <div className={cx('messFile')}>
-                        <img src={props.mess.file_url} alt="" />
+                {props.mess.img_url?.length ? (
+                    <div className={cx('messRow')}>
+                        {props.mess.img_url.map((img, i) => (
+                            <div key={i} className={cx('messImgUrl')}>
+                                <img src={img} alt="" />
+                            </div>
+                        ))}
                     </div>
                 ) : (
                     <></>

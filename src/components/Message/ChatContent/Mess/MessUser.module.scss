@@ -24,7 +24,7 @@
     img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center;
     }
 }
@@ -38,21 +38,25 @@
     max-width: 500px;
 }
 
-.messFile {
-    padding: 5px;
-    border-radius: 20px;
+.messRow {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
     max-width: 500px;
-    // max-height: 300px;
-    min-width: 200px;
-    min-height: 100px;
+}
+
+.messImgUrl {
+    text-align: center;
     overflow: hidden;
-    border-radius: 20px;
+    margin: 2px;
+    border-radius: 10px;
 
     img {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center;
+        vertical-align: middle;
     }
 }
 
