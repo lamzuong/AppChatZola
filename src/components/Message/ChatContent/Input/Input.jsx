@@ -15,17 +15,14 @@ const cx = classNames.bind(styles);
 const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
     const [rerender, setRerender] = useState(false);
-<<<<<<< HEAD
     const [showEmojis, setShowEmojis] = useState(false);
-    const [image, setImage] = useState(null);
-=======
+
     const [image, setImage] = useState([]);
 
     const handleMultiFile = (e) => {
         setImage(e.target.files);
     };
 
->>>>>>> c0b133f4f92bac477d3b40aa98c128fe72ce3982
     const handleSendMessage = async (e) => {
         setShowEmojis(false);
         const formData = new FormData();

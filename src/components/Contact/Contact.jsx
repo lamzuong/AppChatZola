@@ -1,12 +1,14 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 import classNames from 'classnames/bind';
 import style from './Contact.module.scss';
 import AccountItem from '../AccountItem/AccountItem';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Input from '../Input/Input';
 import Letter from './Letter/Letter';
+import { AuthContext } from '../../context/AuthContext';
+import axiosCilent from '../../api/axiosClient';
 
 const cx = classNames.bind(style);
 const customStyles = {
@@ -21,7 +23,7 @@ const customStyles = {
     },
 };
 
-const user = [
+const user1 = [
     {
         id: '1',
         ava: 'https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg',
@@ -126,10 +128,13 @@ const category = [
 ];
 
 const Contact = (props) => {
+    const { user, dispatch } = useContext(AuthContext);
     const [activeId, setActiveId] = useState(1);
 
     Modal.setAppElement('#root');
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState({});
+    const [listMem, setListMem] = useState([]);
     const openModal = () => {
         setModalIsOpen(true);
     };
@@ -137,6 +142,38 @@ const Contact = (props) => {
     const closeModal = () => {
         setModalIsOpen(false);
     };
+    const listUser = [];
+    useLayoutEffect(() => {
+        const getCurrentUser = async () => {
+            const res = await axiosCilent.get(`/zola/users/${user.id}`);
+            dispatch({ type: 'LOGIN_SUCCESS', payload: res });
+            console.log(res);
+        };
+        getCurrentUser();
+    }, []);
+
+    useEffect(() => {
+        let listFriend = [];
+        const getInfoFriends = async () => {
+            for (let i = 0; i < user.friends.length; i++) {
+                try {
+                    let res = await axiosCilent.get('/zola/users/' + user.friends[i]);
+
+                    listFriend.push(res);
+                    //console.log(listFriend);
+                    if (i === user.friends.length - 1) {
+                        setListMem([...listFriend]);
+                        break;
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        };
+        getInfoFriends();
+    }, []);
+
+    console.log(listMem);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
@@ -189,7 +226,7 @@ const Contact = (props) => {
                                                     Danh sách bạn bè
                                                 </span>
 
-                                                {user.map((u, i) => {
+                                                {listMem.map((u, i) => {
                                                     return (
                                                         <div className={cx('item-choose-frend')}>
                                                             <input type="checkbox" name="" id="" />
@@ -215,7 +252,7 @@ const Contact = (props) => {
                 </ul>
                 <div className={cx('list')}>
                     {activeId === 1
-                        ? user.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)
+                        ? listMem.map((u, i) => <AccountItem key={i} id={u.id} ava={u.img} name={u.fullName} />)
                         : group.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)}
                 </div>
             </div>
@@ -227,16 +264,9 @@ const Contact = (props) => {
                     <h4>Danh sách kết bạn</h4>
                 </div>
                 <div className={cx('body-3')}>
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
-                    <Letter />
+                    {user.listReceiver.map((id) => {
+                        return <Letter key={id} id={id} listReceiver={currentUser.listReceiver} />;
+                    })}
                 </div>
             </div>
         </div>

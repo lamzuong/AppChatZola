@@ -11,14 +11,17 @@ const InfoDetailUser = ({ ava, name, id }) => {
     const { user, dispatch } = useContext(AuthContext);
     const [awaitAceept, setAwaitAccept] = useState(false);
     const [isFriend, setIsFriend] = useState(false);
-    const arrTemp = user.listSender;
 
-    console.log(arrTemp);
-    console.log(awaitAceept);
     useEffect(() => {
-        if (arrTemp.includes(id)) setAwaitAccept(true);
-        if (user.friends.includes(id)) setIsFriend(true);
-    }, [user.listSender.length]);
+        const StateAwait = async () => {
+            const res = await axiosCilent.get(`/zola/users/${user.id}`);
+            const arrTemp = res.listSender;
+            if (arrTemp.includes(id)) setAwaitAccept(true);
+            if (res.friends.includes(id)) setIsFriend(true);
+        };
+        StateAwait();
+    }, []);
+    console.log(awaitAceept);
 
     const handleAddFriend = async () => {
         // const formData = new FormData();
