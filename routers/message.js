@@ -174,7 +174,7 @@ router.post('/mobile', (req, res) => {
     });
     // Luu vo images conversation
     var paramsConversation = {};
-    if (img.length > 0) {
+    if (listImg.length > 0) {
         paramsConversation = {
             TableName: 'conversation',
             Key: {
