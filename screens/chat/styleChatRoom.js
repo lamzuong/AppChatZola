@@ -55,5 +55,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     flex: 1,
   },
+  btnRemoveImg: {
+    marginTop: -5,
+    marginLeft: -15,
+    backgroundColor: "grey",
+    height: 25,
+    width: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+  },
 });
 export default styles;

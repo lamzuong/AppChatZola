@@ -104,7 +104,11 @@ const ListMem = (props) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible); }}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalViewInfo}>
               <View style={styles.contentModal}>

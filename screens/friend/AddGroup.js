@@ -8,10 +8,12 @@ import {
   FlatList,
   Alert,
   BackHandler,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import SearchBar from "../chat/SearchBar";
 import { Ionicons } from "@expo/vector-icons";
+import { EvilIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
@@ -226,6 +228,7 @@ const ItemFriend = (props) => {
 };
 const Header = () => {
   const navigation = useNavigation();
+  const [appearX, setAppearX] = useState("");
   return (
     <View style={styles.header}>
       <TouchableOpacity
@@ -236,7 +239,33 @@ const Header = () => {
       >
         <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
       </TouchableOpacity>
-      <SearchBar title="Nhập tên cần tìm..." />
+      {/* <SearchBar title="Nhập tên cần tìm..." /> */}
+      <View style={styles.txtSearch}>
+        <EvilIcons
+          name="search"
+          size={30}
+          color="white"
+          style={{ paddingRight: 5 }}
+        />
+        <TextInput
+          placeholder="Nhập email hoặc tên cần tìm..."
+          style={{ fontSize: 18, color: "white", width: "80%" }}
+          placeholderTextColor="rgb(124,189,255)"
+          value={appearX}
+          onChangeText={(appearX) => setAppearX(appearX)}
+          autoFocus={true}
+        />
+
+        {appearX && (
+          <TouchableOpacity
+            onPress={() => {
+              setAppearX("");
+            }}
+          >
+            <MaterialIcons name="clear" size={24} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 };
@@ -272,6 +301,18 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(0,145,255)",
     flexDirection: "row",
     justifyContent: "center",
+  },
+  txtSearch: {
+    height: 40,
+    width: "90%",
+    flexDirection: "row",
+    fontSize: 18,
+    borderWidth: 1,
+    borderColor: "rgb(124,189,255)",
+    borderRadius: 10,
+    color: "white",
+    paddingVertical: 8,
+    paddingHorizontal: 5,
   },
   iconBack: {
     width: 40,

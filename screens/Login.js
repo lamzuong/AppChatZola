@@ -112,7 +112,7 @@ export default function Login({ navigation }) {
         <TextInput
           style={{ fontSize: 18, color: "black", width: "90%" }}
           value={email}
-          placeholder="Nhập Username"
+          placeholder="Nhập Username hoặc Email"
           placeholderTextColor="gray"
           onChangeText={(text) => {
             if (isEmpty(text)) {

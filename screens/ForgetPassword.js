@@ -68,7 +68,7 @@ export default function ForgetPassword({ navigation }) {
     } else {
       return false;
     }
-  }
+  };
 
   const poolData = {
     UserPoolId: "ap-southeast-1_cvABWaWG8",
@@ -269,7 +269,7 @@ export default function ForgetPassword({ navigation }) {
                   } else {
                     setErrorCode("");
                     setHideErrorCode(false);
-                    if (hideBtnSignup(code,password, confirmPassword)) {
+                    if (hideBtnSignup(code, password, confirmPassword)) {
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);
@@ -285,7 +285,7 @@ export default function ForgetPassword({ navigation }) {
                 onPress={() => {
                   setCode("");
                   setHideErrorCode(true);
-                  setErrorCode("Code không được rỗng.");
+                  setErrorCode("Mã xác thực không được rỗng.");
                   sethidebtn(true);
                 }}
               >
@@ -314,7 +314,7 @@ export default function ForgetPassword({ navigation }) {
                   } else {
                     seterrorPassword("");
                     sethideErrorPassword(false);
-                    if (hideBtnSignup(code,password, confirmPassword)) {
+                    if (hideBtnSignup(code, password, confirmPassword)) {
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);
@@ -383,7 +383,7 @@ export default function ForgetPassword({ navigation }) {
                   } else {
                     seterrorRepassword("");
                     sethideErrorRepassword(false);
-                    if (hideBtnSignup(code,password, confirmPassword)) {
+                    if (hideBtnSignup(code, password, confirmPassword)) {
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);

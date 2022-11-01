@@ -17,7 +17,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { Menu, MenuItem } from "react-native-material-menu";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import SearchBar from "./SearchBar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { useState, useEffect, useContext } from "react";

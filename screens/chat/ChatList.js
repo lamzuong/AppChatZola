@@ -1,9 +1,15 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styles from "./styleChatList";
 import { useNavigation } from "@react-navigation/native";
 import axiosCilent from "../../api/axiosClient";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
+import { AuthContext } from "../../context/AuthContext";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function ChatList(props) {
   const navigation = useNavigation();
   const [nameInChat, setNameInChat] = useState(props.name);
@@ -11,9 +17,11 @@ export default function ChatList(props) {
   if (strName.length > 25) {
     setNameInChat(strName.slice(0, 22) + "...");
   }
+
   //========================
   const conversation = props.conversation;
-  const [user, setUser] = useState(null);
+  const [friends, setFriend] = useState(null);
+  const { user } = useContext(AuthContext);
   useEffect(() => {
     const friendID = props.conversation.members.find(
       (m) => m !== props.currentUser.id
@@ -21,7 +29,7 @@ export default function ChatList(props) {
     const getInfoFriends = async () => {
       try {
         const res = await axiosCilent.get("/zola/users/" + friendID);
-        setUser(res);
+        setFriend(res);
       } catch (error) {
         console.log(error);
       }
@@ -34,11 +42,37 @@ export default function ChatList(props) {
     img = props.conversation.avatarGroup;
     name = props.conversation.groupName;
   } else {
-    img = user?.img ? user.img : null;
-    name = user?.fullName;
+    img = friends?.img ? friends.img : null;
+    name = friends?.fullName;
   }
   //========getLastMessage===================
   const [message, setMessage] = useState([]);
+  const [messageLast, setMessageLast] = useState("");
+  const [imgLast, setImgLast] = useState("");
+  useEffect(() => {
+    socket.on("server-send-to-client", (data) => {
+      let conversationIDChat;
+      try {
+        conversationIDChat = conversation.id;
+        if (data.conversationID == conversationIDChat) {
+          let nameShow = data.fullName.split(" ").slice(-1);
+          if (data.imgs > 0) {
+            if (data.senderId == user.id)
+              setMessageLast("Bạn đã gửi " + data.imgs + " ảnh");
+            else setMessageLast(nameShow + " đã gửi " + data.imgs + " ảnh");
+          } else {
+            if (data.senderId == user.id) {
+              setMessageLast("Bạn: " + data.mess);
+            } else if (data.group) {
+              setMessageLast(nameShow + ": " + data.mess);
+            } else setMessageLast(data.mess);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  });
   useEffect(() => {
     const getMess = async () => {
       try {
@@ -54,24 +88,23 @@ export default function ChatList(props) {
 
   let numMembers = conversation.members.length;
   let lastMess = "";
-  let senderID = "";
   if (message.slice(-1).length > 0) {
     let foo = message.slice(-1);
-    // lastMess = foo.map(({ mess }) => mess);
-    lastMess = foo[0].mess;
-    senderID = foo[0].sender;
-    if (senderID == props.currentUser.id) {
-      lastMess = "Bạn: " + lastMess;
+    let senderID = foo[0].sender;
+    let nameShow = foo[0].infoSender.fullName.split(" ").slice(-1);
+    if (foo[0].img_url.length > 0 && typeof foo[0].img_url !== "undefined") {
+      if (senderID == user.id)
+        lastMess = "Bạn đã gửi " + foo[0].img_url.length + " ảnh";
+      else lastMess = nameShow + " đã gửi " + foo[0].img_url.length + " ảnh";
     } else {
-      if (numMembers > 2) {
-        // getInfoFriends(senderID);
-        // lastMess = userSend.fullName.split(" ").slice(-1) + ": " + lastMess;
-      }
+      if (senderID == user.id) {
+        lastMess = "Bạn: " + foo[0].mess;
+      } else if (numMembers > 2) {
+        lastMess = nameShow + ": " + foo[0].mess;
+      } else lastMess = foo[0].mess;
     }
-    // if (lastMess.length > 30) {
-    //   lastMess = lastMess.slice(0, 25) + "...";
-    // }
   }
+
   //======================
   return (
     <View style={{ backgroundColor: "white" }}>
@@ -93,7 +126,15 @@ export default function ChatList(props) {
           />
           <View style={styles.user}>
             <Text style={styles.nickname}>{name}</Text>
-            <Text style={styles.chatLastTime}>{lastMess}</Text>
+            {messageLast || imgLast ? (
+              <>
+                <Text style={styles.chatLastTime}>{messageLast}</Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.chatLastTime}>{lastMess}</Text>
+              </>
+            )}
           </View>
         </View>
       </TouchableOpacity>

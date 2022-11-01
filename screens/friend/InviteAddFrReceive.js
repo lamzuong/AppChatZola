@@ -6,65 +6,140 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import axiosCilent from "../../api/axiosClient";
+import { AuthContext } from "../../context/AuthContext";
 
 export default function InviteAddFrReceive() {
-  const listInvite = [
-    {
-      id: "1",
-      ava: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
-      name: "Phúc Du",
-      message: "hello",
-    },
-    {
-      id: "2",
-      ava: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
-      name: "Phuc Nguyen",
-      message: "hello",
-    },
-    {
-      id: "3",
-      ava: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
-      name: "Minh Vuong M4U",
-      message: "hello",
-    },
-    {
-      id: "4",
-      ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-      name: "Nam Zuong",
-      message: "hello",
-    },
-    {
-      id: "5",
-      ava: "https://i.pinimg.com/280x280_RS/43/cd/7c/43cd7c65d590d2f41c05a23f3dfe82d4.jpg",
-      name: "Trung Quoc",
-      message: "hello",
-    },
-  ];
+  const { user, dispatch } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = useState({});
+  const [renderUser, setRenderUser] = useState(false);
+  const [renderList, setRenderList] = useState(false);
+  const [listInvite, setListInvite] = useState([]);
+  useEffect(() => {
+    const getInfoUser = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/users/" + user.id);
+        dispatch({ type: "LOGIN_SUCCESS", payload: res });
+        setCurrentUser(res);
+        setListInvite(res.listReceiver);
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getInfoUser();
+  }, [renderUser]);
+  //========================
+  var listReceive = [];
+  const [listMem, setListMem] = useState([]);
+  useEffect(() => {
+    var i = 0;
+    const getInfoFriends = async (mem) => {
+      try {
+        const res = await axiosCilent.get("/zola/users/" + mem);
+        listReceive.push(res);
+        ++i;
+        if (i === listInvite.length) {
+          setListMem(listReceive);
+          i = 0;
+          console.log(listMem);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    listInvite.forEach((element) => {
+      getInfoFriends(element);
+    });
+    if (listInvite.length == 0) {
+      setListMem([]);
+    }
+  }, [listInvite, renderList]);
+  //========================
+  const denyInvite = async (id) => {
+    try {
+      await axiosCilent.put("/zola/users/denyFriend", {
+        userId: currentUser.id,
+        friendId: id,
+        listReceiver: currentUser.listReceiver,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const acceptInvite = async (id) => {
+    try {
+      await axiosCilent.put("/zola/users/acceptFriend", {
+        userId: currentUser.id,
+        friendId: id,
+        listReceiver: currentUser.listReceiver,
+        friends: currentUser.friends,
+      });
+      const res = await axiosCilent.get("/zola/users/" + user.id);
+      dispatch({ type: "LOGIN_SUCCESS", payload: res });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  //==================
+  function render() {
+    setRenderUser(!renderUser);
+    setRenderList(!renderList);
+  }
+  function deleteTemp(index) {
+    var listTemp = [...listMem];
+    listTemp.splice(index, 1);
+    setListMem(listTemp);
+  }
+  //==================
   return (
     <View style={styles.container}>
-      <FlatList
-        data={listInvite}
-        renderItem={({ item, index }) => {
-          return (
-            <View style={styles.item}>
-              <TouchableOpacity style={styles.itemLeft}>
-                <Image source={{ uri: item.ava }} style={styles.ava} />
-                <Text style={styles.txtName}>{item.name}</Text>
-              </TouchableOpacity>
-              <View style={styles.itemRight}>
-                <TouchableOpacity style={{ marginHorizontal: 10 }}>
-                  <AntDesign name="checkcircle" size={30} color="#33ff33" />
+      {listMem.length == 0 ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={{ fontSize: 22, color: "grey" }}>
+            Bạn không có lời mời kết bạn nào
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          data={listMem}
+          renderItem={({ item, index }) => {
+            return (
+              <View style={styles.item}>
+                <TouchableOpacity style={styles.itemLeft}>
+                  <Image source={{ uri: item.img }} style={styles.ava} />
+                  <Text style={styles.txtName}>{item.fullName}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <AntDesign name="closecircle" size={30} color="#ff1a1a" />
-                </TouchableOpacity>
+                <View style={styles.itemRight}>
+                  <TouchableOpacity
+                    style={{ marginHorizontal: 10 }}
+                    onPress={() => {
+                      acceptInvite(item.id);
+                      // deleteTemp(index);
+                      render();
+                    }}
+                  >
+                    <AntDesign name="checkcircle" size={30} color="#33ff10" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      denyInvite(item.id);
+                      // deleteTemp(index);
+                      render();
+                    }}
+                  >
+                    <AntDesign name="closecircle" size={30} color="#ff1a1a" />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
     </View>
   );
 }

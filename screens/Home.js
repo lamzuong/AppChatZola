@@ -10,7 +10,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import Constants from "expo-constants";
 
 import Rooms from "./chat/Rooms";
-import Friends from "./friend/Friends";
 import Profile from "./profile/Profile";
 import Directory from "./friend/Directory";
 import GroupFriends from "./friend/GroupFriends";
