@@ -20,7 +20,7 @@ const storage = multer.memoryStorage({
 });
 
 const checkFileType = (file, cb) => {
-    const fileTypes = /jpeg|jpg|png|gif/;
+    const fileTypes = /jpeg|jpg|png|gif|jfif|mp4|mkv/;
 
     const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
     const mineType = fileTypes.test(file.mimetype);
@@ -31,7 +31,7 @@ const checkFileType = (file, cb) => {
 };
 const upload = multer({
     storage,
-    limits: { fileSize: 2000000 },
+    limits: { fileSize: 30000000 },
     fileFilter(req, file, cb) {
         checkFileType(file, cb);
     },
@@ -41,6 +41,7 @@ const upload = multer({
 router.post('/', upload.array('imgs', 20), (req, res) => {
     const { conversationID, sender, mess } = req.body;
     const img = req.files;
+    var date = new Date().getTime();
     // luu vo S3
     var img_url = [];
     if (img.length <= 0) {
@@ -73,7 +74,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             sender,
             mess,
             img_url: img.length > 0 ? img_url : '',
-            date: new Date().getTime(),
+            date: date,
         },
     };
     docClient.put(params, (err, data) => {
@@ -83,35 +84,54 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
         console.log('thanh cong');
     });
     // Luu vo images conversation
+    var paramsConversation = {};
     if (img.length > 0) {
-        const imagesConversation = {
+        paramsConversation = {
             TableName: 'conversation',
             Key: {
                 id: conversationID,
             },
-            UpdateExpression: 'SET #images=list_append(#images,:images)',
+            UpdateExpression: 'SET #date=:date, #images=list_append(#images,:images)',
             ExpressionAttributeNames: {
                 //COLUMN NAME
                 '#images': 'images',
+                '#date': 'date',
             },
             ExpressionAttributeValues: {
                 ':images': img_url,
+                ':date': date,
             },
         };
-        docClient.update(imagesConversation, (err, data) => {
-            if (err) {
-                return res.status(500).json('Loi: ' + err);
-            }
-            console.log('thanh cong convesation');
-            return res.status(200).json('Gui thanh cong');
-        });
+    } else {
+        paramsConversation = {
+            TableName: 'conversation',
+            Key: {
+                id: conversationID,
+            },
+            UpdateExpression: 'SET #date=:date',
+            ExpressionAttributeNames: {
+                //COLUMN NAME
+                '#date': 'date',
+            },
+            ExpressionAttributeValues: {
+                ':date': date,
+            },
+        };
     }
+    docClient.update(paramsConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        }
+        console.log('thanh cong convesation');
+    });
+    return res.status(200).json('Gui thanh cong');
 });
 
 // Send mess listImg mobile
 router.post('/mobile', (req, res) => {
     const { conversationID, sender, mess, listImg } = req.body;
     var img_url = []; //create list
+    var date = new Date().getTime();
     // luu vo S3
     if (listImg.length <= 0) {
     } else {
@@ -148,35 +168,52 @@ router.post('/mobile', (req, res) => {
     };
     docClient.put(params, (err, data) => {
         if (err) {
-            return res.status(500).json('Loi: ' + err);
+            console.log('Loi: ' + err);
         }
         console.log('thanh cong');
-        return res.status(200).json('Gui thanh cong');
     });
     // Luu vo images conversation
-    if (listImg.length > 0) {
-        const imagesConversation = {
+    var paramsConversation = {};
+    if (img.length > 0) {
+        paramsConversation = {
             TableName: 'conversation',
             Key: {
                 id: conversationID,
             },
-            UpdateExpression: 'SET #images=list_append(#images,:images)',
+            UpdateExpression: 'SET #date=:date, #images=list_append(#images,:images)',
             ExpressionAttributeNames: {
                 //COLUMN NAME
                 '#images': 'images',
+                '#date': 'date',
             },
             ExpressionAttributeValues: {
                 ':images': img_url,
+                ':date': date,
             },
         };
-        docClient.update(imagesConversation, (err, data) => {
-            if (err) {
-                return res.status(500).json('Loi: ' + err);
-            }
-            console.log('thanh cong convesation');
-            return res.status(200).json('Gui thanh cong');
-        });
+    } else {
+        paramsConversation = {
+            TableName: 'conversation',
+            Key: {
+                id: conversationID,
+            },
+            UpdateExpression: 'SET #date=:date',
+            ExpressionAttributeNames: {
+                //COLUMN NAME
+                '#date': 'date',
+            },
+            ExpressionAttributeValues: {
+                ':date': date,
+            },
+        };
     }
+    docClient.update(paramsConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        }
+        console.log('thanh cong convesation');
+    });
+    return res.status(200).json('Gui thanh cong');
 });
 
 // Get mess of conversation

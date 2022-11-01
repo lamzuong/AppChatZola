@@ -108,20 +108,9 @@ router.post('/login', (req, res) => {
     });
 });
 // changePassword
-router.post('/changePassword', (req, res) => {
-    const { email, oldPassword, newPassword } = req.body;
-
-    var userData = {
-        Username: email,
-        Pool: userPool,
-    };
-    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
-
-    cognitoUser.changePassword(oldPassword, newPassword, (err, data) => {
-        if (err) {
-            return res.send('Loi' + err);
-        }
-        return res.send(data);
-    });
+router.post('/changePassword/:params', (req, res) => {
+    const { oldPassword, date } = req.body;
+    console.log(req.params);
+    console.log(oldPassword, date);
 });
 module.exports = router;
