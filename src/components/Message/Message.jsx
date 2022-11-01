@@ -126,7 +126,7 @@ const Message = (props) => {
             }
         };
         getConversation();
-    }, [user.id]);
+    }, [user.id, rerender]);
 
     let cbChild = (childData) => {
         setCurrentChat(childData);
@@ -177,6 +177,7 @@ const Message = (props) => {
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [message, rerender]);
+
     useEffect(() => {
         socket.on('server-send-to-client', (data) => {
             let conversationIDChat;
@@ -188,6 +189,7 @@ const Message = (props) => {
             } catch (error) {}
         });
     });
+    conversation.sort((a, b) => b.date - a.date);
     return (
         <div className={cx('wrapper')}>
             <ChatList data={mess} conversation={conversation} rerender={rerender} parentCb={cbChild} />
@@ -220,7 +222,7 @@ const Message = (props) => {
                                 </div>
                             ))}
                         </div>
-                        <Input user={user} params={props.params} parentCb={cbChild1} />
+                        <Input user={user} params={currentChat} parentCb={cbChild1} />
                     </>
                 ) : (
                     <h1 style={{ display: 'flex', justifyContent: 'center', marginTop: '30%', color: '#646e74' }}>

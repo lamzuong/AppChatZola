@@ -47,7 +47,13 @@ const MessUser = (props) => {
                     <div className={cx('messRow')}>
                         {props.mess.img_url.map((img, i) => (
                             <div key={i} className={cx('messImgUrl')}>
-                                <img src={img} alt="" />
+                                {img.split('.').splice(-1)[0] === 'mp4' ? (
+                                    <video width="540" height="310" controls>
+                                        <source src={img} type="video/mp4"></source>
+                                    </video>
+                                ) : (
+                                    <img src={img} alt="" />
+                                )}
                             </div>
                         ))}
                     </div>

@@ -2,7 +2,6 @@ import classNames from 'classnames/bind';
 import { useState } from 'react';
 import Modal from 'react-modal';
 import styles from './ButtonSeeAllFile.module.scss';
-import { imgStore } from '../../../../DataTest/DataTest';
 import StoreItem from '../../../Store/StoreItem/StoreItem';
 import ListViewItem from '../../../ListView/ListViewItem/ListViewItem';
 
@@ -30,7 +29,7 @@ const items = [
     },
 ];
 
-const ButtonSeeAllFile = () => {
+const ButtonSeeAllFile = (props) => {
     const [showModal, setShowModal] = useState(false);
     const [choose, setChoose] = useState('1');
     Modal.setAppElement('#root');
@@ -67,11 +66,11 @@ const ButtonSeeAllFile = () => {
                     <div className={cx('content-w')}>
                         {choose.toString() === '1' ? (
                             <div className={cx('content', 'gridv2')}>
-                                {imgStore.map((img) => (
+                                {props.imgStore?.map((img) => (
                                     <>
                                         <div className={cx('wrapper-media')}>
                                             <img
-                                                src={img.img}
+                                                src={img}
                                                 alt="img"
                                                 onError={({ currentTarget }) => {
                                                     currentTarget.onerror = null; // prevents looping

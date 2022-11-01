@@ -21,10 +21,11 @@
 }
 
 .container {
-    @include flex(center, flex-start);
+    @include flex(unset, flex-start);
     background-color: rgb(245, 241, 241);
     border-radius: 10px;
     width: 95%;
+    flex-direction: column;
     padding: 8px 8px 8px 15px;
     font-size: 1.5rem;
     * ~ * {
@@ -41,6 +42,11 @@
         background-color: transparent;
         font-size: 1.3rem;
     }
+}
+
+.viewChat {
+    @include flex(center, flex-start);
+    flex-direction: row;
 }
 
 .chatContent {
@@ -78,4 +84,46 @@
     font-size: 24px;
     cursor: pointer;
     margin-left: 8px;
+}
+
+.wrapper-imgs {
+    border-radius: 5px;
+    background-color: #fff;
+    width: 800px;
+    height: 115px;
+    border-radius: 5px;
+    margin-left: -45px;
+    border: 1px solid #e5e7eb;
+    overflow-x: auto;
+    overscroll-behavior: auto;
+}
+
+.imgs {
+    display: flex;
+}
+
+.img {
+    position: relative;
+    width: 110px;
+    height: 90px;
+    margin-right: 10px;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    i {
+        position: absolute;
+        left: 80px;
+    }
 }

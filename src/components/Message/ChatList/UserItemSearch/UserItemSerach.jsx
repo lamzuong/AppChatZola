@@ -4,7 +4,6 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(style);
 
 const UserItemSearch = ({ name, ava }) => {
-    console.log(ava);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('avatar')}>

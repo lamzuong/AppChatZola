@@ -49,7 +49,6 @@ const Login = (props) => {
                 setErrorUsername('');
                 setErrorPassword('');
                 const res = await axiosClient.post('/zola/auth/login', userCredential);
-                console.log(res);
                 dispatch({ type: 'LOGIN_SUCCESS', payload: res });
                 setLoading(false);
             } catch (error) {

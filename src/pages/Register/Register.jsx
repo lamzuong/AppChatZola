@@ -53,7 +53,6 @@ const Register = (props) => {
 
     const closeModal = () => {
         setModalIsOpen(false);
-        // navigate('/login');
     };
 
     const user = { email, username, password, fullName };
@@ -77,7 +76,6 @@ const Register = (props) => {
             if (errUn === true && errEm === true && errFn === true && errPw === true && errRp === true) {
                 setLoading(true);
                 await axiosClient.post('/zola/auth/register', user);
-                console.log('xong');
                 setLoading(false);
                 return true;
             } else {
@@ -89,7 +87,6 @@ const Register = (props) => {
     };
 
     const handleRegister = async (e) => {
-        console.log('1');
         let result = await register();
         if (result === true) {
             openModal();
@@ -113,8 +110,6 @@ const Register = (props) => {
             }, 1000);
         }
     };
-
-    //console.log('vuong@gmail.com'.match('/^w+([.-]?w+)*@w+([.-]?w+)*(.w{2,3})+$/'));
     return (
         <Fragment>
             {loading && <Loading />}

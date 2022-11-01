@@ -29,8 +29,6 @@ const ForgotPassword = (props) => {
     const [rePassword, setRePassword] = useState('');
     const [errRePassword, setErrRePassword] = useState('');
     const navigate = useNavigate();
-    console.log(code);
-
     Modal.setAppElement('#root');
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
@@ -95,7 +93,6 @@ const ForgotPassword = (props) => {
         if (errPassword === true && errRePassword === true) {
             getUser().confirmPassword(code, password, {
                 onSuccess: (data) => {
-                    console.log('onSuccess:', data);
                     navigate('/login');
                 },
                 onFailure: (err) => {
@@ -104,7 +101,6 @@ const ForgotPassword = (props) => {
             });
         } else return;
     };
-    console.log(code);
 
     return (
         <div className={cx('wrapper')}>
