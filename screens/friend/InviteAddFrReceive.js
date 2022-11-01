@@ -24,7 +24,7 @@ export default function InviteAddFrReceive() {
         dispatch({ type: "LOGIN_SUCCESS", payload: res });
         setCurrentUser(res);
         setListInvite(res.listReceiver);
-        console.log(res);
+        // console.log(res);
       } catch (error) {
         console.log(error);
       }
@@ -53,18 +53,23 @@ export default function InviteAddFrReceive() {
     listInvite.forEach((element) => {
       getInfoFriends(element);
     });
-    if (listInvite.length == 0) {
+    if (listMem.length == 0) {
       setListMem([]);
     }
-  }, [listInvite, renderList]);
+  }, [listInvite]);
   //========================
+  console.log(user.listReceiver);
   const denyInvite = async (id) => {
     try {
       await axiosCilent.put("/zola/users/denyFriend", {
-        userId: currentUser.id,
+        userId: user.id,
         friendId: id,
-        listReceiver: currentUser.listReceiver,
+        listReceiver: user.listReceiver,
       });
+      const res = await axiosCilent.get("/zola/users/" + user.id);
+      dispatch({ type: "LOGIN_SUCCESS", payload: res });
+      const res2 = await axiosCilent.get("/zola/users/" + user.id);
+      setListInvite(res2.listReceiver);
     } catch (err) {
       console.log(err);
     }
@@ -72,13 +77,15 @@ export default function InviteAddFrReceive() {
   const acceptInvite = async (id) => {
     try {
       await axiosCilent.put("/zola/users/acceptFriend", {
-        userId: currentUser.id,
+        userId: user.id,
         friendId: id,
-        listReceiver: currentUser.listReceiver,
-        friends: currentUser.friends,
+        listReceiver: user.listReceiver,
+        friends: user.friends,
       });
       const res = await axiosCilent.get("/zola/users/" + user.id);
       dispatch({ type: "LOGIN_SUCCESS", payload: res });
+      const res2 = await axiosCilent.get("/zola/users/" + user.id);
+      setListInvite(res2.listReceiver);
     } catch (err) {
       console.log(err);
     }
@@ -120,7 +127,7 @@ export default function InviteAddFrReceive() {
                     onPress={() => {
                       acceptInvite(item.id);
                       // deleteTemp(index);
-                      render();
+                      // render();
                     }}
                   >
                     <AntDesign name="checkcircle" size={30} color="#33ff10" />
@@ -129,7 +136,7 @@ export default function InviteAddFrReceive() {
                     onPress={() => {
                       denyInvite(item.id);
                       // deleteTemp(index);
-                      render();
+                      // render();
                     }}
                   >
                     <AntDesign name="closecircle" size={30} color="#ff1a1a" />
