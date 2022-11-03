@@ -44,7 +44,6 @@ const Input = ({
                 />
                 <br />
             </div>
-
             {init || <span className={cx('warning')}>{validation(txtIpt, standard)}</span>}
         </div>
     );
