@@ -135,7 +135,7 @@ router.post('/mobile', (req, res) => {
             } else {
                 var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
                 const fileType = listImg[i].fileType;
-                var filePath = `${uuid()}/${image}`;
+                var filePath = `${uuid() + '/' + listImg[i].name}`;
                 const uploadS3 = {
                     Bucket: 'zola-chat',
                     Key: filePath,
@@ -314,5 +314,4 @@ router.put('/deleteMess', (req, res) => {
         return res.status(200).json('thanh cong');
     });
 });
-
 module.exports = router;
