@@ -9,12 +9,17 @@ import {
   TouchableWithoutFeedback,
   Alert,
   FlatList,
+  Linking,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import styleModal from "./styleModalImage";
+import { Video, AVPlaybackStatus } from "expo-av";
+import TransferList from "./TransferList";
 
 export default function MessageChat(props) {
   const { user } = useContext(AuthContext);
@@ -59,10 +64,84 @@ export default function MessageChat(props) {
   const [ownerMess, setOwnerMess] = useState(true);
   //============================
   const [modalVisibleImage, setModalVisibleImage] = useState(false);
+  const [modalVisibleVideo, setModalVisibleVideo] = useState(false);
+  const [modalVisibleConversation, setModalVisibleConversation] =
+    useState(false);
   const [showCloseBtn, setShowCloseBtn] = useState(false);
   const [imgPress, setImgPress] = useState("");
-  //============================
-  return (
+  const [videoPress, setVideoPress] = useState("");
+  const [status, setStatus] = useState({});
+  const [remove, setRemove] = useState(item.deleted);
+  const [personRemove, setPersonRemove] = useState(
+    item.removePerson.includes(user.id)
+  );
+
+  //=======Thu hồi==============
+  const removeMessage = async (e) => {
+    try {
+      await axiosCilent.put("/zola/message/recoverMess", { id: item.id });
+    } catch (err) {
+      console.log(err);
+    }
+    setRemove(true);
+    setRerender(!rerender);
+  };
+  const deleteMessage = async (e) => {
+    try {
+      await axiosCilent.put("/zola/message/deleteMess", {
+        id: item.id,
+        userId: user.id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    setPersonRemove(true);
+    setRerender(!rerender);
+  };
+  //=========Show File=================
+  const FileShow = (props) => {
+    async function downloadFile(url) {
+      await Linking.openURL(url);
+    }
+    return (
+      <TouchableOpacity
+        style={styles.viewFile}
+        onPress={() => {
+          downloadFile(props.e);
+        }}
+        onLongPress={() => {
+          setModalVisible(!modalVisible);
+          setOwnerMess(owner);
+        }}
+      >
+        <FontAwesome
+          name="file-text"
+          size={24}
+          color="black"
+          style={styles.iconFile}
+        />
+        <Text style={[styles.txtMess, { fontWeight: "bold" }]}>
+          {props.e.split("/").slice(-1)}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+  //====Get All Conversation to Tranfer======
+  const [rerender, setRerender] = useState(false);
+  const [conversation, setConversation] = useState([]);
+  useEffect(() => {
+    const getConversation = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/conversation/" + user.id);
+        setConversation(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getConversation();
+  }, [user.id, rerender]);
+  //==========================
+  return personRemove ? null : (
     <View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <TouchableWithoutFeedback
@@ -85,7 +164,7 @@ export default function MessageChat(props) {
                       },
                       {
                         text: "OK",
-                        onPress: () => console.log("OK Pressed"),
+                        onPress: () => removeMessage(),
                       },
                     ]);
                   }}
@@ -113,7 +192,7 @@ export default function MessageChat(props) {
                     },
                     {
                       text: "OK",
-                      onPress: () => console.log("OK Pressed"),
+                      onPress: () => deleteMessage(),
                     },
                   ]);
                 }}
@@ -123,6 +202,20 @@ export default function MessageChat(props) {
                 </View>
                 <View>
                   <Text style={styles.txtModal}>Xóa tin nhắn</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.itemModal}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  setModalVisibleConversation(!modalVisibleConversation);
+                }}
+              >
+                <View style={{ paddingHorizontal: 20 }}>
+                  <Entypo name="arrow-right" size={24} color="black" />
+                </View>
+                <View>
+                  <Text style={styles.txtModal}>Chuyển tiếp</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -164,6 +257,73 @@ export default function MessageChat(props) {
           </View>
         </Pressable>
       </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleVideo}
+        onRequestClose={() => {
+          setModalVisibleVideo(!modalVisibleVideo);
+        }}
+      >
+        <Pressable
+          onPress={() => {
+            setShowCloseBtn(!showCloseBtn);
+          }}
+        >
+          <View style={styleModal.modalView}>
+            {showCloseBtn ? (
+              <Pressable
+                style={styleModal.btnCloseModal}
+                onPress={() => {
+                  setModalVisibleVideo(!modalVisibleVideo);
+                }}
+              >
+                <MaterialIcons name="clear" size={30} color="white" />
+              </Pressable>
+            ) : (
+              <View style={{ height: 40 }}></View>
+            )}
+            <Video
+              style={{ width: "100%", height: "100%", marginTop: -50 }}
+              source={{
+                uri: videoPress,
+              }}
+              useNativeControls
+              resizeMode="contain"
+              // isLooping
+              onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+            />
+          </View>
+        </Pressable>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleConversation}
+        onRequestClose={() => {
+          setModalVisibleConversation(!modalVisibleConversation);
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalVisible(!modalVisibleConversation);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={[styles.modalView, styles.modalViewBonus]}>
+              {conversation.map((e, i) => (
+                <TransferList
+                  key={i}
+                  conversation={e}
+                  currentUser={user}
+                  mess={item.mess}
+                  img_url={item.img_url}
+                />
+              ))}
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
       <View>
         {owner ? null : (
           <Text style={styles.txtName}>{group ? nameShow : ""}</Text>
@@ -193,7 +353,13 @@ export default function MessageChat(props) {
               {item.mess}
             </Text>
           </Pressable>
-        ) : item.mess == "" ? null : (
+        ) : item.mess == "" ? null : remove == true ? (
+          <View style={styles.txtThuHoi}>
+            <Text style={[styles.txtMess, { color: "grey" }]}>
+              Tin nhắn đã được thu hồi
+            </Text>
+          </View>
+        ) : (
           <Pressable
             style={owner ? styles.txtContentOwner : styles.txtContent}
             onPress={() => {
@@ -215,80 +381,256 @@ export default function MessageChat(props) {
           item.mess == ""
             ? owner
               ? { marginTop: -20 }
-              : { marginTop: -50 }
+              : { marginTop: -40 }
             : { marginTop: 0 }
         }
       >
         {typeof item.img_url != "undefined" && item.img_url.length > 0 ? (
-          <View
-            style={
-              owner
-                ? [styles.styleOwner]
-                : [styles.styleFriend, { marginLeft: 50 }]
-            }
-          >
-            {item.img_url.length === 1 ? (
-              <FlatList
-                style={{ marginTop: 5, marginLeft: 10 }}
-                data={item.img_url}
-                renderItem={({ item, index }) => {
-                  return (
-                    <Pressable
-                      onPress={() => {
-                        setImgPress(item);
-                        setModalVisibleImage(!modalVisibleImage);
+          remove ? (
+            <View
+              style={
+                owner
+                  ? [styles.styleOwner]
+                  : [styles.styleFriend, { marginLeft: 50 }]
+              }
+            >
+              <View style={styles.txtThuHoi}>
+                <Text style={[styles.txtMess, { color: "grey" }]}>
+                  Tin nhắn đã được thu hồi
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <>
+              <View
+                style={
+                  owner
+                    ? [styles.styleOwner]
+                    : [styles.styleFriend, { marginLeft: 50 }]
+                }
+              >
+                {item.img_url.length === 1 ? (
+                  <>
+                    <FlatList
+                      style={{ marginTop: 5, marginLeft: 10 }}
+                      data={item.img_url}
+                      renderItem={({ item, index }) => {
+                        var fileTypeRender = item.split(".").splice(-1)[0];
+                        return fileTypeRender === "mp4" ? (
+                          <Pressable
+                            onPress={() => {
+                              setVideoPress(item);
+                              setModalVisibleVideo(!modalVisibleVideo);
+                            }}
+                            onLongPress={() => {
+                              setModalVisible(!modalVisible);
+                              setOwnerMess(owner);
+                            }}
+                          >
+                            <Video
+                              style={{
+                                width: 250,
+                                height: 150,
+                                borderRadius: 20,
+                              }}
+                              source={{
+                                uri: item,
+                              }}
+                              useNativeControls
+                              resizeMode="contain"
+                              // isLooping
+                              onPlaybackStatusUpdate={(status) =>
+                                setStatus(() => status)
+                              }
+                            />
+                          </Pressable>
+                        ) : fileTypeRender == "png" ||
+                          fileTypeRender == "jpg" ||
+                          fileTypeRender == "jpeg" ||
+                          fileTypeRender == "gif" ||
+                          fileTypeRender == "jfif" ? (
+                          <Pressable
+                            onPress={() => {
+                              setImgPress(item);
+                              setModalVisibleImage(!modalVisibleImage);
+                            }}
+                            onLongPress={() => {
+                              setModalVisible(!modalVisible);
+                              setOwnerMess(owner);
+                            }}
+                          >
+                            <Image source={{ uri: item }} style={styles.img1} />
+                          </Pressable>
+                        ) : null;
                       }}
-                    >
-                      <Image source={{ uri: item }} style={styles.img1} />
-                    </Pressable>
-                  );
-                }}
-                keyExtractor={(item, index) => "_" + index}
-                key={"_"}
-                numColumns={1}
-              />
-            ) : item.img_url.length === 2 ? (
-              <FlatList
-                style={{ marginTop: 5, marginLeft: 10 }}
-                data={item.img_url}
-                renderItem={({ item, index }) => {
-                  return (
-                    <Pressable
-                      onPress={() => {
-                        setImgPress(item);
-                        setModalVisibleImage(!modalVisibleImage);
+                      keyExtractor={(item, index) => "_" + index}
+                      key={"_"}
+                      numColumns={1}
+                    />
+                    <View>
+                      {item.img_url.map((e, i) =>
+                        e.split(".").splice(-1)[0] == "docx" ||
+                        e.split(".").splice(-1)[0] == "doc" ||
+                        e.split(".").splice(-1)[0] == "xlsx" ||
+                        e.split(".").splice(-1)[0] == "xls" ||
+                        e.split(".").splice(-1)[0] == "csv" ||
+                        e.split(".").splice(-1)[0] == "pptx" ||
+                        e.split(".").splice(-1)[0] == "ppt" ||
+                        e.split(".").splice(-1)[0] == "pdf" ||
+                        e.split(".").splice(-1)[0] == "txt" ? (
+                          <FileShow key={i} e={e} />
+                        ) : null
+                      )}
+                    </View>
+                  </>
+                ) : item.img_url.length === 2 ? (
+                  <>
+                    <FlatList
+                      style={{ marginTop: 5, marginLeft: 10 }}
+                      data={item.img_url}
+                      renderItem={({ item, index }) => {
+                        var fileTypeRender = item.split(".").splice(-1)[0];
+                        return fileTypeRender === "mp4" ? (
+                          <Pressable
+                            onPress={() => {
+                              setVideoPress(item);
+                              setModalVisibleVideo(!modalVisibleVideo);
+                            }}
+                            onLongPress={() => {
+                              setModalVisible(!modalVisible);
+                              setOwnerMess(owner);
+                            }}
+                          >
+                            <Video
+                              style={{ width: 260, height: 150 }}
+                              source={{
+                                uri: item,
+                              }}
+                              useNativeControls
+                              resizeMode="contain"
+                              onPlaybackStatusUpdate={(status) =>
+                                setStatus(() => status)
+                              }
+                            />
+                          </Pressable>
+                        ) : fileTypeRender == "png" ||
+                          fileTypeRender == "jpg" ||
+                          fileTypeRender == "jpeg" ||
+                          fileTypeRender == "gif" ||
+                          fileTypeRender == "jfif" ? (
+                          <Pressable
+                            onPress={() => {
+                              setImgPress(item);
+                              setModalVisibleImage(!modalVisibleImage);
+                            }}
+                            onLongPress={() => {
+                              setModalVisible(!modalVisible);
+                              setOwnerMess(owner);
+                            }}
+                          >
+                            <Image source={{ uri: item }} style={styles.img2} />
+                          </Pressable>
+                        ) : null;
                       }}
-                    >
-                      <Image source={{ uri: item }} style={styles.img2} />
-                    </Pressable>
-                  );
-                }}
-                keyExtractor={(item, index) => "#" + index}
-                key={"#"}
-                numColumns={2}
-              />
-            ) : (
-              <FlatList
-                style={{ marginTop: 10, marginLeft: 10 }}
-                data={item.img_url}
-                renderItem={({ item, index }) => {
-                  return (
-                    <Pressable
-                      onPress={() => {
-                        setImgPress(item);
-                        setModalVisibleImage(!modalVisibleImage);
+                      keyExtractor={(item, index) => "#" + index}
+                      key={"#"}
+                      numColumns={2}
+                    />
+                    <View>
+                      {item.img_url.map((e, i) =>
+                        e.split(".").splice(-1)[0] == "docx" ||
+                        e.split(".").splice(-1)[0] == "doc" ||
+                        e.split(".").splice(-1)[0] == "xlsx" ||
+                        e.split(".").splice(-1)[0] == "xls" ||
+                        e.split(".").splice(-1)[0] == "csv" ||
+                        e.split(".").splice(-1)[0] == "pptx" ||
+                        e.split(".").splice(-1)[0] == "ppt" ||
+                        e.split(".").splice(-1)[0] == "pdf" ||
+                        e.split(".").splice(-1)[0] == "txt" ? (
+                          <FileShow key={i} e={e} />
+                        ) : null
+                      )}
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <FlatList
+                      style={{ marginTop: 10, marginLeft: 10 }}
+                      data={item.img_url}
+                      renderItem={({ item, index }) => {
+                        var fileTypeRender = item.split(".").splice(-1)[0];
+                        return fileTypeRender === "mp4" ? (
+                          <Pressable
+                            onPress={() => {
+                              setVideoPress(item);
+                              setModalVisibleVideo(!modalVisibleVideo);
+                            }}
+                            onLongPress={() => {
+                              setModalVisible(!modalVisible);
+                              setOwnerMess(owner);
+                            }}
+                          >
+                            <Video
+                              style={{
+                                width: 80,
+                                height: 100,
+                                backgroundColor: "black",
+                                borderRadius: 10,
+                              }}
+                              source={{
+                                uri: item,
+                              }}
+                              useNativeControls
+                              resizeMode="contain"
+                              onPlaybackStatusUpdate={(status) =>
+                                setStatus(() => status)
+                              }
+                            />
+                          </Pressable>
+                        ) : fileTypeRender == "png" ||
+                          fileTypeRender == "jpg" ||
+                          fileTypeRender == "jpeg" ||
+                          fileTypeRender == "gif" ||
+                          fileTypeRender == "jfif" ? (
+                          <Pressable
+                            onPress={() => {
+                              setImgPress(item);
+                              setModalVisibleImage(!modalVisibleImage);
+                            }}
+                            onLongPress={() => {
+                              setModalVisible(!modalVisible);
+                              setOwnerMess(owner);
+                            }}
+                          >
+                            <Image source={{ uri: item }} style={styles.img3} />
+                          </Pressable>
+                        ) : null;
                       }}
-                    >
-                      <Image source={{ uri: item }} style={styles.img3} />
-                    </Pressable>
-                  );
-                }}
-                keyExtractor={(item, index) => "@" + index}
-                key={"@"}
-                numColumns={3}
-              />
-            )}
-          </View>
+                      keyExtractor={(item, index) => "@" + index}
+                      key={"@"}
+                      numColumns={3}
+                    />
+
+                    <View>
+                      {item.img_url.map((e, i) =>
+                        e.split(".").splice(-1)[0] == "docx" ||
+                        e.split(".").splice(-1)[0] == "doc" ||
+                        e.split(".").splice(-1)[0] == "xlsx" ||
+                        e.split(".").splice(-1)[0] == "xls" ||
+                        e.split(".").splice(-1)[0] == "csv" ||
+                        e.split(".").splice(-1)[0] == "pptx" ||
+                        e.split(".").splice(-1)[0] == "ppt" ||
+                        e.split(".").splice(-1)[0] == "pdf" ||
+                        e.split(".").splice(-1)[0] == "txt" ? (
+                          <FileShow key={i} e={e} />
+                        ) : null
+                      )}
+                    </View>
+                  </>
+                )}
+              </View>
+            </>
+          )
         ) : null}
       </View>
 
@@ -300,6 +642,7 @@ export default function MessageChat(props) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   imageAva: {
     height: 40,
@@ -310,11 +653,21 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "flex-end",
     marginRight: 10,
-    marginTop: 10,
+    marginVertical: 5,
   },
   styleFriend: {
     flexDirection: "row",
     marginLeft: 10,
+  },
+  txtThuHoi: {
+    maxWidth: 200,
+    backgroundColor: "white",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "rgb(245, 241, 241)",
+    padding: 10,
+    marginLeft: 10,
+    marginBottom: 10,
   },
   txtContent: {
     maxWidth: 200,
@@ -345,11 +698,25 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   txtMess: {
+    maxWidth: 150,
     fontSize: 17,
   },
   txtMessOwner: {
     fontSize: 16,
     color: "white",
+  },
+  viewFile: {
+    maxWidth: 200,
+    backgroundColor: "rgb(245, 241, 241)",
+    borderRadius: 20,
+    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  iconFile: {
+    paddingRight: 7,
+    paddingLeft: 5,
   },
   time: {
     marginLeft: 70,
@@ -383,8 +750,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     borderRadius: 7,
   },
-  imgSender: {},
-  imgReceive: {},
   //=======Modal========
   centeredView: {
     flex: 1,
@@ -411,6 +776,11 @@ const styles = StyleSheet.create({
   itemModal: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  modalViewBonus: {
+    width: "80%",
+    paddingVertical: 10,
+    paddingLeft: 10,
   },
   //====================
 });

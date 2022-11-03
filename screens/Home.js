@@ -158,7 +158,6 @@ const TopNavigator = () => {
         tabBarActiveTintColor: "white",
         tabBarLabelStyle: { fontSize: 16, fontWeight: "bold" },
         tabBarPressColor: "#000033",
-
         tabBarStyle: [
           {
             justifyContent: "center",

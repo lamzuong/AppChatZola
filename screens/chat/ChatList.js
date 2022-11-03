@@ -58,8 +58,8 @@ export default function ChatList(props) {
           let nameShow = data.fullName.split(" ").slice(-1);
           if (data.imgs > 0) {
             if (data.senderId == user.id)
-              setMessageLast("Bạn đã gửi " + data.imgs + " ảnh");
-            else setMessageLast(nameShow + " đã gửi " + data.imgs + " ảnh");
+              setMessageLast("Bạn đã gửi " + data.imgs + " tập tin");
+            else setMessageLast(nameShow + " đã gửi " + data.imgs + " tập tin");
           } else {
             if (data.senderId == user.id) {
               setMessageLast("Bạn: " + data.mess);
@@ -94,8 +94,9 @@ export default function ChatList(props) {
     let nameShow = foo[0].infoSender.fullName.split(" ").slice(-1);
     if (foo[0].img_url.length > 0 && typeof foo[0].img_url !== "undefined") {
       if (senderID == user.id)
-        lastMess = "Bạn đã gửi " + foo[0].img_url.length + " ảnh";
-      else lastMess = nameShow + " đã gửi " + foo[0].img_url.length + " ảnh";
+        lastMess = "Bạn đã gửi " + foo[0].img_url.length + " tập tin";
+      else
+        lastMess = nameShow + " đã gửi " + foo[0].img_url.length + " tập tin";
     } else {
       if (senderID == user.id) {
         lastMess = "Bạn: " + foo[0].mess;

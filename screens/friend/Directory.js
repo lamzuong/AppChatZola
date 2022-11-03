@@ -10,45 +10,60 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 
-export default function Directory() {
-  const { user } = useContext(AuthContext);
+export default function Directory({ navigation }) {
+  // const isFocused = useIsFocused();
+  const { user, dispatch } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState({});
   const [renderUser, setRenderUser] = useState(false);
   const [listFriendsId, setListFriendsId] = useState([]);
+  // console.log("zxc" + renderUser);
+  // if (isFocused) {
   useEffect(() => {
     const getInfoUser = async () => {
       try {
-        const res = await axiosCilent.get("/zola/users/" + user?.id);
-        setCurrentUser(res);
+        const res = await axiosCilent.get("/zola/users/" + user.id);
         setListFriendsId(res.friends);
+        // console.log(res.friends);
       } catch (error) {
         console.log(error);
       }
     };
     getInfoUser();
   }, [renderUser]);
+  // }
+  //========================
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      setRenderUser(true);
+      // console.log(renderUser);
+    });
+    return unsubscribe;
+  }, [navigation]);
+  // console.log(renderUser);
+
   //========================
   var listFriends = [];
   const [listMem, setListMem] = useState([]);
   useEffect(() => {
-    var i = 0;
-    const getInfoFriends = async (mem) => {
-      try {
-        const res = await axiosCilent.get("/zola/users/" + mem);
-        listFriends.push(res);
-        ++i;
-        if (i === listFriendsId.length) {
-          setListMem(listFriends);
-          i = 0;
+    if (listFriendsId.length != 0) {
+      var i = 0;
+      const getInfoFriends = async (mem) => {
+        try {
+          const res = await axiosCilent.get("/zola/users/" + mem);
+          listFriends.push(res);
+          ++i;
+          if (i === listFriendsId.length) {
+            setListMem(listFriends);
+            i = 0;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    listFriendsId.forEach((element) => {
-      getInfoFriends(element);
-    });
-    if (listFriendsId.length == 0) {
+      };
+      listFriendsId.forEach((element) => {
+        getInfoFriends(element);
+      });
+    } else {
       setListMem([]);
     }
   }, [listFriendsId]);
@@ -90,7 +105,6 @@ export default function Directory() {
   const sort_ListFriends = [...listMem].sort((a, b) =>
     a.fullName > b.fullName ? 1 : -1
   );
-  // console.log(sort_ListFriends);
   var list = [];
   var setShow = [];
   for (let i = 0; i < listTitle.length; i++) {

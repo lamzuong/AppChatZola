@@ -28,6 +28,9 @@ import { AuthContext } from "../../context/AuthContext";
 import { io } from "socket.io-client";
 import apiConfig from "../../api/apiConfig";
 import emotion from "../../data/emotion";
+import * as FileSystem from "expo-file-system";
+// import RNFetchBlob from "rn-fetch-blob";
+// import RNFS from "react-native-fs";
 
 const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
@@ -64,7 +67,7 @@ export default function ChatRoom({ route }) {
   const [hiddenNext, setHiddenNext] = useState(true);
   useEffect(() => {
     if (valueInput === "") {
-      setWidthInput("73%");
+      setWidthInput("63%");
       setHiddenIcon(false);
       setHiddenNext(true);
     } else if (valueInput != "") {
@@ -84,7 +87,7 @@ export default function ChatRoom({ route }) {
       return;
     }
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsMultipleSelection: true,
       quality: 1,
       base64: true,
@@ -97,14 +100,19 @@ export default function ChatRoom({ route }) {
       }
       setImagesSelected(arrShowImages);
       // console.log(arrShowImages);
+    } else if (result.cancelled) {
     } else if (!result.selected) {
       // Chọn 1 ảnh
       arrShowImages.push(result);
       setImagesSelected(arrShowImages);
-      // console.log(arrShowImages);
+      // console.log(result.uri);
     }
   };
-
+  const getBlob = async (uri) => {
+    const respone = await fetch(uri);
+    const blob = await respone.blob();
+    return blob;
+  };
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -120,7 +128,6 @@ export default function ChatRoom({ route }) {
       // console.log(arr);
     }
   };
-
   //======getConversation=======
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
@@ -140,54 +147,65 @@ export default function ChatRoom({ route }) {
 
   //====Send Message======
   const handleSendMessage = async (e) => {
-    // if (valueInput.trim() === "") {
-    // } else {
-    e.preventDefault();
-    let listImg = [];
-    if (imagesSelected.length !== 0) {
-      imagesSelected.forEach((e) => {
-        const image = e.uri.split(".");
-        const fileType = image[image.length - 1];
-        var obj = {
-          base64: `data:image/jpeg;base64,${e.base64}`,
-          fileType: fileType,
-        };
-        listImg.push(obj);
-      });
-      // console.log(listImg);
-    }
-    const message = {
-      conversationID: conversation.id,
-      sender: user.id,
-      mess: valueInput,
-      listImg: listImg,
-    };
-    try {
-      await axiosCilent.post("/zola/message/mobile", message);
-      socket.emit("send-to-server", {
-        mess: valueInput,
-        senderId: user.id,
+    if (valueInput.trim() === "" && imagesSelected.length == 0) {
+    } else {
+      e.preventDefault();
+      let listImg = [];
+      if (imagesSelected.length !== 0) {
+        imagesSelected.forEach((e) => {
+          const image = e.uri.split(".");
+          const fileType = image[image.length - 1];
+          var obj = {
+            base64: `data:image/jpeg;base64,${e.base64}`,
+            fileType: fileType,
+            name: e.uri.split("/").slice(-1),
+            // blob: getBlob(e.uri),
+          };
+          listImg.push(obj);
+        });
+        // console.log(listImg);
+      }
+      const message = {
         conversationID: conversation.id,
-        imgs: imagesSelected.length,
-        fullName: user.fullName,
-        group: conversation.members.length > 2,
-      });
-      setValueInput("");
-      setImagesSelected([]);
-      setRerender(!rerender);
-      // console.log(imagesSelected);
-
-      // console.log(imagesSelected);
-    } catch (err) {
-      console.log(err);
+        sender: user.id,
+        mess: valueInput,
+        listImg: listImg,
+      };
+      try {
+        await axiosCilent.post("/zola/message/mobile", message);
+        socket.emit("send-to-server", {
+          mess: valueInput,
+          senderId: user.id,
+          conversationID: conversation.id,
+          imgs: imagesSelected.length,
+          fullName: user.fullName,
+          group: conversation.members.length > 2,
+        });
+        setValueInput("");
+        setImagesSelected([]);
+        setRerender(!rerender);
+      } catch (err) {
+        console.log(err);
+      }
     }
-    // }
   };
   //========ChatInfo======
   let chatInfo = "ChatInfo";
   if (conversation.members.length > 2) chatInfo = "ChatInfoGroup";
   //=====Sroll to end=======
   const flatlistRef = useRef();
+  const [timeScroll, setTimeScroll] = useState(2000);
+  React.useLayoutEffect(() => {
+    const timeout = setTimeout(() => {
+      if (flatlistRef.current && message && message.length > 0) {
+        flatlistRef.current.scrollToEnd({ animated: true });
+        setTimeScroll(100);
+      }
+    }, timeScroll);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [message]);
   //======Button Back=======
   useEffect(() => {
     const backAction = () => {
@@ -239,7 +257,7 @@ export default function ChatRoom({ route }) {
   //===================
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={[styles.header, { marginBottom: 10 }]}>
         <View style={{ width: "10%" }}>
           <TouchableOpacity
             style={styles.iconBack}
@@ -282,7 +300,8 @@ export default function ChatRoom({ route }) {
         </View>
       </View>
       <FlatList
-        data={message.reverse()}
+        // data={message.reverse()}
+        data={message}
         renderItem={({ item }) => (
           <MessageChat
             time={item.date}
@@ -290,15 +309,10 @@ export default function ChatRoom({ route }) {
             item={item}
           />
         )}
-        keyExtractor={(item, index) => index}
-        inverted
-        initialNumToRender={10}
-        // windowSize={5}
-        // maxToRenderPerBatch={5}
-        // updateCellsBatchingPeriod={10}
-        // removeClippedSubviews={false}
-        // onEndReachedThreshold={0.1}
-        // ref={flatlistRef}
+        keyExtractor={(item, index) => index + item}
+        // inverted={-1}
+        // initialNumToRender={10}
+        ref={flatlistRef}
         // onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
       />
       {/* Xem trước ảnh */}
@@ -333,14 +347,12 @@ export default function ChatRoom({ route }) {
       {/* FOOTER */}
       <View style={styles.footer}>
         {hiddenIcon ? null : (
-          <View
-            style={{
-              width: "27%",
-              flexDirection: "row",
-              marginTop: 5,
-              justifyContent: "center",
-            }}
-          >
+          <View style={styles.iconBottom}>
+            <TouchableOpacity
+              style={{ justifyContent: "center", marginRight: 5 }}
+            >
+              <Entypo name="attachment" size={24} color="rgb(0,145,255)" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={showImagePicker}>
               <MaterialIcons name="image" size={30} color="rgb(0,145,255)" />
             </TouchableOpacity>
@@ -359,7 +371,7 @@ export default function ChatRoom({ route }) {
         {hiddenNext ? null : (
           <TouchableOpacity
             onPress={() => {
-              setWidthInput("73%");
+              setWidthInput("63%");
               setHiddenIcon(false);
               setHiddenNext(true);
             }}
@@ -406,7 +418,7 @@ export default function ChatRoom({ route }) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.iconBottom, { marginTop: 3 }]}
+            style={{ marginTop: 3, marginLeft: 10 }}
             onPress={handleSendMessage}
           >
             <Ionicons name="send" size={30} color="rgb(0,145,255)" />

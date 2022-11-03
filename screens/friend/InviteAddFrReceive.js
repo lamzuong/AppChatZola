@@ -13,18 +13,14 @@ import { AuthContext } from "../../context/AuthContext";
 
 export default function InviteAddFrReceive() {
   const { user, dispatch } = useContext(AuthContext);
-  const [currentUser, setCurrentUser] = useState({});
   const [renderUser, setRenderUser] = useState(false);
-  const [renderList, setRenderList] = useState(false);
   const [listInvite, setListInvite] = useState([]);
   useEffect(() => {
     const getInfoUser = async () => {
       try {
         const res = await axiosCilent.get("/zola/users/" + user.id);
         dispatch({ type: "LOGIN_SUCCESS", payload: res });
-        setCurrentUser(res);
         setListInvite(res.listReceiver);
-        // console.log(res);
       } catch (error) {
         console.log(error);
       }
@@ -36,24 +32,24 @@ export default function InviteAddFrReceive() {
   const [listMem, setListMem] = useState([]);
   useEffect(() => {
     var i = 0;
-    const getInfoFriends = async (mem) => {
-      try {
-        const res = await axiosCilent.get("/zola/users/" + mem);
-        listReceive.push(res);
-        ++i;
-        if (i === listInvite.length) {
-          setListMem(listReceive);
-          i = 0;
-          console.log(listMem);
+    if (listInvite.length != 0) {
+      const getInfoFriends = async (mem) => {
+        try {
+          const res = await axiosCilent.get("/zola/users/" + mem);
+          listReceive.push(res);
+          ++i;
+          if (i === listInvite.length) {
+            setListMem(listReceive);
+            i = 0;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    listInvite.forEach((element) => {
-      getInfoFriends(element);
-    });
-    if (listMem.length == 0) {
+      };
+      listInvite.forEach((element) => {
+        getInfoFriends(element);
+      });
+    } else {
       setListMem([]);
     }
   }, [listInvite]);
@@ -91,16 +87,6 @@ export default function InviteAddFrReceive() {
     }
   };
   //==================
-  function render() {
-    setRenderUser(!renderUser);
-    setRenderList(!renderList);
-  }
-  function deleteTemp(index) {
-    var listTemp = [...listMem];
-    listTemp.splice(index, 1);
-    setListMem(listTemp);
-  }
-  //==================
   return (
     <View style={styles.container}>
       {listMem.length == 0 ? (
@@ -126,8 +112,6 @@ export default function InviteAddFrReceive() {
                     style={{ marginHorizontal: 10 }}
                     onPress={() => {
                       acceptInvite(item.id);
-                      // deleteTemp(index);
-                      // render();
                     }}
                   >
                     <AntDesign name="checkcircle" size={30} color="#33ff10" />
@@ -135,8 +119,6 @@ export default function InviteAddFrReceive() {
                   <TouchableOpacity
                     onPress={() => {
                       denyInvite(item.id);
-                      // deleteTemp(index);
-                      // render();
                     }}
                   >
                     <AntDesign name="closecircle" size={30} color="#ff1a1a" />
@@ -145,6 +127,7 @@ export default function InviteAddFrReceive() {
               </View>
             );
           }}
+          keyExtractor={(item, index) => index}
         />
       )}
     </View>

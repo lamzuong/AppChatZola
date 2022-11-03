@@ -42,7 +42,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   iconBottom: {
-    marginLeft: 5,
+    width: "40%",
+    flexDirection: "row",
+    marginTop: 5,
+    justifyContent: "center",
   },
   chatInput: {
     height: 40,
