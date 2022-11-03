@@ -42,8 +42,14 @@ const MessUser = (props) => {
             </div>
             <div className={cx('messright')}>
                 <div className={cx('messName')}>{props.group ? props.sender.fullName : '  '}</div>
-                {props.mess.mess.length === 0 ? <></> : <div className={cx('messText')}>{props.mess.mess}</div>}
-                {props.mess.img_url?.length ? (
+                {props.mess.mess.length === 0 || props.mess.deleted ? (
+                    <></>
+                ) : (
+                    <div className={cx('messText')}>{props.mess.mess}</div>
+                )}
+                {props.mess.deleted ? (
+                    <div className={cx('messDel')}>Tin nhắn đã được thu hồi</div>
+                ) : props.mess.img_url?.length ? (
                     <div className={cx('messRow')}>
                         {props.mess.img_url.map((img, i) => (
                             <div key={i} className={cx('messImgUrl')}>
@@ -51,8 +57,26 @@ const MessUser = (props) => {
                                     <video width="540" height="310" controls>
                                         <source src={img} type="video/mp4"></source>
                                     </video>
-                                ) : (
+                                ) : img.split('.').splice(-1)[0] === 'png' ||
+                                  img.split('.').splice(-1)[0] === 'jpg' ||
+                                  img.split('.').splice(-1)[0] === 'jpeg' ||
+                                  img.split('.').splice(-1)[0] === 'gif' ||
+                                  img.split('.').splice(-1)[0] === 'jfif' ? (
                                     <img src={img} alt="" />
+                                ) : (
+                                    <a
+                                        style={{
+                                            padding: '10px',
+                                            borderRadius: '20px',
+                                            backgroundColor: '#0091ff',
+                                            color: '#fff',
+                                            wordBreak: 'break-word',
+                                            maxWidth: '500px',
+                                        }}
+                                        href={img}
+                                    >
+                                        {img.split('/')[4]}
+                                    </a>
                                 )}
                             </div>
                         ))}

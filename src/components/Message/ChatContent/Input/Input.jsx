@@ -76,7 +76,7 @@ const Input = (props) => {
                                     type="file"
                                     id="image"
                                     name="imgs"
-                                    accept="image/*"
+                                    accept="*"
                                     multiple
                                     style={{ display: 'none' }}
                                     onChange={(e) => handleMultiFile(e)}
