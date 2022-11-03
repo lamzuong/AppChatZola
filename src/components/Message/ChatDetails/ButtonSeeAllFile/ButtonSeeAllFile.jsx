@@ -83,7 +83,9 @@ const ButtonSeeAllFile = (props) => {
                         ) : (
                             <>
                                 <ListViewItem
-                                    icon={<i class="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
+                                    icon={
+                                        <i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>
+                                    }
                                     title="nhom5.doc"
                                 />
                                 <ListViewItem

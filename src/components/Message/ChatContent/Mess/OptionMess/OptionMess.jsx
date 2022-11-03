@@ -6,6 +6,7 @@ import style from './OptionMess.module.scss';
 import classNames from 'classnames/bind';
 import Modal from 'react-modal';
 import UserItemSearch from '../../../ChatList/UserItemSearch/UserItemSerach';
+import axiosCilent from '../../../../../api/axiosClient';
 
 const cx = classNames.bind(style);
 
@@ -20,7 +21,7 @@ const customStyles = {
         transform: 'translate(-50%, -50%)',
     },
 };
-const OptionMess = ({ noOwn }) => {
+const OptionMess = ({ noOwn, conversation, mess }) => {
     const [showMore, setShowMore] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
@@ -31,14 +32,21 @@ const OptionMess = ({ noOwn }) => {
         setModalIsOpen(false);
     };
 
-    useEffect(() => {});
+    const recoverMess = async () => {
+        try {
+            await axiosCilent.put('/zola/message/recoverMess', { id: mess.id });
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     return (
         <Tippy
             visible={showMore}
             interactive={true}
             render={(attrs) => (
                 <ul className={cx('wrapper-more')} tabIndex="-1" {...attrs}>
-                    {!noOwn && <li onClick={() => alert('ll')}>Thu hồi</li>}
+                    {!noOwn && <li onClick={recoverMess}>Thu hồi</li>}
                     <li onClick={openModal}>Chuyển tiếp</li>
                     <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal} ariaHideApp={false}>
                         <div className={cx('wrapper-modal')}>
@@ -47,52 +55,9 @@ const OptionMess = ({ noOwn }) => {
                                 <FontAwesomeIcon icon={faXmark} className={cx('close-md')} onClick={closeModal} />
                             </div>
                             <div className={cx('body-md')}>
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
-                                <UserItemSearch
-                                    name="Minh Vuong"
-                                    ava="https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg"
-                                    button="Gửi"
-                                />
+                                {conversation?.map((c, i) => (
+                                    <UserItemSearch mess={mess} con={c} button="Gửi" />
+                                ))}
                             </div>
                         </div>
                     </Modal>

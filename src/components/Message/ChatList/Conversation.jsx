@@ -42,7 +42,14 @@ const Conversation = (props) => {
     let name = '';
     const rs = mess[mess?.length - 1]?.sender === user.id;
     let nameShow = mess[mess.length - 1]?.infoSender.fullName.split(' ').slice(-1);
-    const messLast = mess[mess.length - 1]?.mess ? mess[mess.length - 1].mess : '[Hình ảnh]';
+    var messLast = '';
+    if (mess[mess.length - 1]?.deleted) {
+        messLast = 'Đã thu hồi tin nhắn';
+    } else if (mess[mess.length - 1]?.mess) {
+        messLast = mess[mess.length - 1].mess;
+    } else {
+        messLast = 'Đã gửi tệp đính kèm';
+    }
     if (props.conversation.members.length > 2) {
         img = props.conversation.avatarGroup;
         name = props.conversation.groupName;

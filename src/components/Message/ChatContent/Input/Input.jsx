@@ -69,6 +69,7 @@ const Input = (props) => {
             image && URL.revokeObjectURL(image);
         };
     }, [image]);
+    console.log(delImg);
     return (
         <div className={cx('wrapper')}>
             <form className={cx('container')} encType="multipart/form-data">
@@ -76,7 +77,42 @@ const Input = (props) => {
                     <div className={cx('chatContent')}>
                         {!chatContent && (
                             <>
-                                <i className="bx bx-paperclip"></i>
+                                <input
+                                    type="file"
+                                    id="file"
+                                    name="imgs"
+                                    accept="*"
+                                    multiple
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => handleMultiFile(e)}
+                                />
+                                <Tippy
+                                    visible={delImg.length > 0}
+                                    interactive={true}
+                                    placement="top-end"
+                                    render={(attrs) => (
+                                        <div className={cx('wrapper-file')} tabIndex="-1" {...attrs}>
+                                            <div className={cx('imgs')}>
+                                                {delImg.map((img, i) => (
+                                                    <div key={i} className={cx('img')}>
+                                                        <span>{img.name}</span>
+                                                        <i
+                                                            className="bx bxs-x-circle"
+                                                            style={{ color: '#bdbdbd' }}
+                                                            onClick={() => handleDelImg(i)}
+                                                        ></i>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                >
+                                    <label for="file">
+                                        <i className="bx bx-paperclip"></i>
+                                    </label>
+                                </Tippy>
+
+                                {/* image & video */}
                                 <input
                                     type="file"
                                     id="image"
