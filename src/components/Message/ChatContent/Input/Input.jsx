@@ -86,38 +86,17 @@ const Input = (props) => {
                                     style={{ display: 'none' }}
                                     onChange={(e) => handleMultiFile(e)}
                                 />
-                                <Tippy
-                                    visible={delImg.length > 0}
-                                    interactive={true}
-                                    placement="top-end"
-                                    render={(attrs) => (
-                                        <div className={cx('wrapper-file')} tabIndex="-1" {...attrs}>
-                                            <div className={cx('imgs')}>
-                                                {delImg.map((img, i) => (
-                                                    <div key={i} className={cx('img')}>
-                                                        <span>{img.name}</span>
-                                                        <i
-                                                            className="bx bxs-x-circle"
-                                                            style={{ color: '#bdbdbd' }}
-                                                            onClick={() => handleDelImg(i)}
-                                                        ></i>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                >
-                                    <label for="file">
-                                        <i className="bx bx-paperclip"></i>
-                                    </label>
-                                </Tippy>
+
+                                <label for="file">
+                                    <i className="bx bx-paperclip"></i>
+                                </label>
 
                                 {/* image & video */}
                                 <input
                                     type="file"
                                     id="image"
                                     name="imgs"
-                                    accept="*"
+                                    accept="file_extension|audio/*|video/*|image/*|media_type"
                                     multiple
                                     style={{ display: 'none' }}
                                     onChange={(e) => handleMultiFile(e)}
@@ -138,8 +117,28 @@ const Input = (props) => {
                                                                     type="video/mp4"
                                                                 ></source>
                                                             </video>
-                                                        ) : (
+                                                        ) : img.name.split('.').splice(-1)[0] === 'png' ||
+                                                          img.name.split('.').splice(-1)[0] === 'jpg' ||
+                                                          img.name.split('.').splice(-1)[0] === 'jpeg' ||
+                                                          img.name.split('.').splice(-1)[0] === 'gif' ||
+                                                          img.name.split('.').splice(-1)[0] === 'jfif' ? (
                                                             <img src={URL.createObjectURL(img)} alt="" />
+                                                        ) : (
+                                                            <div
+                                                                style={{
+                                                                    padding: '5px',
+                                                                    borderRadius: '20px',
+                                                                    backgroundColor: 'rgb(245, 241, 241)',
+                                                                    color: '#000',
+                                                                    fontWeight: '400',
+                                                                    wordBreak: 'break-word',
+                                                                    fontSize: '20px',
+                                                                    maxWidth: '500px',
+                                                                    textAlign: 'center',
+                                                                }}
+                                                            >
+                                                                {img.name}
+                                                            </div>
                                                         )}
                                                         <i
                                                             className="bx bxs-x-circle"

@@ -62,6 +62,7 @@ const ChatDetails = (props) => {
             i.split('.').splice(-1)[0] !== 'gif' &&
             i.split('.').splice(-1)[0] !== 'jfif',
     );
+
     return (
         <div className={cx('wrapper')}>
             <Header title="Thông tin hội thoại" className={cx('customHeader')} />
@@ -70,7 +71,7 @@ const ChatDetails = (props) => {
                 <Store>
                     <StoreItem title="Ảnh/Video">
                         <div className={cx('content', 'gridv2')}>
-                            {listImg.splice(0, 8).map((img, i) => (
+                            {listImg.slice(0, 8).map((img, i) => (
                                 <div key={i}>
                                     <div
                                         className={cx('wrapper-media')}
@@ -103,17 +104,20 @@ const ChatDetails = (props) => {
                                 </div>
                             ))}
                         </div>
-                        <ButtonSeeAllFile imgStore={listImg} />
+
+                        <ButtonSeeAllFile imgStore={listImg} fileStore={listFile} />
                     </StoreItem>
                     <StoreItem title="File">
-                        {listFile.splice(0, 4).map((f, i) => (
+                        {console.log(listFile)}
+                        {listFile.slice(0, 4).map((f, i) => (
                             <ListViewItem
                                 key={i}
                                 icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
                                 title={f.split('/')[4]}
                             />
                         ))}
-                        <ButtonSeeAllFile />
+
+                        <ButtonSeeAllFile fileStore={listFile} imgStore={listImg} />
                     </StoreItem>
                 </Store>
             </div>

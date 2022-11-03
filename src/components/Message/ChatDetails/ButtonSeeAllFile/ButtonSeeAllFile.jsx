@@ -45,6 +45,7 @@ const ButtonSeeAllFile = (props) => {
     const closeModal = () => {
         setShowModal(false);
     };
+
     return (
         <>
             <button className={cx('btn-see-all')} onClick={handleShowModal}>
@@ -82,16 +83,18 @@ const ButtonSeeAllFile = (props) => {
                             </div>
                         ) : (
                             <>
-                                <ListViewItem
-                                    icon={
-                                        <i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>
-                                    }
-                                    title="nhom5.doc"
-                                />
-                                <ListViewItem
-                                    icon={<i class="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                                    title="nhom5.doc"
-                                />
+                                {props.fileStore.map((f, i) => (
+                                    <ListViewItem
+                                        key={i}
+                                        icon={
+                                            <i
+                                                className="bx bx-file"
+                                                style={{ marginRight: '4px', fontSize: '24px' }}
+                                            ></i>
+                                        }
+                                        title={f.split('/')[4]}
+                                    />
+                                ))}
                             </>
                         )}
                     </div>
