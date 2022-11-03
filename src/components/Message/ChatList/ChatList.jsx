@@ -37,16 +37,6 @@ const ChatList = (props) => {
     const [clickUser, setClickUser] = useState(false);
     const [userChoosed, setUserChoosed] = useState({});
 
-    const [listSend, setListSend] = useState([]);
-
-    // useEffect(() => {
-    //     const getUserCurrent = async () => {
-    //         const res = await axiosCilent.get(`/zola/users/${user.id}`);
-    //         setListSend(res.listSender);
-    //     };
-    //     getUserCurrent();
-    // }, [listSend.length]);
-
     const customStyles = {
         content: {
             padding: '0',
@@ -63,12 +53,10 @@ const ChatList = (props) => {
     const openModal = () => {
         setModalIsOpen(true);
     };
-    console.log(userChoosed);
     const closeModal = () => {
         setModalIsOpen(false);
         setUserChoosed({});
         setClickUser(false);
-        // navigate('/login');
     };
     const handleCleanText = () => {
         setText('');
@@ -82,7 +70,6 @@ const ChatList = (props) => {
         setText('');
     };
     const handleChooseUser = (user) => {
-        console.log(user);
         setUserChoosed(user);
         setClickUser(true);
     };
@@ -92,9 +79,7 @@ const ChatList = (props) => {
                 setResultSearch([]);
             }
             const res = await axiosCilent.get(`/zola/users/search/` + name);
-            console.log(res);
             setResultSearch([...res]);
-            console.log(name.length);
         };
         search();
     }, [name]);
@@ -187,7 +172,6 @@ const ChatList = (props) => {
                                                 {resultSearch.length > 0 ? (
                                                     <div className={cx('result-md')}>
                                                         {resultSearch.map((user) => {
-                                                            console.log(user);
                                                             return (
                                                                 <div
                                                                     onClick={handleChooseUser.bind(null, user)}
@@ -230,6 +214,7 @@ const ChatList = (props) => {
                     <ul className={cx('chatList')}>
                         {conversation.map((e, i) => (
                             <div
+                                key={i}
                                 onClick={() => {
                                     sendData(e);
                                     navigate(`/t/${e.id}`);

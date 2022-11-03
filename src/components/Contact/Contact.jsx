@@ -147,7 +147,6 @@ const Contact = (props) => {
         const getCurrentUser = async () => {
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-            console.log(res);
         };
         getCurrentUser();
     }, []);
@@ -173,7 +172,6 @@ const Contact = (props) => {
         getInfoFriends();
     }, []);
 
-    console.log(listMem);
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>

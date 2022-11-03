@@ -21,26 +21,17 @@ const InfoDetailUser = ({ ava, name, id }) => {
         };
         StateAwait();
     }, []);
-    console.log(awaitAceept);
 
     const handleAddFriend = async () => {
-        // const formData = new FormData();
-        // formData.append('id', user.id);
-        // formData.append('friendId', id);
-        // formData.append('listSender', user.listSender);
         const req = {
             userId: user.id,
             friendId: id,
             listSender: user.listSender,
         };
-        //console.log(formData)
         try {
             await axiosCilent.put('/zola/users/friends', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-            // console.log(res);
-            // const res1 = await axiosCilent.get(`/zola/users/${user.id}`);
-            // dispatch({ type: 'LOGIN_SUCCESS', payload: res1 });
             setAwaitAccept(true);
         } catch (error) {
             console.log(error);
@@ -48,23 +39,15 @@ const InfoDetailUser = ({ ava, name, id }) => {
     };
 
     const handleCaccelFriend = async () => {
-        // const formData = new FormData();
-        // formData.append('id', user.id);
-        // formData.append('friendId', id);
-        // formData.append('listSender', user.listSender);
         const req = {
             userId: user.id,
             friendId: id,
             listSender: user.listSender,
         };
-        //console.log(formData)
         try {
             await axiosCilent.put('/zola/users/cancelFriend', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-            // console.log(res);
-            // const res1 = await axiosCilent.get(`/zola/users/${user.id}`);
-            // dispatch({ type: 'LOGIN_SUCCESS', payload: res1 });
             setAwaitAccept(true);
         } catch (error) {
             console.log(error);

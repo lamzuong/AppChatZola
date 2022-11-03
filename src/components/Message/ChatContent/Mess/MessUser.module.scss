@@ -3,6 +3,16 @@
 .message {
     display: flex;
     margin: 20px 15px;
+    align-items: center;
+}
+
+.icon-more {
+    display: none;
+    cursor: pointer;
+}
+
+.message:hover .icon-more {
+    display: block;
 }
 
 .messright {
@@ -35,6 +45,7 @@
     background-color: rgb(245, 241, 241);
     color: black;
     word-wrap: break-word;
+    width: fit-content;
     max-width: 500px;
 }
 
@@ -47,7 +58,6 @@
 
 .messImgUrl {
     text-align: center;
-    overflow: hidden;
     margin: 2px;
     border-radius: 10px;
 
@@ -57,6 +67,13 @@
         object-fit: cover;
         object-position: center;
         vertical-align: middle;
+    }
+
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
     }
 }
 
@@ -92,4 +109,55 @@
 
 .message.group .messImg {
     margin-top: 21px;
+}
+
+// modal anh
+.header-detail-img {
+    font-weight: 400;
+    font-size: 16px;
+    padding-left: 14px;
+    padding-right: 4px;
+    height: 24px;
+    background-color: #545454;
+    color: #fff;
+    @include flex(center, right);
+}
+
+.btn-close {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.show-img {
+    height: calc(100vh - 26px);
+    background-color: #3e4041;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+        width: auto;
+        height: 100%;
+    }
+}
+
+//tippy
+.wrapper-more {
+    background-color: #fff;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-left: 8px;
+    min-width: 35px;
+    min-height: 35px;
+    text-align: center;
+
+    li {
+        color: #000;
+        line-height: 35px;
+        padding: 4px 6px;
+        &:hover {
+            cursor: pointer;
+            background-color: #eeeff2;
+        }
+    }
 }

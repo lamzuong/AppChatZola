@@ -68,7 +68,6 @@ const LoginFirst = (props) => {
         formData.append('fullNameOld', user.fullName);
         formData.append('imgOld', user.img);
         try {
-            console.log('lll');
             await axiosCilent.put('/zola/users', formData);
 
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
@@ -79,7 +78,6 @@ const LoginFirst = (props) => {
             console.log(err);
         }
     };
-    console.log(avatar);
     return (
         <div className={cx('wrapper')}>
             <Wellcome />
