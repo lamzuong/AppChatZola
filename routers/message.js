@@ -3,6 +3,7 @@ const router = require('express').Router();
 const multer = require('multer');
 const { v4: uuid } = require('uuid');
 const path = require('path');
+const utf8 = require('utf8');
 const docClient = require('../db.config');
 
 const tableName = 'message';
@@ -18,23 +19,9 @@ const storage = multer.memoryStorage({
         callback(null, '');
     },
 });
-
-const checkFileType = (file, cb) => {
-    const fileTypes = /jpeg|jpg|png|gif|jfif|mp4|mkv/;
-
-    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mineType = fileTypes.test(file.mimetype);
-    if (extname && mineType) {
-        return cb(null, true);
-    }
-    return cb('Error');
-};
 const upload = multer({
     storage,
     limits: { fileSize: 30000000 },
-    fileFilter(req, file, cb) {
-        checkFileType(file, cb);
-    },
 });
 
 // Send mess listImg web
@@ -47,14 +34,15 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
     if (img.length <= 0) {
     } else {
         for (let i = 0; i < img.length; i++) {
-            const image = img[i].originalname.split('.');
+            const image = img[i].originalname;
             const fileType = image[image.length - 1];
-            var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+            var filePath = `${uuid()}/${image}`;
             const uploadS3 = {
                 Bucket: 'zola-chat',
                 Key: filePath,
                 Body: img[i].buffer,
             };
+            console.log(image);
             s3.upload(uploadS3, (err, data) => {
                 if (err) {
                     console.log('Loi s3: ' + err);
@@ -73,6 +61,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             conversationID,
             sender,
             mess,
+            deleted: false,
             img_url: img.length > 0 ? img_url : '',
             date: date,
         },
@@ -138,7 +127,7 @@ router.post('/mobile', (req, res) => {
         for (let i = 0; i < listImg.length; i++) {
             var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
             const fileType = listImg[i].fileType;
-            var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+            var filePath = `${uuid()}/${image}`;
             const uploadS3 = {
                 Bucket: 'zola-chat',
                 Key: filePath,
@@ -162,6 +151,7 @@ router.post('/mobile', (req, res) => {
             conversationID,
             sender,
             mess,
+            deleted: false,
             img_url: listImg.length > 0 ? img_url : '',
             date: new Date().getTime(),
         },
@@ -263,6 +253,31 @@ router.get('/:conversationID', async (req, res) => {
     } catch (e) {
         return res.status(500).send('Loi' + e);
     }
+});
+
+// Delete Mess
+router.put('/deleteMess', (req, res) => {
+    const { id } = req.body;
+    const params = {
+        TableName: tableName,
+        Key: {
+            id,
+        },
+        UpdateExpression: 'SET #deleted=:deleted',
+        ExpressionAttributeNames: {
+            //COLUMN NAME
+            '#deleted': 'deleted',
+        },
+        ExpressionAttributeValues: {
+            ':deleted': true,
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi ' + err);
+        }
+        return res.status(200).json('thanh cong');
+    });
 });
 
 module.exports = router;
