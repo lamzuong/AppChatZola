@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(style);
 
-const UserItemSearch = ({ name, ava }) => {
+const UserItemSearch = ({ name, ava, button = false }) => {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('avatar')}>
@@ -12,7 +12,7 @@ const UserItemSearch = ({ name, ava }) => {
             <div className={cx('name')}>
                 <span>{name}</span>
             </div>
-            {/* <button className={cx('btn-add-frend')}>Kết bạn</button> */}
+            {button && <button className={cx('btn-add-frend')}>{button}</button>}
         </div>
     );
 };

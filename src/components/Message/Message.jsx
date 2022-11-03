@@ -222,7 +222,12 @@ const Message = (props) => {
                                 </div>
                             ))}
                         </div>
-                        <Input user={user} params={currentChat} parentCb={cbChild1} />
+                        <Input
+                            user={user}
+                            params={currentChat}
+                            parentCb={cbChild1}
+                            group={currentChat.members.length > 2}
+                        />
                     </>
                 ) : (
                     <h1 style={{ display: 'flex', justifyContent: 'center', marginTop: '30%', color: '#646e74' }}>

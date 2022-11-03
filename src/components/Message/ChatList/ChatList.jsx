@@ -23,7 +23,7 @@ const ChatList = (props) => {
     const path = pathname.slice(3, pathname.length);
     const conversation = props.conversation;
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
+    const { user, dispatch } = useContext(AuthContext);
     const sendData = (data) => {
         props.parentCb(data);
     };
@@ -36,6 +36,7 @@ const ChatList = (props) => {
     const [name, setName] = useState('');
     const [clickUser, setClickUser] = useState(false);
     const [userChoosed, setUserChoosed] = useState({});
+
     const customStyles = {
         content: {
             padding: '0',

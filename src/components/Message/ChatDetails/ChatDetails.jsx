@@ -55,8 +55,8 @@ const ChatDetails = (props) => {
                 <Store>
                     <StoreItem title="Ảnh/Video">
                         <div className={cx('content', 'gridv2')}>
-                            {props.currentChat.images.slice(0, 8).map((img) => (
-                                <>
+                            {props.currentChat.images.slice(0, 8).map((img, i) => (
+                                <div key={i}>
                                     <div
                                         className={cx('wrapper-media')}
                                         onClick={(e) => {
@@ -85,7 +85,7 @@ const ChatDetails = (props) => {
                                             <img src={openModalImg && src} alt="" />
                                         </div>
                                     </Modal>
-                                </>
+                                </div>
                             ))}
                         </div>
                         <ButtonSeeAllFile imgStore={props.currentChat.images} />

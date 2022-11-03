@@ -26,6 +26,7 @@ const Input = (props) => {
         setImage(e.target.files);
         setDelImg(Array.from(e.target.files));
     };
+
     const handleSendMessage = async (e) => {
         setShowEmojis(false);
         const formData = new FormData();
@@ -40,6 +41,10 @@ const Input = (props) => {
             socket.emit('send-to-server', {
                 senderId: props.user.id,
                 conversationID: props.params.id,
+                mess: chatContent,
+                imgs: image.length,
+                fullName: props.user.fullName,
+                group: props.group,
             });
             setChatContent('');
             setRerender(!rerender);
@@ -135,7 +140,6 @@ const Input = (props) => {
                     <Tippy
                         visible={showEmojis}
                         interactive={true}
-                        placement="top-end"
                         render={(attrs) => (
                             <div className={cx('wrapper-icons')} tabIndex="-1" {...attrs}>
                                 <div className={cx('icons')}>

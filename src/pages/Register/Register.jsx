@@ -99,7 +99,6 @@ const Register = (props) => {
                         setLoading(true);
                         const res = await axiosClient.post('/zola/auth/login', userCredential);
                         dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-
                         clearInterval(timerId.current);
                         navigate('/');
                     } catch (error) {
