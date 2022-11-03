@@ -78,16 +78,18 @@ const MessUser = (props) => {
                     <></>
                 ) : (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {props.own && <OptionMess />}
+                        {props.own && <OptionMess mess={props.mess} conversation={props.conversation} />}
                         <div className={cx('messText')}>{props.mess.mess}</div>
-                        {!props.own && <OptionMess noOwn={!props.own} />}
+                        {!props.own && (
+                            <OptionMess mess={props.mess} conversation={props.conversation} noOwn={!props.own} />
+                        )}
                     </div>
                 )}
                 {props.mess.deleted ? (
                     <div className={cx('messDel')}>Tin nhắn đã được thu hồi</div>
                 ) : props.mess.img_url?.length ? (
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {props.own && <OptionMess />}
+                        {props.own && <OptionMess mess={props.mess} conversation={props.conversation} />}
                         <div className={cx('messRow')}>
                             {props.mess.img_url.map((img, i) => (
                                 <div key={i} className={cx('messImgUrl')}>
@@ -130,22 +132,29 @@ const MessUser = (props) => {
                                     ) : (
                                         <a
                                             style={{
-                                                padding: '10px',
+                                                padding: '20px',
                                                 borderRadius: '20px',
-                                                backgroundColor: '#0091ff',
-                                                color: '#fff',
+                                                backgroundColor: 'rgb(245, 241, 241)',
+                                                color: '#000',
+                                                fontWeight: '600',
                                                 wordBreak: 'break-word',
                                                 maxWidth: '500px',
                                             }}
                                             href={img}
                                         >
+                                            <i
+                                                className="bx bx-file"
+                                                style={{ marginRight: '4px', fontSize: '24px' }}
+                                            ></i>
                                             {img.split('/')[4]}
                                         </a>
                                     )}
                                 </div>
                             ))}
                         </div>
-                        {!props.own && <OptionMess noOwn={!props.own} />}
+                        {!props.own && (
+                            <OptionMess mess={props.mess} conversation={props.conversation} noOwn={!props.own} />
+                        )}
                     </div>
                 ) : (
                     <></>

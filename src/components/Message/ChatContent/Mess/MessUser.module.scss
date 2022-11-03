@@ -61,7 +61,6 @@
     display: grid;
     grid-template-columns: auto auto auto;
     max-width: 500px;
-    padding-bottom: 10px;
 }
 
 .messImgUrl {
@@ -87,6 +86,7 @@
 
 .messBot {
     font-size: 0.9rem;
+    margin-top: 10px;
 }
 
 .message.own {

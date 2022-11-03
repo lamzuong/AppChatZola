@@ -173,6 +173,7 @@ const Message = (props) => {
         img = userChat?.img ? userChat.img : noAvatar;
         name = userChat?.fullName;
     }
+    console.log(rerender);
 
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -217,6 +218,7 @@ const Message = (props) => {
                                         own={m.sender === user.id}
                                         mess={m}
                                         sender={m.infoSender}
+                                        conversation={conversation}
                                         group={currentChat.members.length > 2}
                                     />
                                 </div>
