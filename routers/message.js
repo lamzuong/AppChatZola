@@ -26,31 +26,35 @@ const upload = multer({
 
 // Send mess listImg web
 router.post('/', upload.array('imgs', 20), (req, res) => {
-    const { conversationID, sender, mess } = req.body;
+    const { conversationID, sender, mess, listImg } = req.body;
     const img = req.files;
     var date = new Date().getTime();
     // luu vo S3
     var img_url = [];
-    if (img.length <= 0) {
+    if (typeof img == 'undefined') {
+        img_url = [...listImg];
     } else {
-        for (let i = 0; i < img.length; i++) {
-            const image = img[i].originalname;
-            const fileType = image[image.length - 1];
-            var filePath = `${uuid()}/${image}`;
-            const uploadS3 = {
-                Bucket: 'zola-chat',
-                Key: filePath,
-                Body: img[i].buffer,
-            };
-            console.log(image);
-            s3.upload(uploadS3, (err, data) => {
-                if (err) {
-                    console.log('Loi s3: ' + err);
-                } else {
-                    console.log('S3 thanh cong');
-                }
-            });
-            img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
+        if (img.length <= 0) {
+        } else {
+            for (let i = 0; i < img.length; i++) {
+                const image = img[i].originalname;
+                const fileType = image[image.length - 1];
+                var filePath = `${uuid()}/${image}`;
+                const uploadS3 = {
+                    Bucket: 'zola-chat',
+                    Key: filePath,
+                    Body: img[i].buffer,
+                };
+                console.log(image);
+                s3.upload(uploadS3, (err, data) => {
+                    if (err) {
+                        console.log('Loi s3: ' + err);
+                    } else {
+                        console.log('S3 thanh cong');
+                    }
+                });
+                img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
+            }
         }
     }
     // luu vo dynamo
@@ -62,7 +66,8 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             sender,
             mess,
             deleted: false,
-            img_url: img.length > 0 ? img_url : '',
+            removePerson: [],
+            img_url: typeof img == 'undefined' || img.length > 0 ? img_url : '',
             date: date,
         },
     };
@@ -74,7 +79,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
     });
     // Luu vo images conversation
     var paramsConversation = {};
-    if (img.length > 0) {
+    if (typeof img == 'undefined' || img.length > 0) {
         paramsConversation = {
             TableName: 'conversation',
             Key: {
@@ -125,22 +130,26 @@ router.post('/mobile', (req, res) => {
     if (listImg.length <= 0) {
     } else {
         for (let i = 0; i < listImg.length; i++) {
-            var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
-            const fileType = listImg[i].fileType;
-            var filePath = `${uuid()}/${image}`;
-            const uploadS3 = {
-                Bucket: 'zola-chat',
-                Key: filePath,
-                Body: buffer,
-            };
-            s3.upload(uploadS3, (err, data) => {
-                if (err) {
-                    console.log('Loi s3: ' + err);
-                } else {
-                    console.log('upload S3 thanh cong');
-                }
-            });
-            img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
+            if (typeof listImg[i].base64 == 'undefined') {
+                img_url.push(listImg[i]);
+            } else {
+                var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+                const fileType = listImg[i].fileType;
+                var filePath = `${uuid()}/${image}`;
+                const uploadS3 = {
+                    Bucket: 'zola-chat',
+                    Key: filePath,
+                    Body: buffer,
+                };
+                s3.upload(uploadS3, (err, data) => {
+                    if (err) {
+                        console.log('Loi s3: ' + err);
+                    } else {
+                        console.log('upload S3 thanh cong');
+                    }
+                });
+                img_url.push(`${CLOUD_FRONT_URL}${filePath}`);
+            }
         }
     }
     // update Dynamo
@@ -152,6 +161,7 @@ router.post('/mobile', (req, res) => {
             sender,
             mess,
             deleted: false,
+            removePerson: [],
             img_url: listImg.length > 0 ? img_url : '',
             date: new Date().getTime(),
         },
@@ -255,8 +265,8 @@ router.get('/:conversationID', async (req, res) => {
     }
 });
 
-// Delete Mess
-router.put('/deleteMess', (req, res) => {
+// Recover Mess
+router.put('/recoverMess', (req, res) => {
     const { id } = req.body;
     const params = {
         TableName: tableName,
@@ -270,6 +280,31 @@ router.put('/deleteMess', (req, res) => {
         },
         ExpressionAttributeValues: {
             ':deleted': true,
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi ' + err);
+        }
+        return res.status(200).json('thanh cong');
+    });
+});
+
+// Delete Mess
+router.put('/deleteMess', (req, res) => {
+    const { id, userId } = req.body;
+    params = {
+        TableName: tableName,
+        Key: {
+            id: id,
+        },
+        UpdateExpression: 'SET #removePerson=list_append(#removePerson,:removePerson)',
+        ExpressionAttributeNames: {
+            //COLUMN NAME
+            '#removePerson': 'removePerson',
+        },
+        ExpressionAttributeValues: {
+            ':removePerson': [userId],
         },
     };
     docClient.update(params, (err, data) => {
