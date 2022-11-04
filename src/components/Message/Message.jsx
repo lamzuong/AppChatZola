@@ -187,15 +187,15 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
-        // socket.on('server-remove-to-client', (data) => {
-        //     let conversationIDChat;
-        //     try {
-        //         conversationIDChat = currentChat.id;
-        //         if (data.conversationID === conversationIDChat) {
-        //             setRerender(!rerender);
-        //         }
-        //     } catch (error) {}
-        // });
+        socket.on('server-remove-to-client', (data) => {
+            let conversationIDChat;
+            try {
+                conversationIDChat = currentChat.id;
+                if (data.conversationID === conversationIDChat) {
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
     });
     console.log(rerender);
     conversation.sort((a, b) => b.date - a.date);

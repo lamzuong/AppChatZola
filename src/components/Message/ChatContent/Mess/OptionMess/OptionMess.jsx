@@ -40,7 +40,7 @@ const OptionMess = ({ noOwn, conversation, mess }) => {
     const recoverMess = async () => {
         try {
             await axiosCilent.put('/zola/message/recoverMess', { id: mess.id });
-            socket.emit('send-to-server', {
+            socket.emit('remove-to-server', {
                 senderId: user.id,
                 conversationID: mess.conversationID,
             });

@@ -63,6 +63,7 @@ const Input = (props) => {
             setRerender(!rerender);
             // sendData(rerender);
             setDelImg([]);
+            setImage([]);
         } catch (err) {
             console.log(err);
         }
@@ -93,7 +94,7 @@ const Input = (props) => {
                                     type="file"
                                     id="file"
                                     name="imgs"
-                                    accept="file_extension|docx|doc|xlsx|xls|csv|pptx|ppt|pdf|txt"
+                                    accept=".docx,.doc,.xlsx,.xls,.csv,.pptx,.ppt,.pdf,.txt"
                                     multiple
                                     style={{ display: 'none' }}
                                     onChange={(e) => handleMultiFile(e)}
@@ -108,7 +109,7 @@ const Input = (props) => {
                                     type="file"
                                     id="image"
                                     name="imgs"
-                                    accept="file_extension|audio/*|video/*|image/*|media_type"
+                                    accept="image/*, video/*"
                                     multiple
                                     style={{ display: 'none' }}
                                     onChange={(e) => handleMultiFile(e)}
