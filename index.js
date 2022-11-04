@@ -40,6 +40,10 @@ io.on('connection', (socket) => {
         // socket.broadcast.emit("user-chat", data); //Gửi tất cả trừ chính mình
         io.emit('server-send-to-client', data); //Gửi tất cả
     });
+    socket.on('remove-to-server', (data) => {
+        io.emit('server-remove-to-client', data); //Gửi tất cả
+        console.log(data);
+    });
 });
 
 server.listen(8000, () => {
