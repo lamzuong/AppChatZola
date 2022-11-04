@@ -28,8 +28,6 @@ const MessUser = (props) => {
     Modal.setAppElement('#root');
     const [modalImgIsOpen, setModalImgIsOpen] = useState(false);
     const [src, setSrc] = useState('a');
-    const [showMore, setShowMore] = useState(false);
-
     const openModalImg = () => {
         setModalImgIsOpen(true);
     };
@@ -66,6 +64,11 @@ const MessUser = (props) => {
             return Math.floor(interval) + ' phút trước';
         }
         return '';
+    }
+
+    var remove = false;
+    if (props.mess?.removePerson.filter((i) => i === props.user.id)) {
+        remove = true;
     }
     return (
         <div className={cx('message', props.group ? 'group' : '', props.own ? 'own' : '')}>
@@ -123,7 +126,6 @@ const MessUser = (props) => {
                                                         <i className="bx bx-x"></i>
                                                     </div>
                                                 </div>
-
                                                 <div className={cx('show-img')}>
                                                     <img src={openModalImg && src} alt="" />
                                                 </div>

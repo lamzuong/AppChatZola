@@ -173,8 +173,6 @@ const Message = (props) => {
         img = userChat?.img ? userChat.img : noAvatar;
         name = userChat?.fullName;
     }
-    console.log(rerender);
-
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [message, rerender]);
@@ -184,12 +182,21 @@ const Message = (props) => {
             let conversationIDChat;
             try {
                 conversationIDChat = currentChat.id;
-                if (data.conversationID === conversationIDChat && data.senderId !== user.id) {
+                if (data.conversationID === conversationIDChat) {
+                    setMessage([...message, data.dataMess]);
+                }
+            } catch (error) {}
+        });
+        socket.on('server-remove-to-client', (data) => {
+            let conversationIDChat;
+            try {
+                conversationIDChat = conversation.id;
+                if (data.conversationID === conversationIDChat) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
         });
-    });
+    }, [socket]);
     conversation.sort((a, b) => b.date - a.date);
     return (
         <div className={cx('wrapper')}>
@@ -217,6 +224,7 @@ const Message = (props) => {
                                     <MessUser
                                         own={m.sender === user.id}
                                         mess={m}
+                                        user={user}
                                         sender={m.infoSender}
                                         conversation={conversation}
                                         group={currentChat.members.length > 2}

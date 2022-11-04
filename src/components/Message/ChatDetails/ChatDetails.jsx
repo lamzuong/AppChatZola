@@ -104,7 +104,6 @@ const ChatDetails = (props) => {
                                 </div>
                             ))}
                         </div>
-
                         <ButtonSeeAllFile imgStore={listImg} fileStore={listFile} />
                     </StoreItem>
                     <StoreItem title="File">

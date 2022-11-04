@@ -30,8 +30,10 @@ const Input = (props) => {
     const handleSendMessage = async (e) => {
         setShowEmojis(false);
         const formData = new FormData();
+        var imgTemp = [];
         for (let i = 0; i < image.length; i++) {
             formData.append('imgs', image[i]);
+            imgTemp.push(image[i]);
         }
         formData.append('conversationID', props.params.id);
         formData.append('sender', props.user.id);
@@ -41,7 +43,18 @@ const Input = (props) => {
             socket.emit('send-to-server', {
                 senderId: props.user.id,
                 conversationID: props.params.id,
-                mess: chatContent,
+                dataMess: {
+                    conversationID: props.params,
+                    date: new Date().getTime(),
+                    id: 'temp',
+                    img_url: imgTemp,
+                    infoSender: {
+                        fullName: props.user.fullName,
+                        imageSender: props.user.img,
+                    },
+                    mess: chatContent,
+                    sender: props.user.id,
+                },
                 imgs: image.length,
                 fullName: props.user.fullName,
                 group: props.group,
@@ -69,7 +82,6 @@ const Input = (props) => {
             image && URL.revokeObjectURL(image);
         };
     }, [image]);
-    console.log(delImg);
     return (
         <div className={cx('wrapper')}>
             <form className={cx('container')} encType="multipart/form-data">
@@ -81,7 +93,7 @@ const Input = (props) => {
                                     type="file"
                                     id="file"
                                     name="imgs"
-                                    accept="*"
+                                    accept="file_extension|docx|doc|xlsx|xls|csv|pptx|ppt|pdf|txt"
                                     multiple
                                     style={{ display: 'none' }}
                                     onChange={(e) => handleMultiFile(e)}

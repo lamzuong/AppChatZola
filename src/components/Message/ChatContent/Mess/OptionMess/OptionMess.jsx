@@ -7,6 +7,10 @@ import classNames from 'classnames/bind';
 import Modal from 'react-modal';
 import UserItemSearch from '../../../ChatList/UserItemSearch/UserItemSerach';
 import axiosCilent from '../../../../../api/axiosClient';
+import { io } from 'socket.io-client';
+import { useContext } from 'react';
+import { AuthContext } from '../../../../../context/AuthContext';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(style);
 
@@ -22,6 +26,7 @@ const customStyles = {
     },
 };
 const OptionMess = ({ noOwn, conversation, mess }) => {
+    const { user } = useContext(AuthContext);
     const [showMore, setShowMore] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
@@ -35,11 +40,41 @@ const OptionMess = ({ noOwn, conversation, mess }) => {
     const recoverMess = async () => {
         try {
             await axiosCilent.put('/zola/message/recoverMess', { id: mess.id });
+            socket.emit('remove-to-server', {
+                id: mess.id,
+                conversationID: conversation.id,
+            });
         } catch (error) {
             console.log(error);
         }
     };
 
+    const delMess = async () => {
+        const req = { id: mess.id, userId: user.id };
+        try {
+            await axiosCilent.put('/zola/message/deleteMess', req);
+            socket.emit('send-to-server', {
+                senderId: mess.sender,
+                conversationID: mess.id,
+                dataMess: {
+                    conversationID: mess.id,
+                    date: new Date().getTime(),
+                    id: 'temp',
+                    img_url: mess.img_url,
+                    infoSender: {
+                        fullName: user.fullName,
+                        imageSender: user.img,
+                    },
+                    mess: mess.mess,
+                    sender: mess.sender,
+                },
+                imgs: mess.img_url.length,
+                fullName: user.fullName,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <Tippy
             visible={showMore}
@@ -48,6 +83,7 @@ const OptionMess = ({ noOwn, conversation, mess }) => {
                 <ul className={cx('wrapper-more')} tabIndex="-1" {...attrs}>
                     {!noOwn && <li onClick={recoverMess}>Thu hồi</li>}
                     <li onClick={openModal}>Chuyển tiếp</li>
+                    <li onClick={delMess}>Xóa</li>
                     <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal} ariaHideApp={false}>
                         <div className={cx('wrapper-modal')}>
                             <div className={cx('header-md')}>
