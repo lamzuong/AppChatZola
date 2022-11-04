@@ -107,7 +107,6 @@ const ChatDetails = (props) => {
                         <ButtonSeeAllFile imgStore={listImg} fileStore={listFile} />
                     </StoreItem>
                     <StoreItem title="File">
-                        {console.log(listFile)}
                         {listFile.slice(0, 4).map((f, i) => (
                             <ListViewItem
                                 key={i}

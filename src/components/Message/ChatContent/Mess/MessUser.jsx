@@ -66,10 +66,10 @@ const MessUser = (props) => {
         return '';
     }
 
-    var remove = false;
-    if (props.mess?.removePerson.filter((i) => i === props.user.id)) {
-        remove = true;
-    }
+    // var remove = false;
+    // if (props.mess?.removePerson.filter((i) => i === props.user.id)) {
+    //     remove = true;
+    // }
     return (
         <div className={cx('message', props.group ? 'group' : '', props.own ? 'own' : '')}>
             <div className={cx('messImg')}>

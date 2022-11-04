@@ -61,15 +61,15 @@ const Input = (props) => {
             });
             setChatContent('');
             setRerender(!rerender);
-            sendData(rerender);
+            // sendData(rerender);
             setDelImg([]);
         } catch (err) {
             console.log(err);
         }
     };
-    const sendData = (data) => {
-        props.parentCb(data);
-    };
+    // const sendData = (data) => {
+    //     props.parentCb(data);
+    // };
 
     const handleDelImg = (i) => {
         delImg.splice(i, 1);

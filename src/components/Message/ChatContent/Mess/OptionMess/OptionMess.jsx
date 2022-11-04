@@ -40,9 +40,9 @@ const OptionMess = ({ noOwn, conversation, mess }) => {
     const recoverMess = async () => {
         try {
             await axiosCilent.put('/zola/message/recoverMess', { id: mess.id });
-            socket.emit('remove-to-server', {
-                id: mess.id,
-                conversationID: conversation.id,
+            socket.emit('send-to-server', {
+                senderId: user.id,
+                conversationID: mess.conversationID,
             });
         } catch (error) {
             console.log(error);
@@ -53,24 +53,6 @@ const OptionMess = ({ noOwn, conversation, mess }) => {
         const req = { id: mess.id, userId: user.id };
         try {
             await axiosCilent.put('/zola/message/deleteMess', req);
-            socket.emit('send-to-server', {
-                senderId: mess.sender,
-                conversationID: mess.id,
-                dataMess: {
-                    conversationID: mess.id,
-                    date: new Date().getTime(),
-                    id: 'temp',
-                    img_url: mess.img_url,
-                    infoSender: {
-                        fullName: user.fullName,
-                        imageSender: user.img,
-                    },
-                    mess: mess.mess,
-                    sender: mess.sender,
-                },
-                imgs: mess.img_url.length,
-                fullName: user.fullName,
-            });
         } catch (error) {
             console.log(error);
         }

@@ -183,20 +183,21 @@ const Message = (props) => {
             try {
                 conversationIDChat = currentChat.id;
                 if (data.conversationID === conversationIDChat) {
-                    setMessage([...message, data.dataMess]);
-                }
-            } catch (error) {}
-        });
-        socket.on('server-remove-to-client', (data) => {
-            let conversationIDChat;
-            try {
-                conversationIDChat = conversation.id;
-                if (data.conversationID === conversationIDChat) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
         });
-    }, [socket]);
+        // socket.on('server-remove-to-client', (data) => {
+        //     let conversationIDChat;
+        //     try {
+        //         conversationIDChat = currentChat.id;
+        //         if (data.conversationID === conversationIDChat) {
+        //             setRerender(!rerender);
+        //         }
+        //     } catch (error) {}
+        // });
+    });
+    console.log(rerender);
     conversation.sort((a, b) => b.date - a.date);
     return (
         <div className={cx('wrapper')}>
