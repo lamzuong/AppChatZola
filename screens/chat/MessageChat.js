@@ -20,7 +20,12 @@ import { Entypo } from "@expo/vector-icons";
 import styleModal from "./styleModalImage";
 import { Video, AVPlaybackStatus } from "expo-av";
 import TransferList from "./TransferList";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function MessageChat(props) {
   const { user } = useContext(AuthContext);
 
@@ -72,14 +77,27 @@ export default function MessageChat(props) {
   const [videoPress, setVideoPress] = useState("");
   const [status, setStatus] = useState({});
   const [remove, setRemove] = useState(item.deleted);
-  const [personRemove, setPersonRemove] = useState(
-    item.removePerson.includes(user.id)
-  );
+  const [personRemove, setPersonRemove] = useState(false);
+  useEffect(() => {
+    if (item?.removePerson == []) {
+      setPersonRemove(false);
+    } else {
+      item?.removePerson.forEach((e) => {
+        if (e == user?.id) {
+          setPersonRemove(true);
+        }
+      });
+    }
+  }, []);
 
   //=======Thu hồi==============
   const removeMessage = async (e) => {
     try {
       await axiosCilent.put("/zola/message/recoverMess", { id: item.id });
+      socket.emit("remove-to-server", {
+        id: item.id,
+        conversationID: item.conversationID,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -311,15 +329,17 @@ export default function MessageChat(props) {
         >
           <View style={styles.centeredView}>
             <View style={[styles.modalView, styles.modalViewBonus]}>
-              {conversation.map((e, i) => (
-                <TransferList
-                  key={i}
-                  conversation={e}
-                  currentUser={user}
-                  mess={item.mess}
-                  img_url={item.img_url}
-                />
-              ))}
+              {conversation.map((e, i) =>
+                props.item.conversationID == e.id ? null : (
+                  <TransferList
+                    key={i}
+                    conversation={e}
+                    currentUser={user}
+                    mess={item.mess}
+                    img_url={item.img_url}
+                  />
+                )
+              )}
             </View>
           </View>
         </TouchableWithoutFeedback>

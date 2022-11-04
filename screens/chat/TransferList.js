@@ -51,7 +51,6 @@ export default function TransferList(props) {
   const [send, setSend] = useState(false);
   const mess = props.mess;
   const img_url = props.img_url;
-  console.log(img_url);
   const handleSendMessage = async (e) => {
     if (mess.trim() === "" && img_url.length == 0) {
     } else {

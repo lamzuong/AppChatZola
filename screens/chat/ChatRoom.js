@@ -38,6 +38,7 @@ const socket = io.connect(apiConfig.baseUrl, {
 export default function ChatRoom({ route }) {
   let { nickname, avatar, conversation } = route.params;
   //=============================
+  const [rerender, setRerender] = useState(false);
   useEffect(() => {
     socket.on("server-send-to-client", (data) => {
       let conversationIDChat;
@@ -47,8 +48,18 @@ export default function ChatRoom({ route }) {
           data.conversationID == conversationIDChat &&
           data.senderId != user.id
         ) {
+          console.log(data.conversationID);
           setRerender(!rerender);
-          // console.log(rerender);
+        }
+      } catch (error) {}
+    });
+    socket.on("server-remove-to-client", (data) => {
+      let conversationIDChat;
+      try {
+        conversationIDChat = conversation.id;
+        if (data.conversationID == conversationIDChat) {
+          // setMessage([]);
+          setRerender(!rerender);
         }
       } catch (error) {}
     });
@@ -131,12 +142,12 @@ export default function ChatRoom({ route }) {
   //======getConversation=======
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
-  const [rerender, setRerender] = useState(false);
   useEffect(() => {
     const getMess = async () => {
       try {
         const res = await axiosCilent.get("/zola/message/" + conversation.id);
-        setMessage(res);
+        var temp = [...res];
+        setMessage(temp);
       } catch (error) {
         console.log(error);
       }
@@ -199,7 +210,7 @@ export default function ChatRoom({ route }) {
     const timeout = setTimeout(() => {
       if (flatlistRef.current && message && message.length > 0) {
         flatlistRef.current.scrollToEnd({ animated: true });
-        setTimeScroll(100);
+        setTimeScroll(1000);
       }
     }, timeScroll);
     return () => {
@@ -301,6 +312,8 @@ export default function ChatRoom({ route }) {
       </View>
       <FlatList
         // data={message.reverse()}
+        // inverted
+        // onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
         data={message}
         renderItem={({ item }) => (
           <MessageChat
@@ -310,11 +323,19 @@ export default function ChatRoom({ route }) {
           />
         )}
         keyExtractor={(item, index) => index + item}
-        // inverted={-1}
-        // initialNumToRender={10}
         ref={flatlistRef}
-        // onContentSizeChange={() => flatlistRef.current.scrollToEnd()}
       />
+      {/* <ScrollView ref={flatlistRef}>
+        {message.map((e, i) => (
+          <View key={i}>
+            <MessageChat
+              time={e.date}
+              group={conversation.members.length > 2}
+              item={e}
+            />
+          </View>
+        ))}
+      </ScrollView> */}
       {/* Xem trước ảnh */}
       <View>
         <FlatList
