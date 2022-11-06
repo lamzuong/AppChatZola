@@ -87,6 +87,7 @@ router.get('/idCon/:id', (req, res) => {
         }
     });
 });
+// Thêm thành viên
 router.put('/addMem', (req, res) => {
     const { conversationId, listFriendId, members } = req.body;
     const getConversation = {
@@ -126,6 +127,7 @@ router.put('/addMem', (req, res) => {
         }
     });
 });
+// Xóa thành viên
 router.put('/deleteMem', (req, res) => {
     const { conversationId, friendId, members } = req.body;
     const getConversation = {
@@ -162,6 +164,7 @@ router.put('/deleteMem', (req, res) => {
         }
     });
 });
+// Đổi tên group
 router.put('/renameGroup', (req, res) => {
     const { conversationId, groupName } = req.body;
     console.log(groupName);
@@ -199,6 +202,7 @@ router.put('/renameGroup', (req, res) => {
         }
     });
 });
+// Đổi avatar group mobile
 router.put('/mobile/avaGroup', (req, res) => {
     const { conversationId, avatarGroup, avatarOld } = req.body;
     if (!(avatarGroup.base64 && avatarGroup.fileType)) {
@@ -241,6 +245,43 @@ router.put('/mobile/avaGroup', (req, res) => {
                 ExpressionAttributeValues: {
                     ':avatarGroup':
                         avatarGroup.base64 && avatarGroup.fileType ? `${CLOUD_FRONT_URL}${filePath}` : avatarOld,
+                },
+            };
+            docClient.update(paramsConversation, (err, data) => {
+                if (err) {
+                    console.log('Loi1' + err);
+                } else {
+                    console.log(data);
+                    return res.send('Success');
+                }
+            });
+        }
+    });
+});
+// Ủy quyền trưởng nhóm
+router.put('/grantPermission', (req, res) => {
+    const { conversationId, creator } = req.body;
+    const getConversation = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.get(getConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        } else {
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: conversationId,
+                },
+                UpdateExpression: 'SET #creator =:creator',
+                ExpressionAttributeNames: {
+                    '#creator': 'creator', //COLUMN NAME
+                },
+                ExpressionAttributeValues: {
+                    ':creator': creator,
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
