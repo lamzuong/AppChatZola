@@ -7,6 +7,7 @@ const s3 = new AWS.S3({
     accessKeyId: 'AKIA34KECLYEL2WGGHN2',
     secretAccessKey: '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',
 });
+const CLOUD_FRONT_URL = 'https://d370tx6r1rzpl2.cloudfront.net/';
 
 router.post('/', (req, res) => {
     const id = uuid();
@@ -199,7 +200,7 @@ router.put('/renameGroup', (req, res) => {
     });
 });
 router.put('/mobile/avaGroup', (req, res) => {
-    const { conversationId, avatarGroup } = req.body;
+    const { conversationId, avatarGroup, avatarOld } = req.body;
     if (!(avatarGroup.base64 && avatarGroup.fileType)) {
     } else {
         var buffer = Buffer.from(avatarGroup.base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
@@ -238,7 +239,8 @@ router.put('/mobile/avaGroup', (req, res) => {
                     '#avatarGroup': 'avatarGroup', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
-                    ':avatarGroup': avatarGroup,
+                    ':avatarGroup':
+                        avatarGroup.base64 && avatarGroup.fileType ? `${CLOUD_FRONT_URL}${filePath}` : avatarOld,
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
