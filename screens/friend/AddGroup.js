@@ -125,16 +125,25 @@ export default function AddGroup({ navigation, route }, props) {
   //======Button Back=======
   useEffect(() => {
     const backAction = () => {
-      navigation.goBack();
+      {
+        itemChoose.length < 2
+          ? navigation.goBack()
+          : Alert.alert("Trở về màn hình chính?", "Bạn có muốn trở về không?", [
+              {
+                text: "Hủy",
+                onPress: () => {},
+              },
+              { text: "OK", onPress: () => navigation.goBack() },
+            ]);
+      }
       return true;
     };
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
     );
-
     return () => backHandler.remove();
-  }, []);
+  }, [itemChoose]);
   //========================
 
   const AllFriends = () => {
@@ -284,10 +293,15 @@ const Footer = (props) => {
     var nameGr = "";
     var memGr = [];
     props.item.forEach((e) => {
-      nameGr += e.fullName + ", ";
+      // nameGr += e.fullName + ", ";
       memGr.push(e.id);
     });
-    nameGr += user.fullName;
+    nameGr += user.fullName.split(" ").slice(-1) + ", ";
+    for (let i = 0; i < 2; i++) {
+      if (i == 1) nameGr += props.item[i].fullName.split(" ").slice(-1);
+      else nameGr += props.item[i].fullName.split(" ").slice(-1) + ", ";
+    }
+
     const conversation = {
       members: [...memGr, user.id],
       nameGroup: nameGr,

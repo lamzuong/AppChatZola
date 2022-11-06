@@ -36,14 +36,13 @@ const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
 });
 export default function ChatRoom({ route }) {
-  let { nickname, avatar, conversation, rerenderTemp } = route.params;
-  console.log(nickname);
+  let { nickname, avatar, conversation, rerenderTemp, renderRooms } =
+    route.params;
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
   useEffect(() => {
     if (route.params.rerenderTemp != null) {
-      console.log(1);
       setRerender(rerenderTemp);
     }
   });
@@ -55,9 +54,15 @@ export default function ChatRoom({ route }) {
         );
         // console.log(res.members.length);
         setConversationRerender(res);
-        setAvaRerender(res.avatarGroup);
-        setNameRerender(res.groupName);
-        setNameInChat(res.groupName);
+        if (res.members > 2) {
+          setAvaRerender(res.avatarGroup);
+          setNameRerender(res.groupName);
+          setNameInChat(res.groupName);
+        } else {
+          setAvaRerender(avatar);
+          setNameRerender(nickname);
+          setNameInChat(nickname);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -303,7 +308,11 @@ export default function ChatRoom({ route }) {
           <TouchableOpacity
             style={styles.iconBack}
             onPress={() => {
-              navigation.navigate("Rooms");
+              navigation.navigate("Rooms", {
+                conId: conversation.id,
+                nameGroup: nameRender,
+                avaGroup: avaRender,
+              });
             }}
           >
             <Ionicons name="md-arrow-back-sharp" size={40} color="white" />

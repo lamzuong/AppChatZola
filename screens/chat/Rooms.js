@@ -30,20 +30,29 @@ export default function Rooms({ navigation, route }) {
   const [conversation, setConversation] = useState([]);
   const { user } = useContext(AuthContext);
   const [rerender, setRerender] = useState(false);
+  const [conIdReceive, setConIdReceive] = useState("");
+  const [nameReceive, setNameReceive] = useState("");
+  const [avaReceive, setAvaReceive] = useState("");
   useEffect(() => {
-    if (route.params != null) setRerender(route.params.rerender);
+    if (route.params != null) {
+      setRerender(route.params.rerender);
+      setConIdReceive(route.params.conId);
+      setNameReceive(route.params.nameGroup);
+      setAvaReceive(route.params.avaGroup);
+    }
   });
   useEffect(() => {
     const getConversation = async () => {
       try {
         const res = await axiosCilent.get("/zola/conversation/" + user.id);
         setConversation(res);
+        setRerender(false);
       } catch (error) {
         console.log(error);
       }
     };
     getConversation();
-  }, [user.id, rerender]);
+  }, [user.id, rerender, conIdReceive, nameReceive, avaReceive]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />

@@ -105,9 +105,6 @@ export default function ChatList(props) {
       } else lastMess = foo[0].mess;
     }
   }
-
-  //======================
-
   //======================
   return (
     <View style={{ backgroundColor: "white" }}>
