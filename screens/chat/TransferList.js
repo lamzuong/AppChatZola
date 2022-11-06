@@ -6,7 +6,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import styles from "./styleTransferList";
+import styles from "./style/styleTransferList";
 import { useNavigation } from "@react-navigation/native";
 import axiosCilent from "../../api/axiosClient";
 import { io } from "socket.io-client";

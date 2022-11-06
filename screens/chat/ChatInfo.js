@@ -15,7 +15,7 @@ import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import styleModal from "./styleModalImage";
+import styleModal from "./style/styleModalImage";
 
 const listImg = [
   {

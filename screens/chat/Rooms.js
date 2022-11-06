@@ -11,7 +11,7 @@ import {
   Alert,
 } from "react-native";
 import ChatList from "./ChatList";
-import styles from "./styleRooms";
+import styles from "./style/styleRooms";
 import { EvilIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { Menu, MenuItem } from "react-native-material-menu";
@@ -22,7 +22,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { useState, useEffect, useContext } from "react";
 import axiosCilent from "../../api/axiosClient";
 
-export default function Rooms({ navigation }) {
+export default function Rooms({ navigation, route }) {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
@@ -30,6 +30,9 @@ export default function Rooms({ navigation }) {
   const [conversation, setConversation] = useState([]);
   const { user } = useContext(AuthContext);
   const [rerender, setRerender] = useState(false);
+  useEffect(() => {
+    if (route.params != null) setRerender(route.params.rerender);
+  });
   useEffect(() => {
     const getConversation = async () => {
       try {
@@ -92,7 +95,7 @@ export default function Rooms({ navigation }) {
           <TouchableOpacity
             style={styles.menuFunction}
             onPress={() => {
-              navigation.navigate("AddGroup");
+              navigation.navigate("AddGroup", { rerender: rerender });
             }}
           >
             <AntDesign

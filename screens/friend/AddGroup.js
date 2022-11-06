@@ -10,94 +10,15 @@ import {
   BackHandler,
   TextInput,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import axiosCilent from "../../api/axiosClient";
+import { AuthContext } from "../../context/AuthContext";
 
-const listFriends = [
-  {
-    id: "1",
-    ava: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
-    name: "Phúc Du",
-    message: "hello",
-  },
-  {
-    id: "2",
-    ava: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
-    name: "Phuc Nguyen",
-    message: "hello",
-  },
-  {
-    id: "3",
-    ava: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
-    name: "Minh Vuong M4U",
-    message: "hello",
-  },
-  {
-    id: "4",
-    ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-    name: "Nam Zuong",
-    message: "hello",
-  },
-  {
-    id: "5",
-    ava: "https://i.pinimg.com/280x280_RS/43/cd/7c/43cd7c65d590d2f41c05a23f3dfe82d4.jpg",
-    name: "Trung Quoc",
-  },
-  {
-    id: "6",
-    ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-    name: "Abalatrap",
-  },
-  {
-    id: "7",
-    ava: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-    name: "Watson Dr.",
-  },
-  {
-    id: "8",
-    ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-    name: "Nguyen",
-  },
-  {
-    id: "9",
-    ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-    name: "Quất",
-  },
-  {
-    id: "10",
-    ava: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-    name: "Vuong",
-  },
-  {
-    id: "11",
-    ava: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-    name: "Nam Quốc",
-  },
-  {
-    id: "12",
-    ava: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-    name: "Phuc",
-  },
-  {
-    id: "13",
-    ava: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-    name: "Ân Nguyen",
-  },
-  {
-    id: "14",
-    ava: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-    name: "Lam Quoc",
-  },
-  {
-    id: "15",
-    ava: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-    name: "Chinh Vuong",
-  },
-];
 const listTitle = [
   "A",
   "Ă",
@@ -133,17 +54,63 @@ const listTitle = [
   "Y",
   "Z",
 ];
-const sort_ListFriends = [...listFriends].sort((a, b) =>
-  a.name > b.name ? 1 : -1
-);
-export default function AddGroup({ navigation }, props) {
+
+export default function AddGroup({ navigation, route }, props) {
+  const { user } = useContext(AuthContext);
+  const [listFriendsId, setListFriendsId] = useState([]);
+  const [renderUser, setRenderUser] = useState(false);
+  const [itemChoose, setItemChoose] = useState([]);
+  let { rerender } = route.params;
+  //=======================
+  useEffect(() => {
+    const getInfoUser = async () => {
+      try {
+        const res = await axiosCilent.get("/zola/users/" + user.id);
+        setListFriendsId(res.friends);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getInfoUser();
+  }, [renderUser]);
+  //========================
+  var listFriends = [];
+  const [listMem, setListMem] = useState([]);
+  useEffect(() => {
+    if (listFriendsId.length != 0) {
+      var i = 0;
+      const getInfoFriends = async (mem) => {
+        try {
+          const res = await axiosCilent.get("/zola/users/" + mem);
+          listFriends.push(res);
+          ++i;
+          if (i === listFriendsId.length) {
+            setListMem(listFriends);
+            i = 0;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      listFriendsId.forEach((element) => {
+        getInfoFriends(element);
+      });
+    } else {
+      setListMem([]);
+    }
+  }, [listFriendsId]);
+  //=======================
+  const sort_ListFriends = [...listMem].sort((a, b) =>
+    a.fullName > b.fullName ? 1 : -1
+  );
   var list = [];
   var setShow = [];
+
   for (let i = 0; i < listTitle.length; i++) {
     list[i] = [];
     sort_ListFriends.forEach((element) => {
       // lọc theo chữ cái
-      if (element.name.startsWith(listTitle[i])) {
+      if (element.fullName.startsWith(listTitle[i])) {
         list[i].push(element);
       }
     });
@@ -168,64 +135,103 @@ export default function AddGroup({ navigation }, props) {
 
     return () => backHandler.remove();
   }, []);
-  return (
-    <View style={{ justifyContent: "flex-end" }}>
-      <Header />
-      <FlatList
-        data={listAll}
-        renderItem={({ item }) => (
+  //========================
+
+  const AllFriends = () => {
+    return (
+      <ScrollView>
+        {listAll.map((e, i) => (
           <ViewListFriend
-            title={item.title}
-            show={item.show}
-            list={item.listFr}
+            key={i}
+            title={e.title}
+            show={e.show}
+            list={e.listFr}
           />
-        )}
-        keyExtractor={(item, index) => index}
-      />
-      <Footer />
+        ))}
+      </ScrollView>
+    );
+  };
+  const ViewListFriend = (props) => {
+    return (
+      <View>
+        {props.show ? <Text style={styles.title}>{props.title}</Text> : null}
+        {props.list.map((e, i) => (
+          <ItemFriend key={i} user={e} />
+        ))}
+      </View>
+    );
+  };
+  const ItemFriend = (props) => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          onUserPress(props.user);
+        }}
+      >
+        <View style={styles.items}>
+          <View style={{ justifyContent: "center", marginRight: 10 }}>
+            <Checkbox
+              status={isUserSelected(props.user) ? "checked" : "unchecked"}
+              onPress={() => {
+                onUserPress(props.user);
+              }}
+              style={styles.styleCkb}
+            />
+          </View>
+          <Image
+            source={{
+              uri: props.user.img,
+            }}
+            style={styles.imageAva}
+          />
+          <Text style={styles.nickname}>{props.user.fullName}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const isUserSelected = (user) => {
+    // xem có id trong itemChoose không, trả về true false
+    return itemChoose.some((selectedUser) => selectedUser.id === user.id);
+  };
+  const onUserPress = (user) => {
+    if (isUserSelected(user)) {
+      // remove it from selected
+      // Lấy những phần tử khác user.id trong mảng có sẵn
+      setItemChoose(
+        itemChoose.filter((selectedUser) => selectedUser.id !== user.id)
+      );
+    } else {
+      setItemChoose([...itemChoose, user]);
+    }
+  };
+  return (
+    <View>
+      <Header />
+      <View style={{ height: "68%", marginBottom: 5 }}>
+        <AllFriends />
+      </View>
+      <View style={[styles.reviewItem, { height: "7%" }]}>
+        <FlatList
+          data={itemChoose}
+          renderItem={({ item }) => {
+            return (
+              <View>
+                <Image
+                  style={{ height: 50, width: 50, borderRadius: 100 }}
+                  source={{ uri: item.img }}
+                />
+              </View>
+            );
+          }}
+          keyExtractor={(item, index) => index}
+          horizontal={true}
+        />
+      </View>
+      <Footer item={itemChoose} rerender={rerender} />
     </View>
   );
 }
-const ViewListFriend = (props) => {
-  return (
-    <View>
-      {props.show ? <Text style={styles.title}>{props.title}</Text> : null}
-      {props.list.map((e, i) => (
-        <ItemFriend key={i} id={e.id} ava={e.ava} name={e.name} />
-      ))}
-    </View>
-  );
-};
-const ItemFriend = (props) => {
-  const [checked, setChecked] = React.useState(false);
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        setChecked(!checked);
-      }}
-    >
-      <View style={styles.items}>
-        <View style={{ justifyContent: "center", marginRight: 10 }}>
-          <Checkbox
-            status={checked ? "checked" : "unchecked"}
-            onPress={() => {
-              setChecked(!checked);
-            }}
-            style={styles.styleCkb}
-          />
-        </View>
 
-        <Image
-          source={{
-            uri: props.ava,
-          }}
-          style={styles.imageAva}
-        />
-        <Text style={styles.nickname}>{props.name}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
 const Header = () => {
   const navigation = useNavigation();
   const [appearX, setAppearX] = useState("");
@@ -269,23 +275,70 @@ const Header = () => {
     </View>
   );
 };
-const Footer = () => {
+const Footer = (props) => {
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
+  var bool = true;
+  if (props.item.length > 1) bool = false;
+  const addGroup = async () => {
+    var nameGr = "";
+    var memGr = [];
+    props.item.forEach((e) => {
+      nameGr += e.fullName + ", ";
+      memGr.push(e.id);
+    });
+    nameGr += user.fullName;
+    const conversation = {
+      members: [...memGr, user.id],
+      nameGroup: nameGr,
+      id: user.id,
+    };
+    try {
+      await axiosCilent.post("/zola/conversation", conversation);
+      Alert.alert("Thông báo", "Tạo nhóm chat thành công!", [
+        {},
+        {
+          text: "OK",
+          onPress: () =>
+            navigation.navigate("Rooms", { rerender: !props.rerender }),
+        },
+      ]);
+    } catch (error) {}
+  };
+  //====================
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.buttonCreate}>
-        <Text style={{ color: "white", fontWeight: "bold" }}>TẠO NHÓM</Text>
-      </TouchableOpacity>
+      {bool ? (
+        <View style={[styles.buttonCreate, { backgroundColor: "#ccccff" }]}>
+          <Text style={{ color: "white", fontWeight: "bold" }}>TẠO NHÓM</Text>
+        </View>
+      ) : (
+        <TouchableOpacity
+          style={styles.buttonCreate}
+          onPress={() => {
+            addGroup();
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold" }}>TẠO NHÓM</Text>
+        </TouchableOpacity>
+      )}
+
       <TouchableOpacity
         style={styles.buttonCancel}
         onPress={() => {
-          Alert.alert("Trở về màn hình chính?", "Bạn có muốn trở về không?", [
-            {
-              text: "Hủy",
-              onPress: () => {},
-            },
-            { text: "OK", onPress: () => navigation.navigate("Home") },
-          ]);
+          bool
+            ? navigation.goBack()
+            : Alert.alert(
+                "Trở về màn hình chính?",
+                "Bạn có muốn trở về không?",
+                [
+                  {
+                    text: "Hủy",
+                    onPress: () => {},
+                  },
+                  { text: "OK", onPress: () => navigation.goBack() },
+                ]
+              );
         }}
       >
         <Text style={{ color: "white", fontWeight: "bold" }}>HỦY</Text>
@@ -347,10 +400,13 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 7,
   },
+  reviewItem: {
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+  },
   footer: {
     height: 130,
     backgroundColor: "white",
-    marginTop: 10,
     alignItems: "center",
   },
   buttonCreate: {

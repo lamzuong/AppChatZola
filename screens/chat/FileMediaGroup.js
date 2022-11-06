@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import styles from "./styleChatInfoGroup";
+import styles from "./style/styleFileMediaGroup";
 
 export default function FileMediaGroup({ navigation, route }) {
   const { listFile, listImg } = route.params;

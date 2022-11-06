@@ -19,6 +19,8 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     fontSize: 22,
     marginLeft: 20,
+    maxWidth: "70%",
+    maxHeight: 30,
   },
   chatLastTime: {
     fontSize: 18,

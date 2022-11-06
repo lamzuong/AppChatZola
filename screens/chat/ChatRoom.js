@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
-import styles from "./styleChatRoom";
+import styles from "./style/styleChatRoom";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -36,7 +36,34 @@ const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
 });
 export default function ChatRoom({ route }) {
-  let { nickname, avatar, conversation } = route.params;
+  let { nickname, avatar, conversation, rerenderTemp } = route.params;
+  console.log(nickname);
+  const [conversationRender, setConversationRerender] = useState(conversation);
+  const [nameRender, setNameRerender] = useState(nickname);
+  const [avaRender, setAvaRerender] = useState(avatar);
+  useEffect(() => {
+    if (route.params.rerenderTemp != null) {
+      console.log(1);
+      setRerender(rerenderTemp);
+    }
+  });
+  useEffect(() => {
+    const getConversation = async () => {
+      try {
+        const res = await axiosCilent.get(
+          "/zola/conversation/idCon/" + conversation.id
+        );
+        // console.log(res.members.length);
+        setConversationRerender(res);
+        setAvaRerender(res.avatarGroup);
+        setNameRerender(res.groupName);
+        setNameInChat(res.groupName);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getConversation();
+  }, [rerender, conversation]);
   //=============================
   const [rerender, setRerender] = useState(false);
   useEffect(() => {
@@ -66,11 +93,14 @@ export default function ChatRoom({ route }) {
   });
   const navigation = useNavigation();
   //======edit name header chat if it too long====
-  const [nameInChat, setNameInChat] = useState(nickname);
-  const strName = new String(nameInChat);
-  if (strName.length > 15) {
-    setNameInChat(strName.slice(0, 12) + "...");
-  }
+  const [nameInChat, setNameInChat] = useState(nameRender);
+  useEffect(() => {
+    const strName = new String(nameInChat);
+    if (strName.length > 15) {
+      setNameInChat(strName.slice(0, 12) + "...");
+    }
+  }, [nameInChat]);
+
   //======edit input text chat======
   const [valueInput, setValueInput] = useState("");
   const [widthInput, setWidthInput] = useState("80%");
@@ -300,9 +330,10 @@ export default function ChatRoom({ route }) {
             style={[styles.iconTop]}
             onPress={() => {
               navigation.navigate(chatInfo, {
-                name: nickname,
-                ava: avatar,
-                conversation: conversation,
+                name: nameRender,
+                ava: avaRender,
+                conversation: conversationRender,
+                rerenderTemp: rerender,
               });
             }}
           >

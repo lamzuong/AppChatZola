@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import styles from "./styleChatList";
+import styles from "./style/styleChatList";
 import { useNavigation } from "@react-navigation/native";
 import axiosCilent from "../../api/axiosClient";
 import { io } from "socket.io-client";
@@ -105,6 +105,8 @@ export default function ChatList(props) {
       } else lastMess = foo[0].mess;
     }
   }
+
+  //======================
 
   //======================
   return (

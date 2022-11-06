@@ -17,7 +17,7 @@ import { AuthContext } from "../../context/AuthContext";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
-import styleModal from "./styleModalImage";
+import styleModal from "./style/styleModalImage";
 import { Video, AVPlaybackStatus } from "expo-av";
 import TransferList from "./TransferList";
 import { io } from "socket.io-client";
@@ -324,7 +324,7 @@ export default function MessageChat(props) {
       >
         <TouchableWithoutFeedback
           onPress={() => {
-            setModalVisible(!modalVisibleConversation);
+            setModalVisibleConversation(!modalVisibleConversation);
           }}
         >
           <View style={styles.centeredView}>

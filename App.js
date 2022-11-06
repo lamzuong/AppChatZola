@@ -1,7 +1,5 @@
 import React from "react";
-import {
-  Button,
-} from "react-native";
+import { Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useWindowDimensions } from "react-native";
@@ -36,7 +34,7 @@ export default function App() {
             name="Welcome"
             component={Welcome}
             options={{ headerShown: false }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="Login"
             component={Login}
@@ -46,12 +44,12 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: false,
             }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="Home"
             component={Home}
             options={{ headerShown: false }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
@@ -61,7 +59,7 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: true,
             }}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="LogInFirst"
             component={LogInFirst}
@@ -71,13 +69,8 @@ export default function App() {
               headerStyle: { backgroundColor: "#0091ff" },
               headerShown: false,
             }}
-          ></Stack.Screen>
-          <Stack.Screen name="ChatRoom" component={ChatRoom} />
-          <Stack.Screen
-            name="ListMemberGroup"
-            component={ListMemberGroup}
-            options={{ animation: "slide_from_right" }}
           />
+          <Stack.Screen name="ChatRoom" component={ChatRoom} />
           <Stack.Screen
             name="FileMediaGroup"
             component={FileMediaGroup}
@@ -91,6 +84,11 @@ export default function App() {
           <Stack.Screen
             name="ChatInfoGroup"
             component={ChatInfoGroup}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="ListMemberGroup"
+            component={ListMemberGroup}
             options={{ animation: "slide_from_right" }}
           />
           <Stack.Screen
