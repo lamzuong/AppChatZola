@@ -15,6 +15,8 @@ import Conversation from './Conversation';
 import Input from '../../Input/Input';
 import UserItemSearch from './UserItemSearch/UserItemSerach';
 import InfoDetailUser from './InfoDetailUser/InfoDetailUser';
+import UserItemSearchGroup from './UserItemSearchGroup/UserItemSearchGroup';
+import UserItemAdded from './UserItemAdded/UserItemAdded';
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +31,7 @@ const ChatList = (props) => {
     };
     const mess = props.data;
     const active = conversation.findIndex((e) => e.id === path);
+    const [rerender, setRerender] = useState(false);
     const [text, setText] = useState('');
     const inputRef = useRef();
     const [foc, setFoc] = useState(false);
@@ -36,6 +39,9 @@ const ChatList = (props) => {
     const [name, setName] = useState('');
     const [clickUser, setClickUser] = useState(false);
     const [userChoosed, setUserChoosed] = useState({});
+    const [listFriendInfo, setListFriendInfo] = useState([]);
+    const [listAddedInfo, setListAddInfo] = useState([]);
+    //
 
     const customStyles = {
         content: {
@@ -49,6 +55,9 @@ const ChatList = (props) => {
         },
     };
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [modalIsOpenGroup, setModalIsOpenGroup] = useState(false);
+    const [checked, setChecked] = useState([]);
+    const [listUerAdded, setListUserAdded] = useState([]);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -57,6 +66,15 @@ const ChatList = (props) => {
         setModalIsOpen(false);
         setUserChoosed({});
         setClickUser(false);
+    };
+    const openModalGroup = () => {
+        setChecked([]);
+        setListUserAdded([]);
+        setModalIsOpenGroup(true);
+    };
+
+    const closeModalGroup = () => {
+        setModalIsOpenGroup(false);
     };
     const handleCleanText = () => {
         setText('');
@@ -73,6 +91,32 @@ const ChatList = (props) => {
         setUserChoosed(user);
         setClickUser(true);
     };
+
+    const haddleCreateGroup = async () => {
+        listAddedInfo.unshift(user);
+        const listTemp = listAddedInfo.slice(0, 3);
+        let groupname = [];
+        for (let i = 0; i < listTemp.length; i++) {
+            groupname.push(listTemp[i].fullName.split(' ').slice(-1)[0]);
+        }
+        try {
+            await axiosCilent.post('zola/conversation/', {
+                members: [...listUerAdded, user.id],
+                nameGroup: groupname.toString(),
+                id: user.id,
+            });
+            setModalIsOpenGroup(false);
+            sendData1(rerender);
+            setRerender(!rerender);
+            navigate('/');
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const sendData1 = (data) => {
+        props.parentCb1(data);
+    };
+
     useEffect(() => {
         const search = async () => {
             if (name.length === 0) {
@@ -83,6 +127,32 @@ const ChatList = (props) => {
         };
         search();
     }, [name]);
+    const getUsersInfo = async (user, func) => {
+        let listTemp = [];
+        for (let i = 0; i < user.length; i++) {
+            const res = await axiosCilent.get(`/zola/users/` + user[i]);
+            listTemp.push(res);
+        }
+        func([...listTemp]);
+    };
+    useEffect(() => {
+        getUsersInfo(user.friends, setListFriendInfo);
+    }, [modalIsOpenGroup]);
+    useEffect(() => {
+        getUsersInfo(listUerAdded, setListAddInfo);
+    }, [listUerAdded.length]);
+    const handleCheck = (id) => {
+        setChecked((prev) => {
+            const isChecked = checked.includes(id);
+            if (isChecked) {
+                setListUserAdded([...checked.filter((item) => item !== id)]);
+                return checked.filter((item) => item !== id);
+            } else {
+                setListUserAdded([...prev, id]);
+                return [...prev, id];
+            }
+        });
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -196,7 +266,88 @@ const ChatList = (props) => {
                                 <i
                                     className="bx bxs-group"
                                     style={{ fontSize: 30, cursor: 'pointer', marginLeft: 8 }}
+                                    onClick={openModalGroup}
                                 ></i>
+                                <Modal isOpen={modalIsOpenGroup} style={customStyles} onRequestClose={closeModalGroup}>
+                                    <div className={cx('wrapper-modal-group')}>
+                                        <div className={cx('header-modal-group')}>
+                                            <span className={cx('title-group')}>Tạo nhóm</span>
+                                            <div className={cx('icon-exit-group')} onClick={closeModalGroup}>
+                                                <i class="bx bx-x"></i>
+                                            </div>
+                                        </div>
+                                        <div className={cx('body-modal-group')}>
+                                            <div className={cx('add-member-group')}>
+                                                <label>Thêm bạn vào nhóm:</label>
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
+                                                    icon={<i class="bx bxs-envelope"></i>}
+                                                />
+                                            </div>
+                                            <div className={cx('list-friend-group')}>
+                                                <div className={cx('wrapper-friends')}>
+                                                    <span style={{ marginBottom: 20, display: 'block' }}>
+                                                        Danh sách bạn bè
+                                                    </span>
+                                                    <ul className={cx('friends')}>
+                                                        {listFriendInfo.map((user) => (
+                                                            <li
+                                                                key={user.id}
+                                                                style={{ display: 'flex' }}
+                                                                className={cx('item-user-group')}
+                                                            >
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={checked.includes(user.id)}
+                                                                    onChange={(e) => handleCheck(user.id)}
+                                                                />
+                                                                <UserItemSearchGroup
+                                                                    name={user.fullName}
+                                                                    ava={user.img}
+                                                                    onClick={() => handleCheck(user.id)}
+                                                                />
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                                {listUerAdded.length > 0 && (
+                                                    <div className={cx('list-user-added-w')}>
+                                                        <span
+                                                            style={{
+                                                                display: 'block',
+                                                                color: '#000',
+                                                                fontSize: '14px',
+                                                                width: '100%',
+                                                                textAlign: 'center',
+                                                                marginTop: '5px',
+                                                            }}
+                                                        >
+                                                            Danh sách nhóm
+                                                        </span>
+                                                        <ul className={cx('list-user-added')}>
+                                                            {listAddedInfo.length > 0 &&
+                                                                listAddedInfo.map((user) => (
+                                                                    <UserItemAdded
+                                                                        name={user.fullName}
+                                                                        ava={user.img}
+                                                                    />
+                                                                ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className={cx('footer-modal-group')}>
+                                            <div style={{ marginRight: 10 }}>
+                                                <button className={cx('btn-cancel-group')}>Hủy</button>
+                                                <button className={cx('btn-confirm-group')} onClick={haddleCreateGroup}>
+                                                    Tạo nhóm
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Modal>
                             </div>
                         )}
                     </div>

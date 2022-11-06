@@ -1,0 +1,25 @@
+// added item
+.added-item {
+    border: 1px solid #0068ff;
+    border-radius: 10px;
+    padding: 4px;
+    display: flex;
+    margin-bottom: 4px;
+    align-items: center;
+    span {
+        font-size: 15px;
+        color: #000;
+        flex: 1;
+    }
+}
+
+.img-added {
+    width: 30px;
+    height: 30px;
+    margin-right: 8px;
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+    }
+}

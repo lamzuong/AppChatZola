@@ -197,11 +197,16 @@ const Message = (props) => {
             } catch (error) {}
         });
     });
-    console.log(rerender);
     conversation.sort((a, b) => b.date - a.date);
     return (
         <div className={cx('wrapper')}>
-            <ChatList data={mess} conversation={conversation} rerender={rerender} parentCb={cbChild} />
+            <ChatList
+                data={mess}
+                conversation={conversation}
+                rerender={rerender}
+                parentCb1={cbChild1}
+                parentCb={cbChild}
+            />
             <div className={cx('chatWrapper')}>
                 {currentChat ? (
                     <>

@@ -1,12 +1,14 @@
 import classNames from 'classnames/bind';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Modal from 'react-modal';
-
+import axiosCilent from '../../../api/axiosClient';
+import AccountItem from '../../AccountItem/AccountItem';
 import { imgStore } from '../../../DataTest/DataTest';
 import ListView from '../../ListView/ListView';
 import ListViewItem from '../../ListView/ListViewItem/ListViewItem';
 import Store from '../../Store/Store';
 import StoreItem from '../../Store/StoreItem/StoreItem';
+
 import ButtonSeeAllFile from './ButtonSeeAllFile/ButtonSeeAllFile';
 import styles from './ChatDetails.module.scss';
 import Header from './Header/Header';
@@ -63,12 +65,48 @@ const ChatDetails = (props) => {
             i.split('.').splice(-1)[0] !== 'jfif',
     );
 
+    const [listMemberInfo, setListMemberInfo] = useState([]);
+
+    useEffect(() => {
+        const getUsersInfo = async () => {
+            let listTemp = [];
+            for (let i = 0; i < props.currentChat?.members.length; i++) {
+                const res = await axiosCilent.get(`/zola/users/` + props.currentChat.members[i]);
+                listTemp.push(res);
+            }
+            setListMemberInfo([...listTemp]);
+        };
+        getUsersInfo();
+    }, [props.currentChat?.members.length]);
+
+    const [down, setDown] = useState(false);
     return (
         <div className={cx('wrapper')}>
             <Header title="Thông tin hội thoại" className={cx('customHeader')} />
             <div className={cx('wrapper-info')}>
                 <Info img={props.img} nameInfo={props.name} />
                 <Store>
+                    {props.currentChat?.members.length > 2 && (
+                        <StoreItem title="Thành viên nhóm">
+                            <span style={{ margin: '0 16px' }}>{`${props.currentChat.members.length} thành viên`}</span>
+                            {down === false && <i className="bx bxs-right-arrow" onClick={() => setDown(true)}></i>}
+                            {down && (
+                                <>
+                                    <i className="bx bxs-down-arrow" onClick={() => setDown(false)}></i>
+                                    <div className={cx('listMember')}>
+                                        <ul>
+                                            {listMemberInfo.map((user) => (
+                                                <li key={user.id} className={cx('item-mem')}>
+                                                    <AccountItem name={user.fullName} ava={user.img} none />
+                                                    <button className={cx('btn-add-frend')}>Xóa</button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </>
+                            )}
+                        </StoreItem>
+                    )}
                     <StoreItem title="Ảnh/Video">
                         <div className={cx('content', 'gridv2')}>
                             {listImg.slice(0, 8).map((img, i) => (

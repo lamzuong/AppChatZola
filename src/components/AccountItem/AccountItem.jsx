@@ -14,7 +14,7 @@ const AccountItem = (props) => {
         <Link to={`/t/${props.id}`} className={cx('wrapper', props.none ? 'none' : active ? 'active' : '')}>
             <div className={cx('avatar')}>
                 <img src={props.ava} alt="" />
-                <div className={cx('onl')}></div>
+                {/* <div className={cx('onl')}></div> */}
             </div>
             <div className={cx('info')}>
                 <h4 className={cx('name')}>
