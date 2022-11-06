@@ -114,6 +114,7 @@ export default function ChatInfoGroup({ navigation, route }) {
   const { name, ava, conversation, tempRender, rerenderTemp } = route.params;
   const { user } = useContext(AuthContext);
   const [modalVisibleAdd, setModalVisibleAdd] = useState(false);
+  const [modalVisibleImg, setModalVisibleImg] = useState(false);
   const [rerender, setRerender] = useState(false);
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [nameRender, setNameRerender] = useState(name);
@@ -276,6 +277,7 @@ export default function ChatInfoGroup({ navigation, route }) {
             base64: imageBase64,
             fileType: fileType,
           },
+          avatarOld: avaRender,
         });
       } catch (err) {
         console.log(err);
@@ -305,7 +307,9 @@ export default function ChatInfoGroup({ navigation, route }) {
             base64: imageBase64,
             fileType: fileType,
           },
+          avatarOld: avaRender,
         });
+        // setAvaRerender(result.uri);
       } catch (err) {
         console.log(err);
       }
@@ -390,6 +394,70 @@ export default function ChatInfoGroup({ navigation, route }) {
                   <Text style={styles.txtAddMem}>Hủy</Text>
                 </TouchableOpacity>
               </View>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+      <Modal animationType="slide" transparent={true} visible={modalVisibleImg}>
+        <TouchableWithoutFeedback
+          onPress={() => {
+            setModalVisibleImg(!modalVisibleImg);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={[styles.modalView, { width: "65%" }]}>
+              <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                  showImagePicker();
+                  setModalVisibleImg(!modalVisibleImg);
+                }}
+              >
+                <View styles={{ width: "100%" }}>
+                  <FontAwesome
+                    name="image"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View styles={{ width: "100%" }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    Chọn ảnh từ thư viện
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flexDirection: "row" }}
+                onPress={() => {
+                  openCamera();
+                  setModalVisibleImg(!modalVisibleImg);
+                }}
+              >
+                <View styles={{ width: "100%" }}>
+                  <AntDesign
+                    name="camera"
+                    size={25}
+                    color="black"
+                    style={{ margin: 10, marginTop: 12 }}
+                  />
+                </View>
+                <View styles={{ width: "100%" }}>
+                  <Text
+                    style={{
+                      fontSize: 20,
+                      paddingVertical: 10,
+                    }}
+                  >
+                    Chụp ảnh
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -479,7 +547,12 @@ export default function ChatInfoGroup({ navigation, route }) {
           </View>
           <Text style={{ textAlign: "center" }}>Chỉnh sửa{"\n"}tên nhóm</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => {
+            setModalVisibleImg(!modalVisibleImg);
+          }}
+        >
           <View style={styles.iconOption}>
             <MaterialCommunityIcons
               name="image-edit-outline"
