@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
+import { Entypo } from "@expo/vector-icons";
 
 export default function ListMemberGroup({ navigation, route }) {
   const { conversation, name, ava, rerender } = route.params;
@@ -188,6 +189,11 @@ export default function ListMemberGroup({ navigation, route }) {
                 />
                 <Text style={styles.txtNameMember}>
                   {props.members.fullName}
+                  {props.conversation.creator == props.members.id ? (
+                    <Entypo name="key" size={22} color="yellow" />
+                  ) : (
+                    ""
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -231,6 +237,11 @@ export default function ListMemberGroup({ navigation, route }) {
           />
           <Text style={styles.txtNameMember}>
             {props.currentUser.fullName}{" "}
+            {conversationRender.creator == props.currentUser.id ? (
+              <Entypo name="key" size={22} color="yellow" />
+            ) : (
+              ""
+            )}
             <Text style={{ color: "rgb(200,200,200)" }}>(Tôi)</Text>
           </Text>
         </TouchableOpacity>

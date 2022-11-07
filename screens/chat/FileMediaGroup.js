@@ -88,7 +88,7 @@ function ChooseTab(props) {
     return (
       <FlatList
         data={props.listImg}
-        renderItem={({ item }) => <GridView name={item.img} />}
+        renderItem={({ item }) => <GridView name={item} />}
         keyExtractor={(item, index) => index}
         numColumns={3}
         style={{ marginTop: 20 }}

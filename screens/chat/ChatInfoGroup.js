@@ -28,88 +28,6 @@ import axiosCilent from "../../api/axiosClient";
 import { Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 
-const listImg = [
-  {
-    id: 1,
-    img: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
-  },
-  {
-    id: 2,
-    img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
-  },
-  {
-    id: 3,
-    img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
-  },
-  {
-    id: 4,
-    img: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
-  },
-  {
-    id: 5,
-    img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-  },
-  {
-    id: 6,
-    img: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-  },
-  {
-    id: 7,
-    img: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-  },
-  {
-    id: 8,
-    img: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-  },
-  {
-    id: 9,
-    img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-  },
-  {
-    id: 10,
-    img: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-  },
-  {
-    id: 11,
-    img: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-  },
-  {
-    id: 12,
-    img: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-  },
-  {
-    id: 13,
-    img: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-  },
-  {
-    id: 14,
-    img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-  },
-  {
-    id: 15,
-    img: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-  },
-  {
-    id: 16,
-    img: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-  },
-  {
-    id: 17,
-    img: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-  },
-];
-const listFile = [
-  { id: 1, file: "nhom5.doc" },
-  { id: 2, file: "nhom5.doc" },
-  { id: 3, file: "nhom5.doc" },
-  { id: 4, file: "nhom5.doc" },
-  { id: 5, file: "nhom5.doc" },
-  { id: 6, file: "nhom5.doc" },
-  { id: 7, file: "nhom5.doc" },
-  { id: 8, file: "nhom5.doc" },
-  { id: 9, file: "nhom5.doc" },
-];
-
 export default function ChatInfoGroup({ navigation, route }) {
   const { name, ava, conversation, tempRender, rerenderTemp } = route.params;
   const { user } = useContext(AuthContext);
@@ -124,6 +42,9 @@ export default function ChatInfoGroup({ navigation, route }) {
   const [listAdd, setListAdd] = useState(
     user.friends.filter((x) => !conversation?.members.includes(x))
   );
+  const [listImg, setListImg] = useState([]);
+  const [listFile, setListFile] = useState([]);
+  // console.log(listImg);
   useEffect(() => {
     if (route.params.tempRender != null) {
       setRerender(tempRender);
@@ -168,6 +89,22 @@ export default function ChatInfoGroup({ navigation, route }) {
         setAvaRerender(res.avatarGroup);
         setNameRerender(res.groupName);
         setListAdd(user.friends.filter((x) => !res.members.includes(x)));
+        var listI = [];
+        var listF = [];
+        res.images.forEach((e) => {
+          var type = e.split(".").slice(-1);
+          if (
+            type == "png" ||
+            type == "jpg" ||
+            type == "jpeg" ||
+            type == "jfif" ||
+            type == "gif"
+          ) {
+            listI.push(e);
+          } else listF.push(e);
+        });
+        setListImg(listI);
+        setListFile(listF);
       } catch (error) {
         console.log(error);
       }
@@ -190,7 +127,7 @@ export default function ChatInfoGroup({ navigation, route }) {
       backAction
     );
     return () => backHandler.remove();
-  }, []);
+  }, [nameRender, avaRender, conversationRender]);
   const [itemChoose, setItemChoose] = useState([]);
   const isUserSelected = (user) => {
     // xem có id trong itemChoose không, trả về true false
@@ -342,10 +279,12 @@ export default function ChatInfoGroup({ navigation, route }) {
   };
   //==================
   const deleteGroup = async () => {
-    console.log(conversation.id);
+    const req = {
+      conversationId: conversation.id,
+    };
     try {
-      await axiosCilent.post("/zola/conversation/deleteGroup", {
-        conversationId: conversation.id,
+      await axiosCilent.delete("/zola/conversation/deleteGroup", {
+        data: req,
       });
       navigation.navigate("Rooms", {
         conId: conversation.id + user.id,

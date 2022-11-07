@@ -72,6 +72,7 @@ export default function ChatRoom({ route }) {
   //=============================
   const [rerender, setRerender] = useState(false);
   useEffect(() => {
+    socket.off();
     socket.on("server-send-to-client", (data) => {
       let conversationIDChat;
       try {
@@ -80,7 +81,6 @@ export default function ChatRoom({ route }) {
           data.conversationID == conversationIDChat &&
           data.senderId != user.id
         ) {
-          console.log(data.conversationID);
           setRerender(!rerender);
         }
       } catch (error) {}
@@ -181,8 +181,7 @@ export default function ChatRoom({ route }) {
     const getMess = async () => {
       try {
         const res = await axiosCilent.get("/zola/message/" + conversation.id);
-        var temp = [...res];
-        setMessage(temp);
+        setMessage(res);
       } catch (error) {
         console.log(error);
       }
@@ -255,7 +254,11 @@ export default function ChatRoom({ route }) {
   //======Button Back=======
   useEffect(() => {
     const backAction = () => {
-      navigation.goBack();
+      navigation.navigate("Rooms", {
+        conId: conversation.id,
+        nameGroup: nameRender,
+        avaGroup: avaRender,
+      });
       return true;
     };
     const backHandler = BackHandler.addEventListener(
@@ -264,7 +267,7 @@ export default function ChatRoom({ route }) {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [nameRender, avaRender]);
   //=====Emoji=========
   const [emoji, setEmoji] = useState(false);
   const ListEmoji = () => {

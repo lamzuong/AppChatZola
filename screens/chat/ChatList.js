@@ -104,6 +104,8 @@ export default function ChatList(props) {
         lastMess = nameShow + ": " + foo[0].mess;
       } else lastMess = foo[0].mess;
     }
+  } else {
+    lastMess = "Hãy bắt đầu cuộc trò chuyện !";
   }
   //======================
   return (
