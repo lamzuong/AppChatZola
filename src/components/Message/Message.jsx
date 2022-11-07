@@ -208,7 +208,7 @@ const Message = (props) => {
                 parentCb={cbChild}
             />
             <div className={cx('chatWrapper')}>
-                {currentChat ? (
+                {props.params ? (
                     <>
                         {/* chatHeader */}
                         <div className={cx('headermessWrapper')}>
@@ -251,7 +251,7 @@ const Message = (props) => {
                     </h1>
                 )}
             </div>
-            {currentChat ? <ChatDetails img={img} name={name} currentChat={currentChat} /> : null}
+            {props.params ? <ChatDetails img={img} name={name} currentChat={currentChat} /> : null}
         </div>
     );
 };

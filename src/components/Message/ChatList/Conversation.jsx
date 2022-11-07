@@ -59,7 +59,13 @@ const Conversation = (props) => {
         name = userChat?.fullName;
         nameLast = rs ? 'Bạn: ' : '';
     }
-    const last = nameLast + messLast;
+
+    var last = '';
+    if (mess.length === 0) {
+        last = 'Hãy bắt đầu cuộc trò chuyện!';
+    } else {
+        last = nameLast + messLast;
+    }
 
     return (
         <div className={cx('wrapper')}>

@@ -2,6 +2,9 @@ import classNames from 'classnames/bind';
 import Modal from 'react-modal';
 import React, { useRef, useState } from 'react';
 import styles from './Info.module.scss';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCameraRetro, faRotate, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +25,8 @@ const Info = ({ img, nameInfo }) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editName, setEditName] = useState(nameInfo);
     const [name, setName] = useState(nameInfo);
+    const [avatar, setAvatar] = useState();
+
     const refInput = useRef();
     const openModal = () => {
         setModalIsOpen(true);
@@ -33,6 +38,18 @@ const Info = ({ img, nameInfo }) => {
     const handleConfirm = () => {
         setName(refInput.current.value);
         setModalIsOpen(false);
+    };
+
+    useEffect(() => {
+        return () => {
+            avatar && URL.revokeObjectURL(avatar.preview);
+        };
+    }, [avatar]);
+
+    const handleReviewAvatar = (e) => {
+        const file = e.target.files[0];
+        file.preview = URL.createObjectURL(file);
+        setAvatar(file);
     };
 
     return (
@@ -50,22 +67,33 @@ const Info = ({ img, nameInfo }) => {
                     <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal}>
                         <div className={cx('wrapper-modal')}>
                             <div className={cx('header-modal')}>
-                                <span>Đặt tên gợi ý</span>
+                                <span>Đổi tên và avatar group</span>
                             </div>
                             <div className={cx('body-modal')}>
-                                <div className={cx('avatar')}>
-                                    <img
-                                        src="https://s120-ava-talk.zadn.vn/c/f/c/d/4/120/b391dd6ba1681c427460c4d1fb83325f.jpg"
-                                        alt="avatar"
-                                    />
-                                </div>
-                                <div className={cx('edit-description')}>
-                                    <span>
-                                        Hãy đặt tên cho <span className={cx('name-edit')}>{name}</span> một cái tên dễ
-                                        nhớ
-                                    </span>
-                                    <div> Lưu ý: Tên gợi nhớ sẽ chỉ hiển thị riêng với bạn.</div>
-                                </div>
+                                <label for="update-avatar">
+                                    <div className={cx('avatar')}>
+                                        {avatar ? (
+                                            <img src={avatar.preview} alt="vuong" />
+                                        ) : (
+                                            <img src={img} alt="phuc" />
+                                        )}
+                                        <div className={cx('iconcam-w')}>
+                                            <FontAwesomeIcon
+                                                icon={faCameraRetro}
+                                                className={cx('icon-camera')}
+                                                style={{ color: '#666', fontSize: '20' }}
+                                            />
+                                        </div>
+                                    </div>
+                                </label>
+                                <input
+                                    type="file"
+                                    style={{ display: 'none' }}
+                                    id="update-avatar"
+                                    accept="image/*"
+                                    name="avatar"
+                                    onChange={handleReviewAvatar}
+                                />
                                 <div className={cx('input-wrapper')}>
                                     <input
                                         className={cx('input-edit-name')}
@@ -88,6 +116,16 @@ const Info = ({ img, nameInfo }) => {
                             </div>
                         </div>
                     </Modal>
+                </div>
+                <div className={cx('ruleAdmin')}>
+                    <div className={cx('addMem')}>
+                        <FontAwesomeIcon icon={faUsers} />
+                        <span>Thêm thành viên</span>
+                    </div>
+                    <div className={cx('grantMem')}>
+                        <FontAwesomeIcon icon={faRotate} />
+                        <span>Ủy quyền</span>
+                    </div>
                 </div>
             </div>
         </div>
