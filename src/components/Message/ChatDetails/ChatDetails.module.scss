@@ -6,7 +6,7 @@
 }
 
 .customHeader {
-    height: 68px;
+    height: 80px;
     padding: 0 15px;
     border-bottom: 1px solid #ccc;
     background-color: #fff;
@@ -152,4 +152,49 @@ img {
     &:hover {
         background-color: #e5efff;
     }
+}
+
+.wrapper-modal {
+    width: 360px;
+}
+
+.header-modal {
+    @include flex(center, left);
+    height: 48px;
+    padding: 0 8px 0 16px;
+    border-bottom: 1px solid #e5e7eb;
+
+    span {
+        font-weight: 500;
+        font-size: 16px;
+    }
+}
+
+.body-modal {
+    padding: 14px 16px 0;
+    @include flex(center, center);
+    flex-direction: column;
+}
+
+.footer-modal {
+    padding: 14px 16px;
+    @include flex(center, right);
+}
+.btn-cancel,
+.btn-conf {
+    border: none;
+    outline: none;
+    height: 40px;
+    min-width: 40px;
+    padding: 0 16px;
+    margin-left: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-conf {
+    background-color: $main-color;
+    color: #fff;
 }

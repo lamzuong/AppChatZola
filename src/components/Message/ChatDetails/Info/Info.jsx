@@ -4,7 +4,7 @@ import React, { useRef, useState } from 'react';
 import Input from '../../../../components/Input/Input';
 import styles from './Info.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCameraRetro, faRotate, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faCameraRetro, faRotate, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { useContext } from 'react';
 import { AuthContext } from '../../../../context/AuthContext';
@@ -53,8 +53,16 @@ const Info = ({ img, nameInfo, conversation }) => {
     const closeModal = () => {
         setModalIsOpen(false);
     };
-    const handleConfirm = () => {
-        setName(refInput.current.value);
+    const handleConfirm = async () => {
+        const formData = new FormData();
+        formData.append('img', avatar);
+        formData.append('conversationId', conversation.id);
+        formData.append('groupName', editName ? editName : nameInfo);
+        try {
+            await axiosCilent.put('/zola/conversation/avaGroup', formData);
+        } catch (err) {
+            console.log(err);
+        }
         setModalIsOpen(false);
     };
 
@@ -183,97 +191,98 @@ const Info = ({ img, nameInfo, conversation }) => {
                         </div>
                     </Modal>
                 </div>
-                {conversation?.creator && (
-                    <div className={cx('ruleAdmin')}>
-                        <div className={cx('addMem')} onClick={openModalGroup}>
-                            <div className={cx('icon')}>
-                                <FontAwesomeIcon icon={faUsers} />
-                            </div>
-                            <span>Thêm thành viên</span>
+
+                <div className={cx('ruleAdmin')}>
+                    <div className={cx('addMem')} onClick={openModalGroup}>
+                        <div className={cx('icon')}>
+                            <FontAwesomeIcon icon={faUsers} />
                         </div>
-                        <Modal isOpen={modalIsOpenGroup} style={customStyles} onRequestClose={closeModalGroup}>
-                            <div className={cx('wrapper-modal-group')}>
-                                <div className={cx('header-modal-group')}>
-                                    <span className={cx('title-group')}>Thêm thành viên vào nhóm</span>
-                                    <div className={cx('icon-exit-group')} onClick={closeModalGroup}>
-                                        <i class="bx bx-x"></i>
-                                    </div>
+                        <span>Thêm thành viên</span>
+                    </div>
+                    <Modal isOpen={modalIsOpenGroup} style={customStyles} onRequestClose={closeModalGroup}>
+                        <div className={cx('wrapper-modal-group')}>
+                            <div className={cx('header-modal-group')}>
+                                <span className={cx('title-group')}>Thêm thành viên vào nhóm</span>
+                                <div className={cx('icon-exit-group')} onClick={closeModalGroup}>
+                                    <i class="bx bx-x"></i>
                                 </div>
-                                <div className={cx('body-modal-group')}>
-                                    <div className={cx('add-member-group')}>
-                                        <label>Thêm bạn vào nhóm:</label>
-                                        <Input
-                                            type="text"
-                                            placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
-                                            icon={<i class="bx bxs-envelope"></i>}
-                                        />
+                            </div>
+                            <div className={cx('body-modal-group')}>
+                                <div className={cx('add-member-group')}>
+                                    <label>Thêm bạn vào nhóm:</label>
+                                    <Input
+                                        type="text"
+                                        placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
+                                        icon={<i class="bx bxs-envelope"></i>}
+                                    />
+                                </div>
+                                <div className={cx('list-friend-group')}>
+                                    <div className={cx('wrapper-friends')}>
+                                        <span style={{ marginBottom: 20, display: 'block' }}>Danh sách bạn bè</span>
+                                        <ul className={cx('friends')}>
+                                            {listFriendInfo.map((user) => (
+                                                <li
+                                                    key={user.id}
+                                                    style={{ display: 'flex' }}
+                                                    className={cx('item-user-group')}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={checked.includes(user.id)}
+                                                        onChange={(e) => handleCheck(user.id)}
+                                                    />
+                                                    <UserItemSearchGroup
+                                                        name={user.fullName}
+                                                        ava={user.img}
+                                                        onClick={() => handleCheck(user.id)}
+                                                    />
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
-                                    <div className={cx('list-friend-group')}>
-                                        <div className={cx('wrapper-friends')}>
-                                            <span style={{ marginBottom: 20, display: 'block' }}>Danh sách bạn bè</span>
-                                            <ul className={cx('friends')}>
-                                                {listFriendInfo.map((user) => (
-                                                    <li
-                                                        key={user.id}
-                                                        style={{ display: 'flex' }}
-                                                        className={cx('item-user-group')}
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={checked.includes(user.id)}
-                                                            onChange={(e) => handleCheck(user.id)}
-                                                        />
-                                                        <UserItemSearchGroup
-                                                            name={user.fullName}
-                                                            ava={user.img}
-                                                            onClick={() => handleCheck(user.id)}
-                                                        />
-                                                    </li>
-                                                ))}
+                                    {listUerAdded.length > 0 && (
+                                        <div className={cx('list-user-added-w')}>
+                                            <span
+                                                style={{
+                                                    display: 'block',
+                                                    color: '#000',
+                                                    fontSize: '14px',
+                                                    width: '100%',
+                                                    textAlign: 'center',
+                                                    marginTop: '5px',
+                                                }}
+                                            >
+                                                Thêm
+                                            </span>
+                                            <ul className={cx('list-user-added')}>
+                                                {listAddedInfo.length > 0 &&
+                                                    listAddedInfo.map((user) => (
+                                                        <UserItemAdded name={user.fullName} ava={user.img} />
+                                                    ))}
                                             </ul>
                                         </div>
-                                        {listUerAdded.length > 0 && (
-                                            <div className={cx('list-user-added-w')}>
-                                                <span
-                                                    style={{
-                                                        display: 'block',
-                                                        color: '#000',
-                                                        fontSize: '14px',
-                                                        width: '100%',
-                                                        textAlign: 'center',
-                                                        marginTop: '5px',
-                                                    }}
-                                                >
-                                                    Thêm
-                                                </span>
-                                                <ul className={cx('list-user-added')}>
-                                                    {listAddedInfo.length > 0 &&
-                                                        listAddedInfo.map((user) => (
-                                                            <UserItemAdded name={user.fullName} ava={user.img} />
-                                                        ))}
-                                                </ul>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                                <div className={cx('footer-modal-group')}>
-                                    <div style={{ marginRight: 10 }}>
-                                        <button className={cx('btn-cancel-group')}>Hủy</button>
-                                        <button className={cx('btn-confirm-group')} onClick={handleAddMemGroup}>
-                                            Thêm thành viên
-                                        </button>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
-                        </Modal>
+                            <div className={cx('footer-modal-group')}>
+                                <div style={{ marginRight: 10 }}>
+                                    <button className={cx('btn-cancel-group')}>Hủy</button>
+                                    <button className={cx('btn-confirm-group')} onClick={handleAddMemGroup}>
+                                        Thêm thành viên
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
+                    {conversation.creator === user.id && (
                         <div className={cx('grantMem')}>
                             <div className={cx('icon')}>
                                 <FontAwesomeIcon icon={faRotate} />
                             </div>
                             <span>Ủy quyền</span>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );

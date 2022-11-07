@@ -38,39 +38,39 @@ const Input = (props) => {
         formData.append('conversationID', props.params.id);
         formData.append('sender', props.user.id);
         formData.append('mess', chatContent ? chatContent : '');
-        try {
-            await axiosCilent.post('/zola/message', formData);
-            socket.emit('send-to-server', {
-                senderId: props.user.id,
-                conversationID: props.params.id,
-                dataMess: {
-                    conversationID: props.params,
-                    date: new Date().getTime(),
-                    id: 'temp',
-                    img_url: imgTemp,
-                    infoSender: {
-                        fullName: props.user.fullName,
-                        imageSender: props.user.img,
-                    },
+        if (chatContent.trim() === '' && imgTemp.length === 0) {
+        } else {
+            try {
+                await axiosCilent.post('/zola/message', formData);
+                socket.emit('send-to-server', {
                     mess: chatContent,
-                    sender: props.user.id,
-                },
-                imgs: image.length,
-                fullName: props.user.fullName,
-                group: props.group,
-            });
-            setChatContent('');
-            setRerender(!rerender);
-            // sendData(rerender);
-            setDelImg([]);
-            setImage([]);
-        } catch (err) {
-            console.log(err);
+                    senderId: props.user.id,
+                    conversationID: props.params.id,
+                    dataMess: {
+                        conversationID: props.params,
+                        date: new Date().getTime(),
+                        id: 'temp',
+                        img_url: imgTemp,
+                        infoSender: {
+                            fullName: props.user.fullName,
+                            imageSender: props.user.img,
+                        },
+                        mess: chatContent,
+                        sender: props.user.id,
+                    },
+                    imgs: image.length,
+                    fullName: props.user.fullName,
+                    group: props.group,
+                });
+                setChatContent('');
+                setRerender(!rerender);
+                setDelImg([]);
+                setImage([]);
+            } catch (err) {
+                console.log(err);
+            }
         }
     };
-    // const sendData = (data) => {
-    //     props.parentCb(data);
-    // };
 
     const handleDelImg = (i) => {
         delImg.splice(i, 1);
