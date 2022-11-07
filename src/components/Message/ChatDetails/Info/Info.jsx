@@ -3,8 +3,11 @@ import Modal from 'react-modal';
 import React, { useRef, useState } from 'react';
 import styles from './Info.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCameraRetro, faRotate, faUser, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faCameraRetro, faRotate, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
+import axiosCilent from '../../../../api/axiosClient';
+import { useContext } from 'react';
+import { AuthContext } from '../../../../context/AuthContext';
 
 const cx = classNames.bind(styles);
 
@@ -20,12 +23,13 @@ const customStyles = {
     },
 };
 
-const Info = ({ img, nameInfo }) => {
+const Info = ({ img, nameInfo, conversation }) => {
     Modal.setAppElement('#root');
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editName, setEditName] = useState(nameInfo);
     const [name, setName] = useState(nameInfo);
     const [avatar, setAvatar] = useState();
+    const { user } = useContext(AuthContext);
 
     const refInput = useRef();
     const openModal = () => {
@@ -35,8 +39,16 @@ const Info = ({ img, nameInfo }) => {
     const closeModal = () => {
         setModalIsOpen(false);
     };
-    const handleConfirm = () => {
-        setName(refInput.current.value);
+    const handleConfirm = async () => {
+        const formData = new FormData();
+        formData.append('img', avatar);
+        formData.append('conversationId', conversation.id);
+        formData.append('groupName', editName ? editName : nameInfo);
+        try {
+            await axiosCilent.put('/zola/conversation/avaGroup', formData);
+        } catch (err) {
+            console.log(err);
+        }
         setModalIsOpen(false);
     };
 
@@ -122,10 +134,12 @@ const Info = ({ img, nameInfo }) => {
                         <FontAwesomeIcon icon={faUsers} />
                         <span>Thêm thành viên</span>
                     </div>
-                    <div className={cx('grantMem')}>
-                        <FontAwesomeIcon icon={faRotate} />
-                        <span>Ủy quyền</span>
-                    </div>
+                    {conversation.creator === user.id && (
+                        <div className={cx('grantMem')}>
+                            <FontAwesomeIcon icon={faRotate} />
+                            <span>Ủy quyền</span>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

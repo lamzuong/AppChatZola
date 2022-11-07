@@ -178,6 +178,7 @@ const Message = (props) => {
     }, [message, rerender]);
 
     useEffect(() => {
+        socket.off();
         socket.on('server-send-to-client', (data) => {
             let conversationIDChat;
             try {
@@ -251,7 +252,7 @@ const Message = (props) => {
                     </h1>
                 )}
             </div>
-            {props.params ? <ChatDetails img={img} name={name} currentChat={currentChat} /> : null}
+            {props.params ? <ChatDetails user={user} img={img} name={name} currentChat={currentChat} /> : null}
         </div>
     );
 };
