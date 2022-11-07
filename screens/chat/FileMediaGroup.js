@@ -7,14 +7,29 @@ import {
   Pressable,
   Image,
   ScrollView,
+  BackHandler,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./style/styleFileMediaGroup";
 
 export default function FileMediaGroup({ navigation, route }) {
+  //======Button Back=======
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+  //=========================
   const { listFile, listImg } = route.params;
   const [select, setSelected] = useState("image");
   return (

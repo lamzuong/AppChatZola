@@ -122,7 +122,7 @@ export default function ChatInfoGroup({ navigation, route }) {
   const [avaRender, setAvaRerender] = useState(ava);
   const [editName, setEditName] = useState(false);
   const [listAdd, setListAdd] = useState(
-    user.friends.filter((x) => !conversation.members.includes(x))
+    user.friends.filter((x) => !conversation?.members.includes(x))
   );
   useEffect(() => {
     if (route.params.tempRender != null) {
@@ -324,6 +324,40 @@ export default function ChatInfoGroup({ navigation, route }) {
         groupName: name,
       });
     } catch (error) {}
+  };
+  //==================
+  const outGroup = async () => {
+    try {
+      await axiosCilent.put("/zola/conversation/outGroup", {
+        conversationId: conversation.id,
+        userId: user?.id,
+        members: conversationRender.members,
+      });
+      navigation.navigate("Rooms", {
+        conId: conversation.id + user.id,
+        nameGroup: nameRender + user.id,
+        avaGroup: avaRender + user.id,
+      });
+    } catch (error) {}
+  };
+  //==================
+  const deleteGroup = async () => {
+    console.log(conversation.id);
+    try {
+      await axiosCilent.post("/zola/conversation/deleteGroup", {
+        conversationId: conversation.id,
+      });
+      navigation.navigate("Rooms", {
+        conId: conversation.id + user.id,
+        nameGroup: nameRender + user.id,
+        avaGroup: avaRender + user.id,
+      });
+    } catch (error) {}
+  };
+  //==================
+  const checkCreator = () => {
+    if (conversationRender.creator == user?.id) return true;
+    else return false;
   };
   //==================
   return (
@@ -612,7 +646,40 @@ export default function ChatInfoGroup({ navigation, route }) {
             </View>
           </TouchableOpacity>
         ) : null}
-        <TouchableOpacity style={styles.btnInfoGr}>
+        <TouchableOpacity
+          style={styles.btnInfoGr}
+          onPress={() => {
+            checkCreator()
+              ? Alert.alert(
+                  "Thông báo",
+                  "Bạn là trưởng nhóm nên phải ủy quyền cho người khác mới được rời khỏi nhóm",
+                  [
+                    {},
+                    {
+                      text: "OK",
+                      onPress: () =>
+                        navigation.navigate("ListMemberGrant", {
+                          conversation: conversationRender,
+                          name: nameRender,
+                          ava: avaRender,
+                          rerender: rerender,
+                        }),
+                    },
+                  ]
+                )
+              : Alert.alert(
+                  "Cảnh báo",
+                  "Bạn có chắc muốn rời khỏi nhóm không?",
+                  [
+                    {
+                      text: "Hủy",
+                      onPress: () => {},
+                    },
+                    { text: "OK", onPress: () => outGroup() },
+                  ]
+                );
+          }}
+        >
           <Entypo name="log-out" size={30} color="red" />
           <View style={styles.borderBot}>
             <Text style={[styles.txtInfoGr, { color: "red" }]}>
@@ -621,7 +688,18 @@ export default function ChatInfoGroup({ navigation, route }) {
           </View>
         </TouchableOpacity>
         {conversationRender.creator == user?.id ? (
-          <TouchableOpacity style={styles.btnInfoGr}>
+          <TouchableOpacity
+            style={styles.btnInfoGr}
+            onPress={() => {
+              Alert.alert("Cảnh báo", "Bạn có chắc muốn giải tán nhóm không?", [
+                {
+                  text: "Hủy",
+                  onPress: () => {},
+                },
+                { text: "OK", onPress: () => deleteGroup() },
+              ]);
+            }}
+          >
             <AntDesign name="delete" size={30} color="red" />
             <View style={styles.borderBot}>
               <Text style={[styles.txtInfoGr, { color: "red" }]}>
