@@ -141,6 +141,18 @@ const ChatDetails = (props) => {
             console.log(error);
         }
     };
+
+    const handleDeleteMemGroup = async (id) => {
+        try {
+            await axiosCilent.put('zola/conversation/deleteMem', {
+                conversationId: props.currentChat.id,
+                friendId: id,
+                members: props.currentChat.members,
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
     return (
         <div className={cx('wrapper')}>
             <Header title="Thông tin hội thoại" className={cx('customHeader')} />
@@ -207,7 +219,12 @@ const ChatDetails = (props) => {
                                                         none
                                                     />
                                                     {props.currentChat.creator === props.user.id && (
-                                                        <button className={cx('btn-add-frend')}>Xóa</button>
+                                                        <button
+                                                            className={cx('btn-add-frend')}
+                                                            onClick={() => handleDeleteMemGroup(user.id)}
+                                                        >
+                                                            Xóa
+                                                        </button>
                                                     )}
                                                 </li>
                                             ))}

@@ -133,11 +133,12 @@ const Info = ({ img, nameInfo, conversation }) => {
                     <img src={img} alt="avatar" />
                 </div>
                 <div className={cx('info-name')}>
-                    <div style={{ width: '32px' }}></div>
                     <span style={{ fontSize: 16 }}>{nameInfo}</span>
-                    <div className={cx('edit')} onClick={openModal}>
-                        <i className="bx bx-edit-alt"></i>
-                    </div>
+                    {conversation.members.length > 2 && (
+                        <div className={cx('edit')} onClick={openModal}>
+                            <i className="bx bx-edit-alt"></i>
+                        </div>
+                    )}
                     <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal}>
                         <div className={cx('wrapper-modal')}>
                             <div className={cx('header-modal')}>
@@ -193,12 +194,14 @@ const Info = ({ img, nameInfo, conversation }) => {
                 </div>
 
                 <div className={cx('ruleAdmin')}>
-                    <div className={cx('addMem')} onClick={openModalGroup}>
-                        <div className={cx('icon')}>
-                            <FontAwesomeIcon icon={faUsers} />
+                    {conversation.members.length > 2 && (
+                        <div className={cx('addMem')} onClick={openModalGroup}>
+                            <div className={cx('icon')}>
+                                <FontAwesomeIcon icon={faUsers} />
+                            </div>
+                            <span>Thêm thành viên</span>
                         </div>
-                        <span>Thêm thành viên</span>
-                    </div>
+                    )}
                     <Modal isOpen={modalIsOpenGroup} style={customStyles} onRequestClose={closeModalGroup}>
                         <div className={cx('wrapper-modal-group')}>
                             <div className={cx('header-modal-group')}>
