@@ -126,7 +126,7 @@ router.put('/addMem', (req, res) => {
         }
     });
 });
-// Xóa thành viên và rời khỏi group
+// Xóa thành viên
 router.put('/deleteMem', (req, res) => {
     const { conversationId, friendId, members } = req.body;
     const getConversation = {
@@ -281,6 +281,43 @@ router.put('/grantPermission', (req, res) => {
                 },
                 ExpressionAttributeValues: {
                     ':creator': creator,
+                },
+            };
+            docClient.update(paramsConversation, (err, data) => {
+                if (err) {
+                    console.log('Loi1' + err);
+                } else {
+                    console.log(data);
+                    return res.send('Success');
+                }
+            });
+        }
+    });
+});
+// Rời khỏi group
+router.put('/outGroup', (req, res) => {
+    const { conversationId, userId, members } = req.body;
+    const getConversation = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.get(getConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        } else {
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: conversationId,
+                },
+                UpdateExpression: 'SET #members =:members',
+                ExpressionAttributeNames: {
+                    '#members': 'members', //COLUMN NAME
+                },
+                ExpressionAttributeValues: {
+                    ':members': members.filter((user) => user !== userId),
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
