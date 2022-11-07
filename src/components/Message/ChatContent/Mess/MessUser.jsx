@@ -71,100 +71,114 @@ const MessUser = (props) => {
     //     remove = true;
     // }
     return (
-        <div className={cx('message', props.group ? 'group' : '', props.own ? 'own' : '')}>
-            <div className={cx('messImg')}>
-                <img src={props.sender?.imageSender ? props.sender.imageSender : noAvatar} alt="" />
-            </div>
-            <div className={cx('messright')}>
-                <div className={cx('messName')}>{props.group ? props.sender.fullName : '  '}</div>
-                {props.mess.mess.length === 0 || props.mess.deleted ? (
-                    <></>
-                ) : (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {props.own && <OptionMess mess={props.mess} conversation={props.conversation} />}
-                        <div className={cx('messText')}>{props.mess.mess}</div>
-                        {!props.own && (
-                            <OptionMess mess={props.mess} conversation={props.conversation} noOwn={!props.own} />
-                        )}
+        <>
+            {props.mess.handleGroup ? (
+                <div className={cx('messHandleGroup')}>{props.mess.mess}</div>
+            ) : (
+                <div className={cx('message', props.group ? 'group' : '', props.own ? 'own' : '')}>
+                    <div className={cx('messImg')}>
+                        <img src={props.sender?.imageSender ? props.sender.imageSender : noAvatar} alt="" />
                     </div>
-                )}
-                {props.mess.deleted ? (
-                    <div className={cx('messDel')}>Tin nhắn đã được thu hồi</div>
-                ) : props.mess.img_url?.length ? (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        {props.own && <OptionMess mess={props.mess} conversation={props.conversation} />}
-                        <div className={cx('messRow')}>
-                            {props.mess.img_url.map((img, i) => (
-                                <div key={i} className={cx('messImgUrl')}>
-                                    {img.split('.').splice(-1)[0] === 'mp4' ? (
-                                        <video width="540" height="310" controls>
-                                            <source src={img} type="video/mp4"></source>
-                                        </video>
-                                    ) : img.split('.').splice(-1)[0] === 'png' ||
-                                      img.split('.').splice(-1)[0] === 'jpg' ||
-                                      img.split('.').splice(-1)[0] === 'jpeg' ||
-                                      img.split('.').splice(-1)[0] === 'gif' ||
-                                      img.split('.').splice(-1)[0] === 'jfif' ? (
-                                        <>
-                                            <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                <img
-                                                    src={img}
-                                                    alt=""
-                                                    onClick={(e) => {
-                                                        openModalImg();
-                                                        handleShowImage(e.target.src);
-                                                    }}
-                                                />
-                                            </div>
-                                            <Modal
-                                                isOpen={modalImgIsOpen}
-                                                style={customStyles1}
-                                                onRequestClose={closeModelImg}
-                                            >
-                                                <div className={cx('header-detail-img')}>
-                                                    <div className={cx('btn-close')} onClick={closeModelImg}>
-                                                        <i className="bx bx-x"></i>
+                    <div className={cx('messright')}>
+                        <div className={cx('messName')}>{props.group ? props.sender.fullName : '  '}</div>
+                        {props.mess.mess.length === 0 || props.mess.deleted ? (
+                            <></>
+                        ) : (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                {props.own && <OptionMess mess={props.mess} conversation={props.conversation} />}
+                                <div className={cx('messText')}>{props.mess.mess}</div>
+                                {!props.own && (
+                                    <OptionMess
+                                        mess={props.mess}
+                                        conversation={props.conversation}
+                                        noOwn={!props.own}
+                                    />
+                                )}
+                            </div>
+                        )}
+                        {props.mess.deleted ? (
+                            <div className={cx('messDel')}>Tin nhắn đã được thu hồi</div>
+                        ) : props.mess.img_url?.length ? (
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                {props.own && <OptionMess mess={props.mess} conversation={props.conversation} />}
+                                <div className={cx('messRow')}>
+                                    {props.mess.img_url.map((img, i) => (
+                                        <div key={i} className={cx('messImgUrl')}>
+                                            {img.split('.').splice(-1)[0] === 'mp4' ? (
+                                                <video width="540" height="310" controls>
+                                                    <source src={img} type="video/mp4"></source>
+                                                </video>
+                                            ) : img.split('.').splice(-1)[0] === 'png' ||
+                                              img.split('.').splice(-1)[0] === 'jpg' ||
+                                              img.split('.').splice(-1)[0] === 'jpeg' ||
+                                              img.split('.').splice(-1)[0] === 'gif' ||
+                                              img.split('.').splice(-1)[0] === 'jfif' ? (
+                                                <>
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                        <img
+                                                            src={img}
+                                                            alt=""
+                                                            onClick={(e) => {
+                                                                openModalImg();
+                                                                handleShowImage(e.target.src);
+                                                            }}
+                                                        />
                                                     </div>
-                                                </div>
-                                                <div className={cx('show-img')}>
-                                                    <img src={openModalImg && src} alt="" />
-                                                </div>
-                                            </Modal>
-                                        </>
-                                    ) : (
-                                        <a
-                                            style={{
-                                                padding: '20px',
-                                                borderRadius: '20px',
-                                                backgroundColor: 'rgb(245, 241, 241)',
-                                                color: '#000',
-                                                fontWeight: '600',
-                                                wordBreak: 'break-word',
-                                                maxWidth: '500px',
-                                            }}
-                                            href={img}
-                                        >
-                                            <i
-                                                className="bx bx-file"
-                                                style={{ marginRight: '4px', fontSize: '24px' }}
-                                            ></i>
-                                            {img.split('/')[4]}
-                                        </a>
-                                    )}
+                                                    <Modal
+                                                        isOpen={modalImgIsOpen}
+                                                        style={customStyles1}
+                                                        onRequestClose={closeModelImg}
+                                                    >
+                                                        <div className={cx('header-detail-img')}>
+                                                            <div className={cx('btn-close')} onClick={closeModelImg}>
+                                                                <i className="bx bx-x"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div className={cx('show-img')}>
+                                                            <img src={openModalImg && src} alt="" />
+                                                        </div>
+                                                    </Modal>
+                                                </>
+                                            ) : (
+                                                <a
+                                                    style={{
+                                                        padding: '20px',
+                                                        borderRadius: '20px',
+                                                        backgroundColor: 'rgb(245, 241, 241)',
+                                                        color: '#000',
+                                                        fontWeight: '600',
+                                                        wordBreak: 'break-word',
+                                                        maxWidth: '500px',
+                                                    }}
+                                                    href={img}
+                                                >
+                                                    <i
+                                                        className="bx bx-file"
+                                                        style={{ marginRight: '4px', fontSize: '24px' }}
+                                                    ></i>
+                                                    {img.split('/')[4]}
+                                                </a>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
-                        </div>
-                        {!props.own && (
-                            <OptionMess mess={props.mess} conversation={props.conversation} noOwn={!props.own} />
+                                {!props.own && (
+                                    <OptionMess
+                                        mess={props.mess}
+                                        conversation={props.conversation}
+                                        noOwn={!props.own}
+                                    />
+                                )}
+                            </div>
+                        ) : (
+                            <></>
                         )}
+                        <div className={cx('messBot')}>{timeSince(new Date(props.mess.date))}</div>
+                        <div style={{ display: 'flex', alignSelf: 'center' }}></div>
                     </div>
-                ) : (
-                    <></>
-                )}
-                <div className={cx('messBot')}>{timeSince(new Date(props.mess.date))}</div>
-                <div style={{ display: 'flex', alignSelf: 'center' }}></div>
-            </div>
-        </div>
+                </div>
+            )}
+        </>
     );
 };
 
