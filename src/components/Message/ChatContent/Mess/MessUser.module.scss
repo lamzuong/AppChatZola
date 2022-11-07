@@ -15,6 +15,10 @@
     display: block;
 }
 
+.messHandleGroup {
+    @include flex(unset, center);
+}
+
 .messright {
     display: flex;
     flex-direction: column;

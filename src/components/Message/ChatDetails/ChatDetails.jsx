@@ -115,17 +115,20 @@ const ChatDetails = (props) => {
     const [down, setDown] = useState(false);
 
     const handleOutGroup = async () => {
-        const req = {
-            conversationId: props.currentChat.id,
-            userId: props.user.id,
-            members: props.currentChat.members,
-        };
-        console.log('out');
-        try {
-            await axiosCilent.put('/zola/conversation/outGroup', req);
+        if (props.currentChat.creator === props.user.id) {
             closeModelOutGroup();
-        } catch (error) {
-            console.log(error);
+        } else {
+            const req = {
+                conversationId: props.currentChat.id,
+                user: props.user,
+                members: props.currentChat.members,
+            };
+            try {
+                await axiosCilent.put('/zola/conversation/outGroup', req);
+                closeModelOutGroup();
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
@@ -133,7 +136,6 @@ const ChatDetails = (props) => {
         const req = {
             conversationId: props.currentChat.id,
         };
-        console.log('del');
         try {
             await axiosCilent.delete('/zola/conversation/deleteGroup', { data: req });
             closeModelDelGroup();
