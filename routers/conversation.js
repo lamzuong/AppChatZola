@@ -154,7 +154,7 @@ router.put('/deleteMem', (req, res) => {
         if (err) {
             console.log('Loi1' + err);
         } else {
-            // Send mess kick group
+            // Send mess kick group hehe
             const paramMess = {
                 TableName: 'message',
                 Item: {
