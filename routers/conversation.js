@@ -331,4 +331,27 @@ router.put('/outGroup', (req, res) => {
         }
     });
 });
+router.delete('/deleteGroup', (req, res) => {
+    const { conversationId } = req.body;
+    const getConversation = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.get(getConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        } else {
+            docClient.delete(getConversation, (err, data) => {
+                if (err) {
+                    console.log('Loi1' + err);
+                } else {
+                    console.log(data);
+                    return res.send('Success');
+                }
+            });
+        }
+    });
+});
 module.exports = router;
