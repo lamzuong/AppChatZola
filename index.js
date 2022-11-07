@@ -36,9 +36,10 @@ const io = require('socket.io')(server, {
 
 io.on('connection', (socket) => {
     socket.on('send-to-server', (data) => {
-        // socket.emit("user-chat", data); //Gửi chính mình
-        // socket.broadcast.emit("user-chat", data); //Gửi tất cả trừ chính mình
         io.emit('server-send-to-client', data); //Gửi tất cả
+    });
+    socket.on('remove-to-server', (data) => {
+        io.emit('server-remove-to-client', data); //Gửi tất cả
     });
 });
 

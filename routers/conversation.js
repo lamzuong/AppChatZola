@@ -13,9 +13,8 @@ router.post('/', (req, res) => {
             Item: {
                 id,
                 members: req.body.members,
-                avatarGroup:
-                    'https://scontent.fsgn5-2.fna.fbcdn.net/v/t1.15752-9/299037378_415150437354620_5970909854063622706_n.png?_nc_cat=105&ccb=1-7&_nc_sid=ae9488&_nc_ohc=2xwCQSZ4SIwAX8Y8FGs&_nc_ht=scontent.fsgn5-2.fna&oh=03_AdT9FUWmPPe_c9FJfD2ZG3D3bRgBsYtvn7x6yiPRJbpnAg&oe=636E66D1',
-                groupName: 'Group',
+                avatarGroup: 'https://d370tx6r1rzpl2.cloudfront.net/ad83db1f-95c8-4a95-a031-2fad89698c9d/6420033.png',
+                groupName: req.body.nameGroup,
                 creator: req.body.id,
                 date: date,
                 images: [],

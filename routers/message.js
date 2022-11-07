@@ -315,4 +315,22 @@ router.put('/deleteMess', (req, res) => {
     });
 });
 
+router.get('/', (req, res) => {
+    const { id } = req.body;
+    console.log(id);
+    const params = {
+        TableName: tableName,
+        Key: {
+            id,
+        },
+    };
+    docClient.get(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi' + err);
+        } else {
+            return res.send(data.Item);
+        }
+    });
+});
+
 module.exports = router;
