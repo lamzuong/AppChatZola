@@ -84,7 +84,7 @@ const ChatDetails = (props) => {
         <div className={cx('wrapper')}>
             <Header title="Thông tin hội thoại" className={cx('customHeader')} />
             <div className={cx('wrapper-info')}>
-                <Info img={props.img} nameInfo={props.name} />
+                <Info img={props.img} nameInfo={props.name} conversation={props.currentChat} />
                 <Store>
                     {props.currentChat?.members.length > 2 && (
                         <StoreItem title="Thành viên nhóm">

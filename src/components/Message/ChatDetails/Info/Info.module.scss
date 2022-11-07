@@ -121,6 +121,147 @@
     color: #fff;
 }
 
+.ruleAdmin {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.addMem,
+.grantMem {
+    .icon {
+        width: 20px;
+        height: 20px;
+    }
+    display: flex;
+    padding: 4px 8px;
+    span {
+        margin-left: 8px;
+    }
+    &:hover {
+        cursor: pointer;
+        background-color: #eeeff2;
+    }
+}
+
 .btn-cancel {
     margin-right: 15px;
+}
+
+// Modal group
+.wrapper-modal-group {
+    width: 520px;
+}
+
+.header-modal-group {
+    padding: 0 8px 0 16px;
+    display: flex;
+    height: 48px;
+    min-height: 48px;
+    justify-content: left;
+    border-bottom: 1px solid #e5e7eb;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title-group {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.icon-exit-group {
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.body-modal-group {
+}
+
+.create-group-name-group,
+.add-member-group,
+.list-friend-group {
+    padding: 16px 16px 0;
+}
+
+.list-friend-group {
+    margin-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    min-height: 50px;
+    height: 300px;
+    overflow-y: auto;
+    overscroll-behavior: 'contain';
+    display: flex;
+}
+
+.wrapper-friends {
+    flex: 1;
+}
+
+.item-choose-frend-group {
+    display: flex;
+}
+
+.footer-modal-group {
+    display: flex;
+    margin-top: 20px;
+    padding: 10px 0;
+    flex-direction: row-reverse;
+    border-top: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
+.btn-cancel-group {
+    height: 40px;
+    min-width: 40px;
+    padding: 0 16px;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 38px;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background-color: red;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-confirm-group {
+    height: 40px;
+    min-width: 40px;
+    padding: 0 16px;
+    line-height: normal;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: normal;
+    line-height: 38px;
+    margin-left: 10px;
+    border: none;
+    outline: none;
+    background-color: #0068ff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.item-user-group {
+    width: 100%;
+    border-radius: 5px;
+    &:hover {
+        cursor: pointer;
+        background-color: #e5e7eb;
+    }
+    input {
+        margin-left: 5px;
+    }
+}
+
+// user added
+.list-user-added-w {
+    width: 30%;
+    height: 100%;
+    border: 1px solid #e5e7eb;
+    overflow-y: auto;
+}
+
+.list-user-added {
+    padding: 2px 4px;
 }
