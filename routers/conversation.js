@@ -90,7 +90,13 @@ router.get('/idCon/:id', (req, res) => {
 
 // Thêm thành viên
 router.put('/addMem', (req, res) => {
-    const { conversationId, user, friend, listMember } = req.body;
+    const { conversationId, user, listMember } = req.body;
+    let listTempInfo = [];
+    let listTempId = [];
+    for (let i = 0; i < listMember.length; i++) {
+        listTempInfo.push(listMember[i].fullName);
+        listTempId.push(listMember[i].id);
+    }
     const params = {
         TableName: 'conversation',
         Key: {
@@ -101,7 +107,7 @@ router.put('/addMem', (req, res) => {
             '#members': 'members', //COLUMN NAME
         },
         ExpressionAttributeValues: {
-            ':members': listMember,
+            ':members': listTempId,
         },
     };
     docClient.update(params, (err, data) => {
@@ -115,7 +121,7 @@ router.put('/addMem', (req, res) => {
                     id: uuid(),
                     conversationID: conversationId,
                     sender: user.id,
-                    mess: `${user.fullName} đã xóa ${friend.fullName} khỏi nhóm.`,
+                    mess: `${user.fullName} đã thêm ${listTempInfo.toString()} vào nhóm.`,
                     deleted: false,
                     handleGroup: true,
                     removePerson: [],
