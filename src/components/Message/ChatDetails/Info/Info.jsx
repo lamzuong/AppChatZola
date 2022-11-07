@@ -115,11 +115,12 @@ const Info = ({ img, nameInfo, conversation }) => {
         });
     };
 
-    const handleAddMemGroup = async () => {
+    const handleAddMemGroup = async (friend) => {
         try {
-            await axiosCilent.put('/zola/conversation//addMemWeb', {
+            await axiosCilent.put('/zola/conversation/addMem', {
                 conversationId: conversation.id,
-                listMember: listUerAdded,
+                user: user,
+                listMember: listAddedInfo,
             });
         } catch (error) {
             console.log(error);

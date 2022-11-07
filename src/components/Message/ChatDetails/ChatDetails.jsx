@@ -13,6 +13,8 @@ import ButtonSeeAllFile from './ButtonSeeAllFile/ButtonSeeAllFile';
 import styles from './ChatDetails.module.scss';
 import Header from './Header/Header';
 import Info from './Info/Info';
+import { useContext } from 'react';
+import { AuthContext } from '../../../context/AuthContext';
 
 const cx = classNames.bind(styles);
 
@@ -42,6 +44,7 @@ const customStyles1 = {
 };
 
 const ChatDetails = (props) => {
+    const { user, dispatch } = useContext(AuthContext);
     Modal.setAppElement('#root');
     const [src, setSrc] = useState('a');
 
@@ -144,11 +147,16 @@ const ChatDetails = (props) => {
         }
     };
 
-    const handleDeleteMemGroup = async (id) => {
+    const handleDeleteMemGroup = async (friend) => {
         try {
+            // console.log(props.currentChat.id);
+            // console.log(friend);
+            // console.log(user);
+            // console.log(props.currentChat.members);
             await axiosCilent.put('zola/conversation/deleteMem', {
                 conversationId: props.currentChat.id,
-                friendId: id,
+                user: user,
+                friend: friend,
                 members: props.currentChat.members,
             });
         } catch (error) {
@@ -223,7 +231,7 @@ const ChatDetails = (props) => {
                                                     {props.currentChat.creator === props.user.id && (
                                                         <button
                                                             className={cx('btn-add-frend')}
-                                                            onClick={() => handleDeleteMemGroup(user.id)}
+                                                            onClick={() => handleDeleteMemGroup(user)}
                                                         >
                                                             Xóa
                                                         </button>
