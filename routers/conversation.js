@@ -2,11 +2,19 @@ const router = require('express').Router();
 const dotenv = require('dotenv');
 const { v4: uuid } = require('uuid');
 const docClient = require('../db.config');
+const multer = require('multer');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+    accessKeyId: 'AKIA34KECLYEL2WGGHN2',
+    secretAccessKey: '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',
+});
+const CLOUD_FRONT_URL = 'https://d370tx6r1rzpl2.cloudfront.net/';
 
 router.post('/', (req, res) => {
     const id = uuid();
     let params = null;
     var date = new Date().getTime();
+
     if (req.body.members.length > 2) {
         params = {
             TableName: 'conversation',
@@ -41,7 +49,7 @@ router.post('/', (req, res) => {
         return res.status(200).json(data);
     });
 });
-
+// get những conversation của user.id
 router.get('/:id', (req, res) => {
     const { id } = req.params;
     var params = {
@@ -58,6 +66,381 @@ router.get('/:id', (req, res) => {
             return res.status(500).send('Loi' + err);
         } else {
             return res.status(200).json(data.Items);
+        }
+    });
+});
+// Lâm Zương
+// get conversation theo id
+router.get('/idCon/:id', (req, res) => {
+    const { id } = req.params;
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id,
+        },
+    };
+    docClient.get(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi' + err);
+        } else {
+            return res.send(data.Item);
+        }
+    });
+});
+
+// Thêm thành viên
+router.put('/addMem', (req, res) => {
+    const { conversationId, user, friend, listMember } = req.body;
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+        UpdateExpression: 'SET #members=list_append(#members,:members)',
+        ExpressionAttributeNames: {
+            '#members': 'members', //COLUMN NAME
+        },
+        ExpressionAttributeValues: {
+            ':members': listMember,
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            console.log('Loi1' + err);
+        } else {
+            // Send mess kick group
+            const paramMess = {
+                TableName: 'message',
+                Item: {
+                    id: uuid(),
+                    conversationID: conversationId,
+                    sender: user.id,
+                    mess: `${user.fullName} đã xóa ${friend.fullName} khỏi nhóm.`,
+                    deleted: false,
+                    handleGroup: true,
+                    removePerson: [],
+                    img_url: '',
+                    date: new Date().getTime(),
+                },
+            };
+            docClient.put(paramMess, (err, data) => {
+                if (err) {
+                    console.log('Loi: ' + err);
+                }
+                console.log('thanh cong');
+            });
+            return res.send('Success');
+        }
+    });
+});
+
+// Xóa thành viên
+router.put('/deleteMem', (req, res) => {
+    const { conversationId, user, friend, members } = req.body;
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+        UpdateExpression: 'SET #members =:members',
+        ExpressionAttributeNames: {
+            '#members': 'members', //COLUMN NAME
+        },
+        ExpressionAttributeValues: {
+            ':members': members.filter((user) => user !== friend.id),
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            console.log('Loi1' + err);
+        } else {
+            // Send mess kick group
+            const paramMess = {
+                TableName: 'message',
+                Item: {
+                    id: uuid(),
+                    conversationID: conversationId,
+                    sender: user.id,
+                    mess: `${user.fullName} đã xóa ${friend.fullName} khỏi nhóm.`,
+                    deleted: false,
+                    handleGroup: true,
+                    removePerson: [],
+                    img_url: '',
+                    date: new Date().getTime(),
+                },
+            };
+            docClient.put(paramMess, (err, data) => {
+                if (err) {
+                    console.log('Loi: ' + err);
+                }
+                console.log('thanh cong');
+            });
+            return res.send('Success');
+        }
+    });
+});
+
+// Đổi tên group
+router.put('/renameGroup', (req, res) => {
+    const { conversationId, groupName } = req.body;
+    console.log(groupName);
+    const getConversation = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.get(getConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        } else {
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: conversationId,
+                },
+                UpdateExpression: 'SET #groupName =:groupName',
+                ExpressionAttributeNames: {
+                    '#groupName': 'groupName', //COLUMN NAME
+                },
+                ExpressionAttributeValues: {
+                    ':groupName': groupName,
+                },
+            };
+            docClient.update(paramsConversation, (err, data) => {
+                if (err) {
+                    console.log('Loi1' + err);
+                } else {
+                    console.log(data);
+                    return res.send('Success');
+                }
+            });
+        }
+    });
+});
+
+const storage = multer.memoryStorage({
+    destination(req, file, callback) {
+        callback(null, '');
+    },
+});
+const upload = multer({
+    storage,
+    limits: { fileSize: 30000000 },
+});
+// Đổi avatar group
+router.put('/avaGroup', upload.single('img'), (req, res) => {
+    const { conversationId, groupName } = req.body;
+    const img = req.file;
+    let paramsConversation = {};
+    if (typeof img == 'undefined') {
+        console.log(1);
+        paramsConversation = {
+            TableName: 'conversation',
+            Key: {
+                id: conversationId,
+            },
+            UpdateExpression: 'SET #groupName=:groupName',
+            ExpressionAttributeNames: {
+                '#groupName': 'groupName', //COLUMN NAME
+            },
+            ExpressionAttributeValues: {
+                ':groupName': groupName,
+            },
+        };
+    } else {
+        const image = img.originalname;
+        var filePath = `${uuid()}/${image}`;
+        const uploadS3 = {
+            Bucket: 'zola-chat',
+            Key: filePath,
+            Body: img.buffer,
+        };
+        s3.upload(uploadS3, (err, data) => {
+            if (err) {
+                return res.send('Loi upload');
+            } else {
+                console.log(2);
+            }
+        });
+        paramsConversation = {
+            TableName: 'conversation',
+            Key: {
+                id: conversationId,
+            },
+            UpdateExpression: 'SET #avatarGroup =:avatarGroup, #groupName=:groupName',
+            ExpressionAttributeNames: {
+                '#avatarGroup': 'avatarGroup', //COLUMN NAME
+                '#groupName': 'groupName',
+            },
+            ExpressionAttributeValues: {
+                ':avatarGroup': `${CLOUD_FRONT_URL}${filePath}`,
+                ':groupName': groupName,
+            },
+        };
+    }
+    docClient.update(paramsConversation, (err, data) => {
+        if (err) {
+            console.log('Loi1' + err);
+        } else {
+            console.log(data);
+            return res.send('Success');
+        }
+    });
+});
+
+// Đổi avatar group mobile
+router.put('/mobile/avaGroup', (req, res) => {
+    const { conversationId, avatarGroup, avatarOld } = req.body;
+    if (!(avatarGroup.base64 && avatarGroup.fileType)) {
+    } else {
+        var buffer = Buffer.from(avatarGroup.base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
+        const fileType = avatarGroup.fileType;
+        var filePath = `${uuid() + Date.now().toString()}.${fileType}`;
+        const uploadS3 = {
+            Bucket: 'zola-chat',
+            Key: filePath,
+            Body: buffer,
+        };
+        s3.upload(uploadS3, (err, data) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(data);
+            }
+        });
+    }
+    const getConversation = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.get(getConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        } else {
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: conversationId,
+                },
+                UpdateExpression: 'SET #avatarGroup =:avatarGroup',
+                ExpressionAttributeNames: {
+                    '#avatarGroup': 'avatarGroup', //COLUMN NAME
+                },
+                ExpressionAttributeValues: {
+                    ':avatarGroup':
+                        avatarGroup.base64 && avatarGroup.fileType ? `${CLOUD_FRONT_URL}${filePath}` : avatarOld,
+                },
+            };
+            docClient.update(paramsConversation, (err, data) => {
+                if (err) {
+                    console.log('Loi1' + err);
+                } else {
+                    console.log(data);
+                    return res.send('Success');
+                }
+            });
+        }
+    });
+});
+// Ủy quyền trưởng nhóm
+router.put('/grantPermission', (req, res) => {
+    const { conversationId, creator } = req.body;
+    const getConversation = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.get(getConversation, (err, data) => {
+        if (err) {
+            console.log('Loi: ' + err);
+        } else {
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: conversationId,
+                },
+                UpdateExpression: 'SET #creator =:creator',
+                ExpressionAttributeNames: {
+                    '#creator': 'creator', //COLUMN NAME
+                },
+                ExpressionAttributeValues: {
+                    ':creator': creator,
+                },
+            };
+            docClient.update(paramsConversation, (err, data) => {
+                if (err) {
+                    console.log('Loi1' + err);
+                } else {
+                    console.log(data);
+                    return res.send('Success');
+                }
+            });
+        }
+    });
+});
+// Rời khỏi group
+router.put('/outGroup', (req, res) => {
+    const { conversationId, user, members } = req.body;
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+        UpdateExpression: 'SET #members =:members',
+        ExpressionAttributeNames: {
+            '#members': 'members', //COLUMN NAME
+        },
+        ExpressionAttributeValues: {
+            ':members': members.filter((u) => u !== user.id),
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            console.log('Loi 1' + err);
+        } else {
+            // Send mess out group
+            const paramMess = {
+                TableName: 'message',
+                Item: {
+                    id: uuid(),
+                    conversationID: conversationId,
+                    sender: user.id,
+                    mess: `${user.fullName} đã rời nhóm.`,
+                    deleted: false,
+                    handleGroup: true,
+                    removePerson: [],
+                    img_url: '',
+                    date: new Date().getTime(),
+                },
+            };
+            docClient.put(paramMess, (err, data) => {
+                if (err) {
+                    console.log('Loi: ' + err);
+                }
+                console.log('thanh cong');
+            });
+            return res.send('Success');
+        }
+    });
+});
+router.delete('/deleteGroup', (req, res) => {
+    const { conversationId } = req.body;
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+    };
+    docClient.delete(params, (err, data) => {
+        if (err) {
+            console.log('Loi 1' + err);
+        } else {
+            console.log(data);
+            return res.send('Success');
         }
     });
 });

@@ -66,6 +66,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             sender,
             mess,
             deleted: false,
+            handleGroup: false,
             removePerson: [],
             img_url: typeof img == 'undefined' || img.length > 0 ? img_url : '',
             date: date,
@@ -135,7 +136,7 @@ router.post('/mobile', (req, res) => {
             } else {
                 var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
                 const fileType = listImg[i].fileType;
-                var filePath = `${uuid()}/${image}`;
+                var filePath = `${uuid() + '/' + listImg[i].name}`;
                 const uploadS3 = {
                     Bucket: 'zola-chat',
                     Key: filePath,
