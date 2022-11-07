@@ -12,6 +12,7 @@ import ChatRoom from "./screens/chat/ChatRoom";
 import ChatInfo from "./screens/chat/ChatInfo";
 import ChatInfoGroup from "./screens/chat/ChatInfoGroup";
 import ListMemberGroup from "./screens/chat/ListMemberGroup";
+import ListMemberGrant from "./screens/chat/ListMemberGrant";
 import FileMediaGroup from "./screens/chat/FileMediaGroup";
 import AddFriend from "./screens/friend/AddFriend";
 import AddGroup from "./screens/friend/AddGroup";
@@ -89,6 +90,11 @@ export default function App() {
           <Stack.Screen
             name="ListMemberGroup"
             component={ListMemberGroup}
+            options={{ animation: "slide_from_right" }}
+          />
+          <Stack.Screen
+            name="ListMemberGrant"
+            component={ListMemberGrant}
             options={{ animation: "slide_from_right" }}
           />
           <Stack.Screen

@@ -594,6 +594,24 @@ export default function ChatInfoGroup({ navigation, route }) {
             <Text style={styles.txtInfoGr}>Ảnh/Video, File</Text>
           </View>
         </TouchableOpacity>
+        {conversationRender.creator == user?.id ? (
+          <TouchableOpacity
+            style={styles.btnInfoGr}
+            onPress={() => {
+              navigation.navigate("ListMemberGrant", {
+                conversation: conversationRender,
+                name: nameRender,
+                ava: avaRender,
+                rerender: rerender,
+              });
+            }}
+          >
+            <Entypo name="cycle" size={28} color="black" />
+            <View style={styles.borderBot}>
+              <Text style={styles.txtInfoGr}>Ủy quyền</Text>
+            </View>
+          </TouchableOpacity>
+        ) : null}
         <TouchableOpacity style={styles.btnInfoGr}>
           <Entypo name="log-out" size={30} color="red" />
           <View style={styles.borderBot}>
@@ -602,7 +620,7 @@ export default function ChatInfoGroup({ navigation, route }) {
             </Text>
           </View>
         </TouchableOpacity>
-        {conversation.creator == user?.id ? (
+        {conversationRender.creator == user?.id ? (
           <TouchableOpacity style={styles.btnInfoGr}>
             <AntDesign name="delete" size={30} color="red" />
             <View style={styles.borderBot}>
