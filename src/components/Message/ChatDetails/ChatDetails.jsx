@@ -13,6 +13,11 @@ import ButtonSeeAllFile from './ButtonSeeAllFile/ButtonSeeAllFile';
 import styles from './ChatDetails.module.scss';
 import Header from './Header/Header';
 import Info from './Info/Info';
+import { useContext } from 'react';
+import { AuthContext } from '../../../context/AuthContext';
+
+import { io } from 'socket.io-client';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -42,6 +47,7 @@ const customStyles1 = {
 };
 
 const ChatDetails = (props) => {
+    const { user, dispatch } = useContext(AuthContext);
     Modal.setAppElement('#root');
     const [src, setSrc] = useState('a');
 
@@ -125,6 +131,9 @@ const ChatDetails = (props) => {
             };
             try {
                 await axiosCilent.put('/zola/conversation/outGroup', req);
+                socket.emit('send-to-server', {
+                    conversationID: props.currentChat.id,
+                });
                 closeModelOutGroup();
             } catch (error) {
                 console.log(error);
@@ -138,7 +147,26 @@ const ChatDetails = (props) => {
         };
         try {
             await axiosCilent.delete('/zola/conversation/deleteGroup', { data: req });
+            socket.emit('send-to-server', {
+                conversationID: props.currentChat.id,
+            });
             closeModelDelGroup();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteMemGroup = async (friend) => {
+        try {
+            await axiosCilent.put('zola/conversation/deleteMem', {
+                conversationId: props.currentChat.id,
+                user: user,
+                friend: friend,
+                members: props.currentChat.members,
+            });
+            socket.emit('send-to-server', {
+                conversationID: props.currentChat.id,
+            });
         } catch (error) {
             console.log(error);
         }
@@ -209,7 +237,12 @@ const ChatDetails = (props) => {
                                                         none
                                                     />
                                                     {props.currentChat.creator === props.user.id && (
-                                                        <button className={cx('btn-add-frend')}>Xóa</button>
+                                                        <button
+                                                            className={cx('btn-add-frend')}
+                                                            onClick={() => handleDeleteMemGroup(user)}
+                                                        >
+                                                            Xóa
+                                                        </button>
                                                     )}
                                                 </li>
                                             ))}
