@@ -16,6 +16,9 @@ import Info from './Info/Info';
 import { useContext } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 
+import { io } from 'socket.io-client';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+
 const cx = classNames.bind(styles);
 
 const customStyles = {
@@ -128,6 +131,9 @@ const ChatDetails = (props) => {
             };
             try {
                 await axiosCilent.put('/zola/conversation/outGroup', req);
+                socket.emit('send-to-server', {
+                    conversationID: props.currentChat.id,
+                });
                 closeModelOutGroup();
             } catch (error) {
                 console.log(error);
@@ -141,6 +147,9 @@ const ChatDetails = (props) => {
         };
         try {
             await axiosCilent.delete('/zola/conversation/deleteGroup', { data: req });
+            socket.emit('send-to-server', {
+                conversationID: props.currentChat.id,
+            });
             closeModelDelGroup();
         } catch (error) {
             console.log(error);
@@ -149,15 +158,14 @@ const ChatDetails = (props) => {
 
     const handleDeleteMemGroup = async (friend) => {
         try {
-            // console.log(props.currentChat.id);
-            // console.log(friend);
-            // console.log(user);
-            // console.log(props.currentChat.members);
             await axiosCilent.put('zola/conversation/deleteMem', {
                 conversationId: props.currentChat.id,
                 user: user,
                 friend: friend,
                 members: props.currentChat.members,
+            });
+            socket.emit('send-to-server', {
+                conversationID: props.currentChat.id,
             });
         } catch (error) {
             console.log(error);

@@ -198,6 +198,9 @@ const Message = (props) => {
             } catch (error) {}
         });
     });
+
+    // console.log(rerender);
+    // console.log(currentChat);
     conversation.sort((a, b) => b.date - a.date);
     return (
         <div className={cx('wrapper')}>
@@ -234,7 +237,7 @@ const Message = (props) => {
                                         user={user}
                                         sender={m.infoSender}
                                         conversation={conversation}
-                                        group={currentChat.members.length > 2}
+                                        group={currentChat?.members.length > 2}
                                     />
                                 </div>
                             ))}
@@ -243,7 +246,7 @@ const Message = (props) => {
                             user={user}
                             params={currentChat}
                             parentCb={cbChild1}
-                            group={currentChat.members.length > 2}
+                            group={currentChat?.members.length > 2}
                         />
                     </>
                 ) : (

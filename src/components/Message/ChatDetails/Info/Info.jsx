@@ -11,7 +11,11 @@ import { AuthContext } from '../../../../context/AuthContext';
 import axiosCilent from '../../../../api/axiosClient';
 import UserItemSearchGroup from '../../ChatList/UserItemSearchGroup/UserItemSearchGroup';
 import UserItemAdded from '../../ChatList/UserItemAdded/UserItemAdded';
+
 import { useNavigate } from 'react-router-dom';
+
+import { io } from 'socket.io-client';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -144,6 +148,10 @@ const Info = ({ img, nameInfo, conversation }) => {
                 user: user,
                 listMember: listAddedInfo,
             });
+            socket.emit('send-to-server', {
+                conversationID: conversation.id,
+            });
+
             closeModalGroup();
         } catch (error) {
             console.log(error);
@@ -156,6 +164,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                 conversationId: conversation.id,
                 creator: choose,
             });
+
             closeModalGroup();
         } catch (error) {
             console.log(error);

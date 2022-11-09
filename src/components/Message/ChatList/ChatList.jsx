@@ -17,18 +17,28 @@ import UserItemSearch from './UserItemSearch/UserItemSerach';
 import InfoDetailUser from './InfoDetailUser/InfoDetailUser';
 import UserItemSearchGroup from './UserItemSearchGroup/UserItemSearchGroup';
 import UserItemAdded from './UserItemAdded/UserItemAdded';
+import { io } from 'socket.io-client';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
 const ChatList = (props) => {
+    const customStyles = {
+        content: {
+            padding: '0',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+        },
+    };
     const { pathname } = useLocation();
     const path = pathname.slice(3, pathname.length);
     const conversation = props.conversation;
     const navigate = useNavigate();
-    const { user, dispatch } = useContext(AuthContext);
-    const sendData = (data) => {
-        props.parentCb(data);
-    };
+    const { user } = useContext(AuthContext);
     const mess = props.data;
     const active = conversation.findIndex((e) => e.id === path);
     const [rerender, setRerender] = useState(false);
@@ -41,23 +51,20 @@ const ChatList = (props) => {
     const [userChoosed, setUserChoosed] = useState({});
     const [listFriendInfo, setListFriendInfo] = useState([]);
     const [listAddedInfo, setListAddInfo] = useState([]);
-    //
-
-    const customStyles = {
-        content: {
-            padding: '0',
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-        },
-    };
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalIsOpenGroup, setModalIsOpenGroup] = useState(false);
     const [checked, setChecked] = useState([]);
     const [listUerAdded, setListUserAdded] = useState([]);
+    const [currentChat, setCurrentChat] = useState(null);
+
+    const sendData = (data) => {
+        props.parentCb(data);
+    };
+
+    useEffect(() => {
+        let e = props.conversation.filter((c) => c.id === currentChat?.id)[0];
+        sendData(e);
+    }, [props.conversation]);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -106,8 +113,8 @@ const ChatList = (props) => {
                 id: user.id,
             });
             setModalIsOpenGroup(false);
-            sendData1(rerender);
             setRerender(!rerender);
+            sendData1(rerender);
             navigate('/');
         } catch (error) {
             console.log(error);
@@ -365,13 +372,14 @@ const ChatList = (props) => {
                     <ul className={cx('chatList')}>
                         {conversation.map((e, i) => (
                             <div
-                                key={i}
+                                key={e.id}
                                 onClick={() => {
+                                    setCurrentChat(e);
                                     sendData(e);
                                     navigate(`/t/${e.id}`);
                                 }}
                             >
-                                <li key={i} className={cx(i === active ? 'active' : '')}>
+                                <li key={e.id} className={cx(i === active ? 'active' : '')}>
                                     <Conversation
                                         key={e.id}
                                         id={e.id}
