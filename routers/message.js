@@ -39,7 +39,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             for (let i = 0; i < img.length; i++) {
                 const image = img[i].originalname;
                 const fileType = image[image.length - 1];
-                var filePath = `${uuid()}/${image}`;
+                var filePath = `${uuid()}-${image}`;
                 const uploadS3 = {
                     Bucket: 'zola-chat',
                     Key: filePath,
@@ -136,7 +136,7 @@ router.post('/mobile', (req, res) => {
             } else {
                 var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
                 const fileType = listImg[i].fileType;
-                var filePath = `${uuid() + '/' + listImg[i].name}`;
+                var filePath = `${uuid() + '-' + listImg[i].name}`;
                 const uploadS3 = {
                     Bucket: 'zola-chat',
                     Key: filePath,

@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
             Item: {
                 id,
                 members: req.body.members,
-                avatarGroup: 'https://d370tx6r1rzpl2.cloudfront.net/ad83db1f-95c8-4a95-a031-2fad89698c9d/6420033.png',
+                avatarGroup: 'https://d370tx6r1rzpl2.cloudfront.net/4054a1a1-4bfc-4ff6-8560-33444141be1e-6420033.png',
                 groupName: req.body.nameGroup,
                 creator: req.body.id,
                 date: date,
@@ -353,7 +353,7 @@ router.put('/mobile/avaGroup', (req, res) => {
 });
 // Ủy quyền trưởng nhóm
 router.put('/grantPermission', (req, res) => {
-    const { conversationId, creator } = req.body;
+    const { conversationId, creator, friend } = req.body;
     const getConversation = {
         TableName: 'conversation',
         Key: {
@@ -374,14 +374,34 @@ router.put('/grantPermission', (req, res) => {
                     '#creator': 'creator', //COLUMN NAME
                 },
                 ExpressionAttributeValues: {
-                    ':creator': creator,
+                    ':creator': creator.id,
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
                 if (err) {
                     console.log('Loi1' + err);
                 } else {
-                    console.log(data);
+                    // Send mess out group
+                    const paramMess = {
+                        TableName: 'message',
+                        Item: {
+                            id: uuid(),
+                            conversationID: conversationId,
+                            sender: user.id,
+                            mess: `${creator.fullName} đã nhượng quyền Trưởng nhóm cho ${friend.fullName}.`,
+                            deleted: false,
+                            handleGroup: true,
+                            removePerson: [],
+                            img_url: '',
+                            date: new Date().getTime(),
+                        },
+                    };
+                    docClient.put(paramMess, (err, data) => {
+                        if (err) {
+                            console.log('Loi: ' + err);
+                        }
+                        console.log('thanh cong');
+                    });
                     return res.send('Success');
                 }
             });
