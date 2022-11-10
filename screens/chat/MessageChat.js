@@ -32,6 +32,7 @@ export default function MessageChat(props) {
   const time = props.time;
   const group = props.group;
   const item = props.item;
+  const messGroup = item.handleGroup;
   const owner = item.sender == user.id;
   let nameShow = item.infoSender.fullName.split(" ").slice(-1);
 
@@ -139,7 +140,7 @@ export default function MessageChat(props) {
           style={styles.iconFile}
         />
         <Text style={[styles.txtMess, { fontWeight: "bold" }]}>
-          {props.e.split("/").slice(-1)}
+          {props.e.split("-")[5]}
         </Text>
       </TouchableOpacity>
     );
@@ -159,7 +160,15 @@ export default function MessageChat(props) {
     getConversation();
   }, [user.id, rerender]);
   //==========================
-  return personRemove ? null : (
+  return messGroup ? (
+    <View style={{ width: "100%", marginVertical: 5 }}>
+      <Text
+        style={{ textAlign: "center", color: "grey", paddingHorizontal: 30 }}
+      >
+        {item.mess}
+      </Text>
+    </View>
+  ) : personRemove ? null : (
     <View>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <TouchableWithoutFeedback

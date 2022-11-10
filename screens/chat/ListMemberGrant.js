@@ -19,14 +19,19 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import { RadioButton } from "react-native-paper";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function ListMemberGroup({ navigation, route }) {
   const { conversation, name, ava, rerender } = route.params;
   const { user } = useContext(AuthContext);
   const [listMem, setListMem] = useState([]);
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [rerenderList, setRerender] = useState(false);
-  const [checked, setChecked] = useState("");
+  const [checked, setChecked] = useState({});
   //=======Button Back============
   useEffect(() => {
     const backAction = () => {
@@ -85,14 +90,18 @@ export default function ListMemberGroup({ navigation, route }) {
     };
     getConversation();
   }, [rerenderList]);
-  const grantPermission = async (id) => {
+  const grantPermission = async (newCreator) => {
     try {
       var conv = {
         conversationId: conversation.id,
-        creator: id,
+        creator: newCreator,
+        user: user,
       };
       await axiosCilent.put("/zola/conversation/grantPermission", conv);
       setRerender(!rerenderList);
+      socket.emit("send-to-server", {
+        conversationID: conversation.id,
+      });
       navigation.navigate("ChatInfoGroup", {
         conversation: conversationRender,
         name: name,
@@ -112,7 +121,7 @@ export default function ListMemberGroup({ navigation, route }) {
         {props.members.id == props.currentUser.id ? null : (
           <TouchableOpacity
             style={styles.itemContainer}
-            onPress={() => setChecked(props.members.id)}
+            onPress={() => setChecked(props.members)}
           >
             <View style={styles.itemMember}>
               <Image
@@ -126,8 +135,8 @@ export default function ListMemberGroup({ navigation, route }) {
             <View style={styles.iconAction}>
               <RadioButton
                 value={props.members.id}
-                status={checked === props.members.id ? "checked" : "unchecked"}
-                onPress={() => setChecked(props.members.id)}
+                status={checked === props.members ? "checked" : "unchecked"}
+                onPress={() => setChecked(props.members)}
               />
             </View>
           </TouchableOpacity>

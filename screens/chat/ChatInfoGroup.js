@@ -27,7 +27,12 @@ import { AuthContext } from "../../context/AuthContext";
 import axiosCilent from "../../api/axiosClient";
 import { Checkbox } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function ChatInfoGroup({ navigation, route }) {
   const { name, ava, conversation, tempRender, rerenderTemp } = route.params;
   const { user } = useContext(AuthContext);
@@ -49,6 +54,21 @@ export default function ChatInfoGroup({ navigation, route }) {
     if (route.params.tempRender != null) {
       setRerender(tempRender);
     }
+  });
+  useEffect(() => {
+    socket.off();
+    socket.on("server-send-to-client", (data) => {
+      let conversationIDChat;
+      try {
+        conversationIDChat = conversation.id;
+        if (
+          data.conversationID == conversationIDChat &&
+          data.senderId != user.id
+        ) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
   });
   const [listMem, setListMem] = useState([]);
   var list = [];
@@ -180,10 +200,14 @@ export default function ChatInfoGroup({ navigation, route }) {
       });
       var conv = {
         conversationId: conversation.id,
-        listFriendId: list,
-        members: conversation.members,
+        user: user,
+        listMember: itemChoose,
       };
       await axiosCilent.put("/zola/conversation/addMem", conv);
+      setItemChoose([]);
+      socket.emit("send-to-addMem", {
+        idAdd: list,
+      });
       setRerender(!rerender);
     } catch (error) {}
   };
@@ -215,6 +239,10 @@ export default function ChatInfoGroup({ navigation, route }) {
             fileType: fileType,
           },
           avatarOld: avaRender,
+          user: user,
+        });
+        socket.emit("send-to-server", {
+          conversationID: conversation.id,
         });
       } catch (err) {
         console.log(err);
@@ -245,8 +273,11 @@ export default function ChatInfoGroup({ navigation, route }) {
             fileType: fileType,
           },
           avatarOld: avaRender,
+          user: user,
         });
-        // setAvaRerender(result.uri);
+        socket.emit("send-to-server", {
+          conversationID: conversation.id,
+        });
       } catch (err) {
         console.log(err);
       }
@@ -259,6 +290,10 @@ export default function ChatInfoGroup({ navigation, route }) {
       await axiosCilent.put("/zola/conversation/renameGroup", {
         conversationId: conversation.id,
         groupName: name,
+        user: user,
+      });
+      socket.emit("send-to-server", {
+        conversationID: conversation.id,
       });
     } catch (error) {}
   };
@@ -267,8 +302,11 @@ export default function ChatInfoGroup({ navigation, route }) {
     try {
       await axiosCilent.put("/zola/conversation/outGroup", {
         conversationId: conversation.id,
-        userId: user?.id,
+        user: user,
         members: conversationRender.members,
+      });
+      socket.emit("send-to-server", {
+        conversationID: conversation.id,
       });
       navigation.navigate("Rooms", {
         conId: conversation.id + user.id,
@@ -285,6 +323,9 @@ export default function ChatInfoGroup({ navigation, route }) {
     try {
       await axiosCilent.delete("/zola/conversation/deleteGroup", {
         data: req,
+      });
+      socket.emit("send-to-server", {
+        conversationID: conversation.id,
       });
       navigation.navigate("Rooms", {
         conId: conversation.id + user.id,

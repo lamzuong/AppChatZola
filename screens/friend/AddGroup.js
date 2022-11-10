@@ -18,7 +18,12 @@ import { Checkbox } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 const listTitle = [
   "A",
   "Ă",
@@ -309,6 +314,9 @@ const Footer = (props) => {
     };
     try {
       await axiosCilent.post("/zola/conversation", conversation);
+      socket.emit("send-to-addGroup", {
+        idAdd: memGr,
+      });
       Alert.alert("Thông báo", "Tạo nhóm chat thành công!", [
         {},
         {

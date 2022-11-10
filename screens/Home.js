@@ -14,6 +14,8 @@ import Profile from "./profile/Profile";
 import Directory from "./friend/Directory";
 import GroupFriends from "./friend/GroupFriends";
 import InviteAddFrReceive from "./friend/InviteAddFrReceive";
+import { io } from "socket.io-client";
+import apiConfig from "../api/apiConfig";
 
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();

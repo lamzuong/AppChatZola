@@ -36,8 +36,7 @@ const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
 });
 export default function ChatRoom({ route }) {
-  let { nickname, avatar, conversation, rerenderTemp, renderRooms } =
-    route.params;
+  let { nickname, avatar, conversation, rerenderTemp } = route.params;
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
@@ -177,6 +176,7 @@ export default function ChatRoom({ route }) {
   //======getConversation=======
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
+  const [render2, setRender2] = useState(true);
   useEffect(() => {
     const getMess = async () => {
       try {
@@ -187,13 +187,13 @@ export default function ChatRoom({ route }) {
       }
     };
     getMess();
-  }, [conversation.id, rerender]);
+  }, [conversation.id, rerender, render2]);
   message.sort((a, b) => a.date - b.date);
-
   //====Send Message======
   const handleSendMessage = async (e) => {
     if (valueInput.trim() === "" && imagesSelected.length == 0) {
     } else {
+      console.log(valueInput);
       e.preventDefault();
       let listImg = [];
       if (imagesSelected.length !== 0) {
@@ -210,14 +210,14 @@ export default function ChatRoom({ route }) {
         });
         // console.log(listImg);
       }
-      const message = {
+      const message1 = {
         conversationID: conversation.id,
         sender: user.id,
         mess: valueInput,
         listImg: listImg,
       };
       try {
-        await axiosCilent.post("/zola/message/mobile", message);
+        await axiosCilent.post("/zola/message/mobile", message1);
         socket.emit("send-to-server", {
           mess: valueInput,
           senderId: user.id,
@@ -229,6 +229,7 @@ export default function ChatRoom({ route }) {
         setValueInput("");
         setImagesSelected([]);
         setRerender(!rerender);
+        setRender2(!render2);
       } catch (err) {
         console.log(err);
       }

@@ -50,12 +50,16 @@ export default function ChatList(props) {
   const [messageLast, setMessageLast] = useState("");
   const [imgLast, setImgLast] = useState("");
   useEffect(() => {
+    socket.off();
     socket.on("server-send-to-client", (data) => {
       let conversationIDChat;
       try {
         conversationIDChat = conversation.id;
-        if (data.conversationID == conversationIDChat) {
-          let nameShow = data.fullName.split(" ").slice(-1);
+        if (
+          data.conversationID == conversationIDChat &&
+          typeof data.fullName !== "undefined"
+        ) {
+          let nameShow = data?.fullName.split(" ").slice(-1);
           if (data.imgs > 0) {
             if (data.senderId == user.id)
               setMessageLast("Bạn đã gửi " + data.imgs + " tập tin");

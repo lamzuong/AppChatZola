@@ -99,7 +99,7 @@ function ChooseTab(props) {
       <ScrollView>
         <View style={{ marginTop: 10, marginBottom: 20 }}>
           {props.listFile.map((e, i) => (
-            <Files key={i} id={e.id} name={e.file} />
+            <Files key={i} name={e} />
           ))}
         </View>
       </ScrollView>
@@ -163,7 +163,7 @@ const Files = (props) => {
     <View>
       <TouchableOpacity style={styles.fileItem}>
         <AntDesign name="filetext1" size={24} color="black" />
-        <Text style={styles.fileName}>{props.name}</Text>
+        <Text style={styles.fileName}>{props.name.split("-")[5]}</Text>
       </TouchableOpacity>
     </View>
   );

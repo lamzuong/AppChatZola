@@ -19,7 +19,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import { Entypo } from "@expo/vector-icons";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function ListMemberGroup({ navigation, route }) {
   const { conversation, name, ava, rerender } = route.params;
   const { user } = useContext(AuthContext);
@@ -85,14 +90,37 @@ export default function ListMemberGroup({ navigation, route }) {
     };
     getConversation();
   }, [rerenderList]);
-  const deleteMem = async (id) => {
+  useEffect(() => {
+    socket.off();
+    socket.on("server-send-to-client", (data) => {
+      let conversationIDChat;
+      try {
+        conversationIDChat = conversation.id;
+        if (
+          data.conversationID == conversationIDChat &&
+          data.senderId != user.id
+        ) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
+  });
+  const deleteMem = async (friend) => {
     try {
       var conv = {
         conversationId: conversation.id,
-        friendId: id,
+        user: user,
+        friend: friend,
         members: conversationRender.members,
       };
       await axiosCilent.put("/zola/conversation/deleteMem", conv);
+      socket.emit("send-to-server", {
+        conversationID: conversation.id,
+      });
+      socket.emit("send-to-out", {
+        conversationID: conversation.id,
+        idDelete: friend.id,
+      });
       setRerender(!rerenderList);
     } catch (error) {}
   };
@@ -212,7 +240,7 @@ export default function ListMemberGroup({ navigation, route }) {
                         },
                         {
                           text: "OK",
-                          onPress: () => deleteMem(props.members.id),
+                          onPress: () => deleteMem(props.members),
                         },
                       ]
                     );
