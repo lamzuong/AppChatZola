@@ -197,6 +197,28 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.on('server-send-to-out', (data) => {
+            try {
+                if (data.idDelete == user.id) {
+                    alert('Bạn bị kick');
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
+        socket.on('server-send-to-addMem', (data) => {
+            try {
+                if (data.idAdd.includes(user.id)) {
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
+        socket.on('server-send-to-addGroup', (data) => {
+            try {
+                if (data.idAdd.includes(user.id)) {
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
     });
 
     // console.log(rerender);
