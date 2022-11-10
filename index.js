@@ -41,6 +41,15 @@ io.on('connection', (socket) => {
     socket.on('remove-to-server', (data) => {
         io.emit('server-remove-to-client', data); //Gửi tất cả
     });
+    socket.on('send-to-out', (data) => {
+        io.emit('server-send-to-out', data); //Gửi tất cả
+    });
+    socket.on('send-to-addMem', (data) => {
+        io.emit('server-send-to-addMem', data); //Gửi tất cả
+    });
+    socket.on('send-to-addGroup', (data) => {
+        io.emit('server-send-to-addGroup', data); //Gửi tất cả
+    });
 });
 
 server.listen(8000, () => {

@@ -188,8 +188,7 @@ router.put('/deleteMem', (req, res) => {
 
 // Đổi tên group
 router.put('/renameGroup', (req, res) => {
-    const { conversationId, groupName } = req.body;
-    console.log(groupName);
+    const { conversationId, groupName, user } = req.body;
     const getConversation = {
         TableName: 'conversation',
         Key: {
@@ -217,7 +216,26 @@ router.put('/renameGroup', (req, res) => {
                 if (err) {
                     console.log('Loi1' + err);
                 } else {
-                    console.log(data);
+                    const paramMess = {
+                        TableName: 'message',
+                        Item: {
+                            id: uuid(),
+                            conversationID: conversationId,
+                            sender: user.id,
+                            mess: `${user.fullName} đã thay đổi tên nhóm.`,
+                            deleted: false,
+                            handleGroup: true,
+                            removePerson: [],
+                            img_url: '',
+                            date: new Date().getTime(),
+                        },
+                    };
+                    docClient.put(paramMess, (err, data) => {
+                        if (err) {
+                            console.log('Loi: ' + err);
+                        }
+                        console.log('thanh cong');
+                    });
                     return res.send('Success');
                 }
             });
@@ -295,7 +313,7 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
                     id: uuid(),
                     conversationID: conversationId,
                     sender: user.id,
-                    mess: `${user.fullName} đã thay đổi ảnh nhóm.`,
+                    mess: `${user.fullName} đã thay đổi thông tin nhóm.`,
                     deleted: false,
                     handleGroup: true,
                     removePerson: [],
