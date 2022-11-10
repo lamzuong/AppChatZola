@@ -167,6 +167,10 @@ const ChatDetails = (props) => {
             socket.emit('send-to-server', {
                 conversationID: props.currentChat.id,
             });
+            socket.emit('send-to-out', {
+                conversationID: props.currentChat.id,
+                idDelete: friend.id,
+            });
         } catch (error) {
             console.log(error);
         }
