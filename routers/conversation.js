@@ -236,7 +236,7 @@ const upload = multer({
 });
 // Đổi avatar group
 router.put('/avaGroup', upload.single('img'), (req, res) => {
-    const { conversationId, groupName } = req.body;
+    const { conversationId, groupName, user } = req.body;
     const img = req.file;
     let paramsConversation = {};
     if (typeof img == 'undefined') {
@@ -289,7 +289,26 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
         if (err) {
             console.log('Loi1' + err);
         } else {
-            console.log(data);
+            const paramMess = {
+                TableName: 'message',
+                Item: {
+                    id: uuid(),
+                    conversationID: conversationId,
+                    sender: user.id,
+                    mess: `${user.fullName} đã thay đổi ảnh nhóm.`,
+                    deleted: false,
+                    handleGroup: true,
+                    removePerson: [],
+                    img_url: '',
+                    date: new Date().getTime(),
+                },
+            };
+            docClient.put(paramMess, (err, data) => {
+                if (err) {
+                    console.log('Loi: ' + err);
+                }
+                console.log('thanh cong');
+            });
             return res.send('Success');
         }
     });
@@ -297,7 +316,7 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
 
 // Đổi avatar group mobile
 router.put('/mobile/avaGroup', (req, res) => {
-    const { conversationId, avatarGroup, avatarOld } = req.body;
+    const { conversationId, avatarGroup, avatarOld, user } = req.body;
     if (!(avatarGroup.base64 && avatarGroup.fileType)) {
     } else {
         var buffer = Buffer.from(avatarGroup.base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
@@ -344,7 +363,26 @@ router.put('/mobile/avaGroup', (req, res) => {
                 if (err) {
                     console.log('Loi1' + err);
                 } else {
-                    console.log(data);
+                    const paramMess = {
+                        TableName: 'message',
+                        Item: {
+                            id: uuid(),
+                            conversationID: conversationId,
+                            sender: user.id,
+                            mess: `${user.fullName} đã thay đổi ảnh nhóm.`,
+                            deleted: false,
+                            handleGroup: true,
+                            removePerson: [],
+                            img_url: '',
+                            date: new Date().getTime(),
+                        },
+                    };
+                    docClient.put(paramMess, (err, data) => {
+                        if (err) {
+                            console.log('Loi: ' + err);
+                        }
+                        console.log('thanh cong');
+                    });
                     return res.send('Success');
                 }
             });
@@ -353,7 +391,7 @@ router.put('/mobile/avaGroup', (req, res) => {
 });
 // Ủy quyền trưởng nhóm
 router.put('/grantPermission', (req, res) => {
-    const { conversationId, creator, friend } = req.body;
+    const { conversationId, creator, user } = req.body;
     const getConversation = {
         TableName: 'conversation',
         Key: {
@@ -388,7 +426,7 @@ router.put('/grantPermission', (req, res) => {
                             id: uuid(),
                             conversationID: conversationId,
                             sender: user.id,
-                            mess: `${creator.fullName} đã nhượng quyền Trưởng nhóm cho ${friend.fullName}.`,
+                            mess: `${user.fullName} đã nhượng quyền Trưởng nhóm cho ${creator.fullName}.`,
                             deleted: false,
                             handleGroup: true,
                             removePerson: [],
