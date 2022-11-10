@@ -238,7 +238,6 @@ router.get('/:conversationID', async (req, res) => {
         var listSenderKhongTrung = [];
         for (var i = 0; i < listSender.length; i++)
             if (!listSenderKhongTrung.includes(listSender[i])) listSenderKhongTrung.push(listSender[i]);
-
         //get infor user from list sender
         var listUserInfo = [];
         for (var j = 0; j < listSenderKhongTrung.length; j++) {

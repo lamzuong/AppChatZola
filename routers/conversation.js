@@ -217,7 +217,26 @@ router.put('/renameGroup', (req, res) => {
                 if (err) {
                     console.log('Loi1' + err);
                 } else {
-                    console.log(data);
+                    const paramMess = {
+                        TableName: 'message',
+                        Item: {
+                            id: uuid(),
+                            conversationID: conversationId,
+                            sender: user.id,
+                            mess: `${user.fullName} đã thay đổi tên nhóm.`,
+                            deleted: false,
+                            handleGroup: true,
+                            removePerson: [],
+                            img_url: '',
+                            date: new Date().getTime(),
+                        },
+                    };
+                    docClient.put(paramMess, (err, data) => {
+                        if (err) {
+                            console.log('Loi: ' + err);
+                        }
+                        console.log('thanh cong');
+                    });
                     return res.send('Success');
                 }
             });
@@ -236,11 +255,11 @@ const upload = multer({
 });
 // Đổi avatar group
 router.put('/avaGroup', upload.single('img'), (req, res) => {
-    const { conversationId, groupName, user } = req.body;
+    const { conversationId, groupName, userID, userfullName } = req.body;
+    console.log(userfullName, userID);
     const img = req.file;
     let paramsConversation = {};
     if (typeof img == 'undefined') {
-        console.log(1);
         paramsConversation = {
             TableName: 'conversation',
             Key: {
@@ -256,7 +275,7 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
         };
     } else {
         const image = img.originalname;
-        var filePath = `${uuid()}/${image}`;
+        var filePath = `${uuid()}-${image}`;
         const uploadS3 = {
             Bucket: 'zola-chat',
             Key: filePath,
@@ -294,8 +313,8 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
                 Item: {
                     id: uuid(),
                     conversationID: conversationId,
-                    sender: user.id,
-                    mess: `${user.fullName} đã thay đổi ảnh nhóm.`,
+                    sender: userID,
+                    mess: `${userfullName} đã thay đổi thông tin nhóm.`,
                     deleted: false,
                     handleGroup: true,
                     removePerson: [],
