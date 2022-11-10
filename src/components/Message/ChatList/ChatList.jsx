@@ -18,6 +18,7 @@ import InfoDetailUser from './InfoDetailUser/InfoDetailUser';
 import UserItemSearchGroup from './UserItemSearchGroup/UserItemSearchGroup';
 import UserItemAdded from './UserItemAdded/UserItemAdded';
 import { io } from 'socket.io-client';
+
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
@@ -111,6 +112,9 @@ const ChatList = (props) => {
                 members: [...listUerAdded, user.id],
                 nameGroup: groupname.toString(),
                 id: user.id,
+            });
+            socket.emit('send-to-addGroup', {
+                idAdd: listUerAdded,
             });
             setModalIsOpenGroup(false);
             setRerender(!rerender);

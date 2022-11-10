@@ -66,10 +66,15 @@ const Info = ({ img, nameInfo, conversation }) => {
     const handleConfirm = async () => {
         const formData = new FormData();
         formData.append('img', avatar);
+        formData.append('userID', user.id);
+        formData.append('userfullName', user.fullName);
         formData.append('conversationId', conversation.id);
         formData.append('groupName', editName ? editName : nameInfo);
         try {
             await axiosCilent.put('/zola/conversation/avaGroup', formData);
+            socket.emit('send-to-server', {
+                conversationID: conversation.id,
+            });
         } catch (err) {
             console.log(err);
         }
@@ -151,7 +156,8 @@ const Info = ({ img, nameInfo, conversation }) => {
                 user: user,
                 listMember: listAddedInfo,
             });
-            socket.emit('send-to-server', {
+            socket.emit('send-to-addMem', {
+                idAdd: listUerAdded,
                 conversationID: conversation.id,
             });
 
@@ -168,6 +174,10 @@ const Info = ({ img, nameInfo, conversation }) => {
                 conversationId: conversation.id,
                 creator: creator,
                 user: user,
+            });
+            socket.emit('send-to-addMem', {
+                idAdd: listUerAdded,
+                conversationID: conversation.id,
             });
             closeModalGroup();
         } catch (error) {

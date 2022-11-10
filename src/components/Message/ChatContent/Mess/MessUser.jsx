@@ -156,7 +156,7 @@ const MessUser = (props) => {
                                                         className="bx bx-file"
                                                         style={{ marginRight: '4px', fontSize: '24px' }}
                                                     ></i>
-                                                    {img.split('/')[4]}
+                                                    {img.split('-')[5]}
                                                 </a>
                                             )}
                                         </div>
