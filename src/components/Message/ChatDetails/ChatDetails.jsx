@@ -302,7 +302,7 @@ const ChatDetails = (props) => {
                             <ListViewItem
                                 key={i}
                                 icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                                title={f.split('/')[4]}
+                                title={f.split('-')[5]}
                             />
                         ))}
 

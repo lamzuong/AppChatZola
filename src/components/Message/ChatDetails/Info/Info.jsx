@@ -58,10 +58,15 @@ const Info = ({ img, nameInfo, conversation }) => {
     const handleConfirm = async () => {
         const formData = new FormData();
         formData.append('img', avatar);
+        formData.append('userID', user.id);
+        formData.append('userfullName', user.fullName);
         formData.append('conversationId', conversation.id);
         formData.append('groupName', editName ? editName : nameInfo);
         try {
             await axiosCilent.put('/zola/conversation/avaGroup', formData);
+            socket.emit('send-to-server', {
+                conversationID: conversation.id,
+            });
         } catch (err) {
             console.log(err);
         }
