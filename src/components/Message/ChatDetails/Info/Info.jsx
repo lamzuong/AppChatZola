@@ -129,7 +129,8 @@ const Info = ({ img, nameInfo, conversation }) => {
                 user: user,
                 listMember: listAddedInfo,
             });
-            socket.emit('send-to-server', {
+            socket.emit('send-to-addMem', {
+                idAdd: listUerAdded,
                 conversationID: conversation.id,
             });
             closeModalGroup();

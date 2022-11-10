@@ -199,7 +199,7 @@ const Message = (props) => {
         });
         socket.on('server-send-to-out', (data) => {
             try {
-                if (data.idDelete == user.id) {
+                if (data.idDelete === user.id) {
                     alert('Bạn bị kick');
                     setRerender(!rerender);
                 }
@@ -207,7 +207,7 @@ const Message = (props) => {
         });
         socket.on('server-send-to-addMem', (data) => {
             try {
-                if (data.idAdd.includes(user.id)) {
+                if (data.idAdd.includes(user.id) || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                 }
             } catch (error) {}

@@ -17,6 +17,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
 
 import { io } from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
@@ -50,6 +51,7 @@ const ChatDetails = (props) => {
     const { user, dispatch } = useContext(AuthContext);
     Modal.setAppElement('#root');
     const [src, setSrc] = useState('a');
+    const navigate = useNavigate();
 
     ////////show modal img
     const [modalImgIsOpen, setModalImgIsOpen] = useState(false);
@@ -131,6 +133,7 @@ const ChatDetails = (props) => {
             };
             try {
                 await axiosCilent.put('/zola/conversation/outGroup', req);
+                navigate('/');
                 socket.emit('send-to-server', {
                     conversationID: props.currentChat.id,
                 });
@@ -163,9 +166,6 @@ const ChatDetails = (props) => {
                 user: user,
                 friend: friend,
                 members: props.currentChat.members,
-            });
-            socket.emit('send-to-server', {
-                conversationID: props.currentChat.id,
             });
             socket.emit('send-to-out', {
                 conversationID: props.currentChat.id,
@@ -322,14 +322,14 @@ const ChatDetails = (props) => {
                                     ></i>
                                 }
                                 title="Rời khỏi nhóm"
-                                style={{ color: 'red' }}
+                                style={{ color: 'red', cursor: 'pointer' }}
                                 onclick={openModalOutGroup}
                             ></StoreItem>
                             {props.currentChat.creator === props.user.id && (
                                 <StoreItem
                                     icon={<i className="bx bx-trash" style={{ fontSize: '1.6rem', color: 'red' }}></i>}
                                     title="Giải tán nhóm"
-                                    style={{ color: 'red' }}
+                                    style={{ color: 'red', cursor: 'pointer' }}
                                     onclick={openModalDelGroup}
                                 ></StoreItem>
                             )}
