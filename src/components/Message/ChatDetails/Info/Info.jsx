@@ -137,8 +137,11 @@ const Info = ({ img, nameInfo, conversation }) => {
         });
     };
 
-    const handleCheck2 = (id) => {
+    const [creator, setCreator] = useState({});
+
+    const handleCheck2 = (id, fullName) => {
         setChoose(id);
+        setCreator({ id, fullName });
     };
 
     const handleAddMemGroup = async (friend) => {
@@ -160,11 +163,12 @@ const Info = ({ img, nameInfo, conversation }) => {
 
     const handleAuthority = async () => {
         try {
+            console.log(conversation.id, creator, user);
             await axiosCilent.put('zola/conversation/grantPermission', {
                 conversationId: conversation.id,
-                creator: choose,
+                creator: creator,
+                user: user,
             });
-
             closeModalGroup();
         } catch (error) {
             console.log(error);
@@ -321,12 +325,12 @@ const Info = ({ img, nameInfo, conversation }) => {
                                                             <input
                                                                 type="radio"
                                                                 checked={choose === user.id}
-                                                                onChange={(e) => handleCheck2(user.id)}
+                                                                onChange={(e) => handleCheck2(user.id, user.fullName)}
                                                             />
                                                             <UserItemSearchGroup
                                                                 name={user.fullName}
                                                                 ava={user.img}
-                                                                onClick={() => handleCheck2(user.id)}
+                                                                onClick={() => handleCheck2(user.id, user.fullName)}
                                                             />
                                                         </li>
                                                     ))}
