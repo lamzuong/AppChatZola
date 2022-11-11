@@ -47,8 +47,6 @@ const Info = ({ img, nameInfo, conversation }) => {
     const [checked, setChecked] = useState([]);
     const [choose, setChoose] = useState();
     const [listUerAdded, setListUserAdded] = useState([]);
-    // const [clickUser, setClickUser] = useState(false);
-    // const [userChoosed, setUserChoosed] = useState({});
     const [listFriendInfo, setListFriendInfo] = useState([]);
     const [listAddedInfo, setListAddInfo] = useState([]);
     const [listMemberInfo, setListMemberInfo] = useState([]);

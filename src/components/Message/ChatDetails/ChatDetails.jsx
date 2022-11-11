@@ -8,6 +8,8 @@ import ListView from '../../ListView/ListView';
 import ListViewItem from '../../ListView/ListViewItem/ListViewItem';
 import Store from '../../Store/Store';
 import StoreItem from '../../Store/StoreItem/StoreItem';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCameraRetro, faKey, faRotate, faUsers } from '@fortawesome/free-solid-svg-icons';
 
 import ButtonSeeAllFile from './ButtonSeeAllFile/ButtonSeeAllFile';
 import styles from './ChatDetails.module.scss';
@@ -240,13 +242,22 @@ const ChatDetails = (props) => {
                                                         ava={user.img}
                                                         none
                                                     />
-                                                    {props.currentChat.creator === props.user.id && (
-                                                        <button
-                                                            className={cx('btn-add-frend')}
-                                                            onClick={() => handleDeleteMemGroup(user)}
-                                                        >
-                                                            Xóa
-                                                        </button>
+
+                                                    {props.currentChat.creator === props.user.id &&
+                                                        user.id !== props.user.id && (
+                                                            <button
+                                                                className={cx('btn-add-frend')}
+                                                                onClick={() => handleDeleteMemGroup(user)}
+                                                            >
+                                                                Xóa
+                                                            </button>
+                                                        )}
+                                                    {props.currentChat.creator === user.id && (
+                                                        <FontAwesomeIcon
+                                                            icon={faKey}
+                                                            className={cx('icon-key')}
+                                                            style={{ color: 'yellow', marginRight: '20' }}
+                                                        />
                                                     )}
                                                 </li>
                                             ))}
