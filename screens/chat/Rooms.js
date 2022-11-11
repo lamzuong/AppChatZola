@@ -21,7 +21,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../context/AuthContext";
 import { useState, useEffect, useContext } from "react";
 import axiosCilent from "../../api/axiosClient";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function Rooms({ navigation, route }) {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
@@ -40,6 +45,43 @@ export default function Rooms({ navigation, route }) {
       setNameReceive(route.params.nameGroup);
       setAvaReceive(route.params.avaGroup);
     }
+  });
+  useEffect(() => {
+    socket.off();
+    socket.on("server-send-to-out", (data) => {
+      try {
+        console.log(data.conversation);
+        if (data.idDelete == user.id) {
+          if (
+            typeof data.conversation.groupName != "undefined" &&
+            data.conversation.groupName != ""
+          ) {
+            Alert.alert(
+              "Thông báo",
+              "Bạn đã bị mời ra khỏi nhóm '" +
+                data.conversation.groupName +
+                "'",
+              [
+                {},
+                {
+                  text: "OK",
+                  onPress: () => {
+                    setRerender(!rerender);
+                  },
+                },
+              ]
+            );
+          }
+        }
+      } catch (error) {}
+    });
+    socket.on("server-send-to-addMem", (data) => {
+      try {
+        if (data.idAdd.includes(user.id)) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
   });
   useEffect(() => {
     const getConversation = async () => {

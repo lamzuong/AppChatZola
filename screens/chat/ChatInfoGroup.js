@@ -207,6 +207,7 @@ export default function ChatInfoGroup({ navigation, route }) {
       setItemChoose([]);
       socket.emit("send-to-addMem", {
         idAdd: list,
+        conversationID: conversation.id,
       });
       setRerender(!rerender);
     } catch (error) {}
@@ -324,8 +325,9 @@ export default function ChatInfoGroup({ navigation, route }) {
       await axiosCilent.delete("/zola/conversation/deleteGroup", {
         data: req,
       });
-      socket.emit("send-to-server", {
+      socket.emit("send-to-deleteGroup", {
         conversationID: conversation.id,
+        listId: conversationRender.members,
       });
       navigation.navigate("Rooms", {
         conId: conversation.id + user.id,
