@@ -205,7 +205,7 @@ const Message = (props) => {
                     setRerender(!rerender);
                     if (data.idDelete === user.id) {
                         setRerender(!rerender);
-                        alert(`Bạn bị kick khỏi nhóm ${currentChat.groupName}`);
+                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
                         }
@@ -223,6 +223,27 @@ const Message = (props) => {
         socket.on('server-send-to-addGroup', (data) => {
             try {
                 if (data.idAdd.includes(user.id)) {
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
+        socket.on('server-send-to-deleteGroup', (data) => {
+            try {
+                if (data.idDelete.includes(user.id) || data.conversationID === currentChat.id) {
+                    setRerender(!rerender);
+                    if (data.idDelete.includes(user.id)) {
+                        setRerender(!rerender);
+                        alert(`Nhóm ${data.groupName} đã bị giải tán.`);
+                        if (data.conversationID === currentChat.id) {
+                            navigate('/');
+                        }
+                    }
+                }
+            } catch (error) {}
+        });
+        socket.on('server-send-to-authorized', (data) => {
+            try {
+                if (data.idGrant === user.id || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                 }
             } catch (error) {}

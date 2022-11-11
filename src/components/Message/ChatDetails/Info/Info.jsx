@@ -172,7 +172,8 @@ const Info = ({ img, nameInfo, conversation }) => {
                 creator: creator,
                 user: user,
             });
-            socket.emit('send-to-server', {
+            socket.emit('send-to-authorized', {
+                idGrant: creator.id,
                 conversationID: conversation.id,
             });
             closeModalGroup();
