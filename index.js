@@ -56,6 +56,9 @@ io.on('connection', (socket) => {
     socket.on('send-to-authorized', (data) => {
         io.emit('server-send-to-authorized', data); //Gửi tất cả
     });
+    socket.on('send-to-edit', (data) => {
+        io.emit('server-send-to-edit', data); //Gửi tất cả
+    });
 });
 
 server.listen(8000, () => {
