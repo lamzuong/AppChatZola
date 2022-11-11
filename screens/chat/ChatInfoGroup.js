@@ -69,6 +69,17 @@ export default function ChatInfoGroup({ navigation, route }) {
         }
       } catch (error) {}
     });
+    socket.on("server-send-to-authorized", (data) => {
+      try {
+        console.log(data);
+        if (
+          data.idGrant === user.id ||
+          data.conversationID === conversationRender.id
+        ) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
   });
   const [listMem, setListMem] = useState([]);
   var list = [];
@@ -327,7 +338,8 @@ export default function ChatInfoGroup({ navigation, route }) {
       });
       socket.emit("send-to-deleteGroup", {
         conversationID: conversation.id,
-        listId: conversationRender.members,
+        idDelete: conversationRender.members,
+        groupName: conversationRender.groupName,
       });
       navigation.navigate("Rooms", {
         conId: conversation.id + user.id,

@@ -94,6 +94,24 @@ export default function ChatRoom({ route }) {
         }
       } catch (error) {}
     });
+    socket.on("server-send-to-out", (data) => {
+      try {
+        console.log(data.conversation);
+        if (data.idDelete == user.id) {
+          navigation.navigate("Rooms");
+        }
+      } catch (error) {}
+    });
+    socket.on("server-send-to-deleteGroup", (data) => {
+      try {
+        if (
+          data.idDelete.includes(user.id) ||
+          data.conversationID === conversation.id
+        ) {
+          navigation.navigate("Rooms");
+        }
+      } catch (error) {}
+    });
   });
   const navigation = useNavigation();
   //======edit name header chat if it too long====

@@ -99,8 +99,9 @@ export default function ListMemberGroup({ navigation, route }) {
       };
       await axiosCilent.put("/zola/conversation/grantPermission", conv);
       setRerender(!rerenderList);
-      socket.emit("send-to-server", {
+      socket.emit("send-to-authorized", {
         conversationID: conversation.id,
+        idGrant: newCreator.id,
       });
       navigation.navigate("ChatInfoGroup", {
         conversation: conversationRender,

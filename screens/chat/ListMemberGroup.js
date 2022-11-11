@@ -104,6 +104,17 @@ export default function ListMemberGroup({ navigation, route }) {
         }
       } catch (error) {}
     });
+    socket.on("server-send-to-authorized", (data) => {
+      try {
+        console.log(data);
+        if (
+          data.idGrant === user.id ||
+          data.conversationID === conversationRender.id
+        ) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
   });
   const deleteMem = async (friend) => {
     try {
@@ -119,6 +130,7 @@ export default function ListMemberGroup({ navigation, route }) {
       });
       socket.emit("send-to-out", {
         conversationID: conversation.id,
+        nameGroup: conversationRender.groupName,
         idDelete: friend.id,
       });
       setRerender(!rerenderList);

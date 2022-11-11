@@ -52,15 +52,10 @@ export default function Rooms({ navigation, route }) {
       try {
         console.log(data.conversation);
         if (data.idDelete == user.id) {
-          if (
-            typeof data.conversation.groupName != "undefined" &&
-            data.conversation.groupName != ""
-          ) {
+          if (typeof data.nameGroup != "undefined" && data.nameGroup != "") {
             Alert.alert(
               "Thông báo",
-              "Bạn đã bị mời ra khỏi nhóm '" +
-                data.conversation.groupName +
-                "'",
+              "Bạn đã bị mời ra khỏi nhóm '" + data.nameGroup + "'",
               [
                 {},
                 {
@@ -79,6 +74,23 @@ export default function Rooms({ navigation, route }) {
       try {
         if (data.idAdd.includes(user.id)) {
           setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
+    socket.on("server-send-to-deleteGroup", (data) => {
+      try {
+        if (
+          data.idDelete.includes(user.id) ||
+          data.conversationID === conversation.id
+        ) {
+          setRerender(!rerender);
+          if (data.idDelete.includes(user.id)) {
+            setRerender(!rerender);
+            Alert.alert(
+              "Thông báo",
+              "Nhóm '" + data.groupName + "' đã bị giải tán"
+            );
+          }
         }
       } catch (error) {}
     });
