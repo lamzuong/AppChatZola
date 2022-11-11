@@ -50,6 +50,12 @@ io.on('connection', (socket) => {
     socket.on('send-to-addGroup', (data) => {
         io.emit('server-send-to-addGroup', data); //Gửi tất cả
     });
+    socket.on('send-to-deleteGroup', (data) => {
+        io.emit('server-send-to-deleteGroup', data); //Gửi tất cả
+    });
+    socket.on('send-to-authorized', (data) => {
+        io.emit('server-send-to-authorized', data); //Gửi tất cả
+    });
 });
 
 server.listen(8000, () => {
