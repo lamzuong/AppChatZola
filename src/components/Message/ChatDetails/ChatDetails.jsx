@@ -88,8 +88,8 @@ const ChatDetails = (props) => {
     const handleShowImage = (src) => {
         setSrc(src);
     };
-    props.currentChat.images.reverse();
-    const listImg = props.currentChat.images?.filter(
+    // props.currentChat.images.reverse();
+    const listImg = props.currentChat?.images.filter(
         (i) =>
             i.split('.').splice(-1)[0] === 'png' ||
             i.split('.').splice(-1)[0] === 'jpg' ||
@@ -98,7 +98,7 @@ const ChatDetails = (props) => {
             i.split('.').splice(-1)[0] === 'jfif' ||
             i.split('.').splice(-1)[0] === 'mp4',
     );
-    const listFile = props.currentChat.images?.filter(
+    const listFile = props.currentChat?.images.filter(
         (i) =>
             i.split('.').splice(-1)[0] !== 'png' &&
             i.split('.').splice(-1)[0] !== 'jpg' &&
@@ -278,7 +278,7 @@ const ChatDetails = (props) => {
                         icon={<i className="bx bxs-file-image" style={{ fontSize: '1.6rem' }}></i>}
                     >
                         <div className={cx('content', 'gridv2')}>
-                            {listImg.slice(0, 8).map((img, i) => (
+                            {listImg?.slice(0, 8).map((img, i) => (
                                 <div key={i}>
                                     <div
                                         className={cx('wrapper-media')}
@@ -319,7 +319,7 @@ const ChatDetails = (props) => {
                         <ButtonSeeAllFile imgStore={listImg} fileStore={listFile} />
                     </StoreItem>
                     <StoreItem title="File" icon={<i className="bx bx-folder" style={{ fontSize: '1.6rem' }}></i>}>
-                        {listFile.slice(0, 4).map((f, i) => (
+                        {listFile?.slice(0, 4).map((f, i) => (
                             <ListViewItem
                                 key={i}
                                 icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
@@ -329,7 +329,7 @@ const ChatDetails = (props) => {
 
                         <ButtonSeeAllFile fileStore={listFile} imgStore={listImg} />
                     </StoreItem>
-                    {props.currentChat.members.length > 2 && (
+                    {props.currentChat?.members.length > 2 && (
                         <>
                             <StoreItem
                                 icon={
@@ -342,7 +342,7 @@ const ChatDetails = (props) => {
                                 style={{ color: 'red', cursor: 'pointer' }}
                                 onclick={openModalOutGroup}
                             ></StoreItem>
-                            {props.currentChat.creator === props.user.id && (
+                            {props.currentChat?.creator === props.user.id && (
                                 <StoreItem
                                     icon={<i className="bx bx-trash" style={{ fontSize: '1.6rem', color: 'red' }}></i>}
                                     title="Giải tán nhóm"

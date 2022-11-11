@@ -201,21 +201,29 @@ const Message = (props) => {
         });
         socket.on('server-send-to-out', (data) => {
             try {
-                if (data.idDelete === user.id || data.conversationID === currentChat.id) {
-                    setRerender(!rerender);
-                    if (data.idDelete === user.id) {
-                        setRerender(!rerender);
-                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
+                if (data.idDelete == user.id || data.conversationID === currentChat.id) {
+                    // setRerender(!rerender);
+                    if (data.idDelete == user.id) {
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
+                            setRerender(!rerender);
+                            location.reload();
+                            // setCurrentChat(null);
                         }
+                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
+                        setRerender(!rerender);
                     }
                 }
+                setRerender(!rerender);
             } catch (error) {}
         });
         socket.on('server-send-to-addMem', (data) => {
             try {
-                if (data.idAdd.includes(user.id) || data.conversationID === currentChat.id) {
+                if (
+                    data.idAdd.includes(user.id) ||
+                    data.conversationID === currentChat.id ||
+                    data.members.includes(user.id)
+                ) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
@@ -236,6 +244,7 @@ const Message = (props) => {
                         alert(`Nhóm ${data.groupName} đã bị giải tán.`);
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
+                            setRerender(!rerender);
                         }
                     }
                 }
@@ -243,7 +252,14 @@ const Message = (props) => {
         });
         socket.on('server-send-to-authorized', (data) => {
             try {
-                if (data.idGrant === user.id || data.conversationID === currentChat.id) {
+                if (data.members.includes(user.id) || data.conversationID === currentChat.id) {
+                    setRerender(!rerender);
+                }
+            } catch (error) {}
+        });
+        socket.on('server-send-to-edit', (data) => {
+            try {
+                if (data.members.includes(user.id)) {
                     setRerender(!rerender);
                 }
             } catch (error) {}

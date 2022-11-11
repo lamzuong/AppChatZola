@@ -70,8 +70,10 @@ const Info = ({ img, nameInfo, conversation }) => {
         formData.append('groupName', editName ? editName : nameInfo);
         try {
             await axiosCilent.put('/zola/conversation/avaGroup', formData);
-            socket.emit('send-to-server', {
+            socket.emit('send-to-edit', {
                 conversationID: conversation.id,
+                members: conversation.members,
+                nameGroup: editName ? editName : nameInfo,
             });
         } catch (err) {
             console.log(err);
@@ -125,8 +127,8 @@ const Info = ({ img, nameInfo, conversation }) => {
         getUsersInfo(listUerAdded, setListAddInfo);
     }, [listUerAdded.length]);
     useEffect(() => {
-        getUsersInfo(conversation.members, setListMemberInfo);
-    }, [conversation.members.length]);
+        getUsersInfo(conversation?.members, setListMemberInfo);
+    }, [conversation?.members.length]);
     const handleCheck = (id) => {
         setChecked((prev) => {
             const isChecked = checked.includes(id);
@@ -156,6 +158,7 @@ const Info = ({ img, nameInfo, conversation }) => {
             });
             socket.emit('send-to-addMem', {
                 idAdd: listUerAdded,
+                members: conversation.members,
                 conversationID: conversation.id,
             });
 
@@ -173,7 +176,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                 user: user,
             });
             socket.emit('send-to-authorized', {
-                idGrant: creator.id,
+                members: conversation.members,
                 conversationID: conversation.id,
             });
             closeModalGroup();
@@ -190,7 +193,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                 </div>
                 <div className={cx('info-name')}>
                     <span style={{ fontSize: 16 }}>{nameInfo}</span>
-                    {conversation.members.length > 2 && (
+                    {conversation?.members.length > 2 && (
                         <div className={cx('edit')} onClick={openModal}>
                             <i className="bx bx-edit-alt"></i>
                         </div>
@@ -250,7 +253,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                 </div>
 
                 <div className={cx('ruleAdmin')}>
-                    {conversation.members.length > 2 && (
+                    {conversation?.members.length > 2 && (
                         <div
                             className={cx('addMem')}
                             onClick={() => {
