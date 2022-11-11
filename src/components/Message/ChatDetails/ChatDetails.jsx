@@ -145,15 +145,19 @@ const ChatDetails = (props) => {
             }
         }
     };
-
     const handleDelGroup = async () => {
+        let listid = [];
+        for (let i = 0; i < props.currentChat.members.length; i++) {
+            listid.push(props.currentChat.members[i]);
+        }
         const req = {
             conversationId: props.currentChat.id,
         };
         try {
             await axiosCilent.delete('/zola/conversation/deleteGroup', { data: req });
-            socket.emit('send-to-server', {
+            socket.emit('send-to-out', {
                 conversationID: props.currentChat.id,
+                idDelete: listid,
             });
             closeModelDelGroup();
         } catch (error) {

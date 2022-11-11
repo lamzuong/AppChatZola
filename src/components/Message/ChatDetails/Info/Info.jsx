@@ -126,7 +126,7 @@ const Info = ({ img, nameInfo, conversation }) => {
     }, [listUerAdded.length]);
     useEffect(() => {
         getUsersInfo(conversation.members, setListMemberInfo);
-    }, conversation.members.length);
+    }, [conversation.members.length]);
     const handleCheck = (id) => {
         setChecked((prev) => {
             const isChecked = checked.includes(id);
@@ -167,14 +167,12 @@ const Info = ({ img, nameInfo, conversation }) => {
 
     const handleAuthority = async () => {
         try {
-            console.log(conversation.id, creator, user);
             await axiosCilent.put('zola/conversation/grantPermission', {
                 conversationId: conversation.id,
                 creator: creator,
                 user: user,
             });
-            socket.emit('send-to-addMem', {
-                idAdd: listUerAdded,
+            socket.emit('send-to-server', {
                 conversationID: conversation.id,
             });
             closeModalGroup();
