@@ -35,7 +35,11 @@ export default function MessageChat(props) {
   const messGroup = item.handleGroup;
   const owner = item.sender == user.id;
   let nameShow = item.infoSender.fullName.split(" ").slice(-1);
-
+  useEffect(() => {
+    if (item.deleted == true) {
+      setRemove(true);
+    }
+  }, [item]);
   //====getTime=====
   function timeSince(date) {
     var seconds = Math.floor((new Date() - date) / 1000);

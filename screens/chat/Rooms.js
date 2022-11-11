@@ -72,7 +72,7 @@ export default function Rooms({ navigation, route }) {
     });
     socket.on("server-send-to-addMem", (data) => {
       try {
-        if (data.idAdd.includes(user.id)) {
+        if (data.idAdd.includes(user.id) || data.members.includes(user.id)) {
           setRerender(!rerender);
         }
       } catch (error) {}
@@ -91,6 +91,20 @@ export default function Rooms({ navigation, route }) {
               "Nhóm '" + data.groupName + "' đã bị giải tán"
             );
           }
+        }
+      } catch (error) {}
+    });
+    socket.on("server-send-to-addGroup", (data) => {
+      try {
+        if (data.idAdd.includes(user.id)) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
+    socket.on("server-send-to-edit", (data) => {
+      try {
+        if (data.members.includes(user.id)) {
+          setRerender(!rerender);
         }
       } catch (error) {}
     });

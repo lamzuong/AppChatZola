@@ -73,9 +73,16 @@ export default function ChatInfoGroup({ navigation, route }) {
       try {
         console.log(data);
         if (
-          data.idGrant === user.id ||
+          data.members.includes(user.id) ||
           data.conversationID === conversationRender.id
         ) {
+          setRerender(!rerender);
+        }
+      } catch (error) {}
+    });
+    socket.on("server-send-to-edit", (data) => {
+      try {
+        if (data.members.includes(user.id)) {
           setRerender(!rerender);
         }
       } catch (error) {}
@@ -218,6 +225,7 @@ export default function ChatInfoGroup({ navigation, route }) {
       setItemChoose([]);
       socket.emit("send-to-addMem", {
         idAdd: list,
+        members: conversationRender.members,
         conversationID: conversation.id,
       });
       setRerender(!rerender);
@@ -253,8 +261,13 @@ export default function ChatInfoGroup({ navigation, route }) {
           avatarOld: avaRender,
           user: user,
         });
-        socket.emit("send-to-server", {
+        var list = [];
+        itemChoose.forEach((e) => {
+          list.push(e.id);
+        });
+        socket.emit("send-to-edit", {
           conversationID: conversation.id,
+          members: list,
         });
       } catch (err) {
         console.log(err);
@@ -287,8 +300,13 @@ export default function ChatInfoGroup({ navigation, route }) {
           avatarOld: avaRender,
           user: user,
         });
-        socket.emit("send-to-server", {
+        var list = [];
+        itemChoose.forEach((e) => {
+          list.push(e.id);
+        });
+        socket.emit("send-to-edit", {
           conversationID: conversation.id,
+          members: list,
         });
       } catch (err) {
         console.log(err);
@@ -304,8 +322,9 @@ export default function ChatInfoGroup({ navigation, route }) {
         groupName: name,
         user: user,
       });
-      socket.emit("send-to-server", {
+      socket.emit("send-to-edit", {
         conversationID: conversation.id,
+        members: conversationRender.members,
       });
     } catch (error) {}
   };

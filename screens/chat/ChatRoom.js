@@ -112,14 +112,23 @@ export default function ChatRoom({ route }) {
         }
       } catch (error) {}
     });
+    socket.on("server-send-to-edit", (data) => {
+      try {
+        if (data.members.includes(user.id)) {
+          setRerender(!rerender);
+          setNameRerender(data.nameGroup);
+          setNameInChat(data.nameGroup);
+        }
+      } catch (error) {}
+    });
   });
   const navigation = useNavigation();
   //======edit name header chat if it too long====
   const [nameInChat, setNameInChat] = useState(nameRender);
   useEffect(() => {
     const strName = new String(nameInChat);
-    if (strName.length > 15) {
-      setNameInChat(strName.slice(0, 12) + "...");
+    if (strName.length > 13) {
+      setNameInChat(strName.slice(0, 10) + "...");
     }
   }, [nameInChat]);
 

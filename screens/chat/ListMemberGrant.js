@@ -101,7 +101,7 @@ export default function ListMemberGroup({ navigation, route }) {
       setRerender(!rerenderList);
       socket.emit("send-to-authorized", {
         conversationID: conversation.id,
-        idGrant: newCreator.id,
+        members: conversationRender.members,
       });
       navigation.navigate("ChatInfoGroup", {
         conversation: conversationRender,
