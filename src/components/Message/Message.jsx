@@ -12,6 +12,7 @@ import MessUser from './ChatContent/Mess/MessUser';
 import Input from './ChatContent/Input/Input';
 import noAvatar from '../../assets/noAvatar.png';
 import { io } from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
 
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
@@ -115,6 +116,7 @@ const Message = (props) => {
     const [rerender, setRerender] = useState(null);
     const [message, setMessage] = useState([]);
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const scrollRef = useRef();
     useEffect(() => {
         const getConversation = async () => {
@@ -199,9 +201,15 @@ const Message = (props) => {
         });
         socket.on('server-send-to-out', (data) => {
             try {
-                if (data.idDelete === user.id) {
-                    alert('Bạn bị kick');
+                if (data.idDelete === user.id || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
+                    if (data.idDelete === user.id) {
+                        setRerender(!rerender);
+                        alert(`Bạn bị kick khỏi nhóm ${currentChat.groupName}`);
+                        if (data.conversationID === currentChat.id) {
+                            navigate('/');
+                        }
+                    }
                 }
             } catch (error) {}
         });
