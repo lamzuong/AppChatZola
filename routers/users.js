@@ -482,6 +482,7 @@ router.put('/deleteFriend', (req, res) => {
 // Search with fullName or email
 router.get('/search/:name', (req, res) => {
     const { name } = req.params;
+    console.log(req.body);
     var params = {
         ExpressionAttributeValues: {
             ':name': name,
