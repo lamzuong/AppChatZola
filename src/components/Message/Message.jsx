@@ -248,12 +248,11 @@ const Message = (props) => {
         socket.on('server-send-to-out', (data) => {
             try {
                 if (data.idDelete == user.id || data.conversationID === currentChat.id) {
-                    // setRerender(!rerender);
+                    setRerender(!rerender);
                     if (data.idDelete == user.id) {
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
                             setRerender(!rerender);
-                            // setCurrentChat(null);
                         }
                         alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
                         setRerender(!rerender);
@@ -289,7 +288,7 @@ const Message = (props) => {
                         alert(`Nhóm ${data.groupName} đã bị giải tán.`);
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
-                            setRerender(!rerender);
+                            // setRerender(!rerender);
                         }
                     }
                 }
@@ -347,7 +346,7 @@ const Message = (props) => {
                     friendVideo.current.srcObject = stream;
                 }
             });
-            
+
             socket.on('callAccepted', (signal) => {
                 console.log(signal);
                 setCallAccepted(true);
