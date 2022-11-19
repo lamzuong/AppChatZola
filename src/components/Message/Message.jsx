@@ -11,8 +11,18 @@ import axiosCilent from '../../api/axiosClient';
 import MessUser from './ChatContent/Mess/MessUser';
 import Input from './ChatContent/Input/Input';
 import noAvatar from '../../assets/noAvatar.png';
+import Modal from 'react-modal';
 import { io } from 'socket.io-client';
+import Peer from 'simple-peer';
 import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faMicrophone,
+    faMicrophoneSlash,
+    faPhoneSlash,
+    faVideo,
+    faVideoSlash,
+} from '@fortawesome/free-solid-svg-icons';
 
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
@@ -110,12 +120,40 @@ const mess = [
         message: 'dcm',
     },
 ];
+
+const customStyles = {
+    content: {
+        width: '100%',
+        backgroundColor: '#3e4041',
+        height: '100vh',
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: '100',
+    },
+};
 const Message = (props) => {
     const [conversation, setConversation] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [rerender, setRerender] = useState(null);
+    const [modalVideoOpen, setModalVideoOpen] = useState(false);
     const [message, setMessage] = useState([]);
     const { user } = useContext(AuthContext);
+
+    const [stream, setStream] = useState();
+    const [receivingCall, setReceivingCall] = useState(false);
+    const [caller, setCaller] = useState('');
+    const [callerSignal, setCallerSignal] = useState();
+    const [callAccepted, setCallAccepted] = useState(false);
+    const [idToCall, setIdToCall] = useState('');
+    const [callEnded, setCallEnded] = useState(false);
+    const [nameVideo, setNameVideo] = useState('');
+    const myVideo = useRef();
+    const friendVideo = useRef();
+    const connectionRef = useRef();
+
     const navigate = useNavigate();
     const scrollRef = useRef();
     useEffect(() => {
@@ -129,6 +167,14 @@ const Message = (props) => {
         };
         getConversation();
     }, [user.id, rerender]);
+
+    const openModalVideo = () => {
+        setModalVideoOpen(true);
+    };
+
+    const closeModelVideo = () => {
+        setModalVideoOpen(false);
+    };
 
     let cbChild = (childData) => {
         setCurrentChat(childData);
@@ -207,7 +253,6 @@ const Message = (props) => {
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
                             setRerender(!rerender);
-                            location.reload();
                             // setCurrentChat(null);
                         }
                         alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
@@ -264,7 +309,83 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.on('callUser', (data) => {
+            setReceivingCall(true);
+            setCaller(data.from);
+            setNameVideo(data.name);
+            setCallerSignal(data.signal);
+        });
+
+        socket.on('callAccepted', (data) => {
+            console.log(data);
+            if (data.to === user.id) setCallAccepted(true);
+        });
     });
+
+    const callUser = () => {
+        openModalVideo();
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            console.log(stream);
+            setStream(stream);
+            myVideo.current.srcObject = stream;
+            const peer = new Peer({
+                initiator: true,
+                trickle: false,
+                stream: stream,
+            });
+            peer.on('signal', (data) => {
+                socket.emit('callUser', {
+                    userToCall: currentChat.id,
+                    signalData: data,
+                    from: user.id,
+                    name: user.fullName,
+                });
+            });
+
+            peer.on('stream', (stream) => {
+                if (friendVideo.current) {
+                    friendVideo.current.srcObject = stream;
+                }
+            });
+            
+            socket.on('callAccepted', (signal) => {
+                console.log(signal);
+                setCallAccepted(true);
+                peer.signal(signal);
+            });
+
+            connectionRef.current = peer;
+        });
+    };
+
+    const answerCall = () => {
+        openModalVideo();
+        setCallAccepted(true);
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            console.log(stream);
+            setStream(stream);
+            myVideo.current.srcObject = stream;
+            const peer = new Peer({
+                initiator: false,
+                trickle: false,
+                stream: stream,
+            });
+            peer.on('signal', (data) => {
+                socket.emit('answerCall', { signal: data, to: caller });
+            });
+            peer.on('stream', (stream) => {
+                friendVideo.current.srcObject = stream;
+            });
+            peer.signal(callerSignal);
+            connectionRef.current = peer;
+        });
+    };
+
+    const leaveCall = () => {
+        closeModelVideo();
+        setCallEnded(true);
+        connectionRef.current.destroy();
+    };
 
     // console.log(rerender);
     // console.log(currentChat);
@@ -291,7 +412,7 @@ const Message = (props) => {
                             </div>
                             <div className={cx('headermessNav')}>
                                 <i className="bx bxs-phone"></i>
-                                <i className="bx bxs-video"></i>
+                                <i className="bx bxs-video" onClick={callUser}></i>
                             </div>
                         </div>
                         {/* chatContent */}
@@ -323,6 +444,36 @@ const Message = (props) => {
                 )}
             </div>
             {props.params ? <ChatDetails user={user} img={img} name={name} currentChat={currentChat} /> : null}
+            <Modal isOpen={modalVideoOpen} style={customStyles} onRequestClose={closeModelVideo}>
+                <div className={cx('videoCall-parent')}>
+                    <div className={cx('friend-video')}>
+                        {/* {callAccepted && !callEnded ? ( */}
+                        <video className={cx('video-f')} autoPlay playsInline ref={friendVideo}></video>
+                        {/* ) : (
+                            null || <div>{nameVideo}</div>
+                        )} */}
+                    </div>
+                    <div className={cx('my-video')}>
+                        <video className={cx('video-m')} autoPlay playsInline ref={myVideo}></video>
+                    </div>
+                    <div className={cx('callVideo-footer')}>
+                        <div className={cx('mic')}>
+                            <FontAwesomeIcon icon={faMicrophone} style={{ color: '#ffffff' }} />
+                            {/* <FontAwesomeIcon icon={faMicrophoneSlash} style={{ color: '#ffffff' }} /> */}
+                        </div>
+                        <div className={cx('cam')}>
+                            <FontAwesomeIcon icon={faVideo} style={{ color: '#ffffff' }} />
+                            {/* <FontAwesomeIcon icon={faVideoSlash} style={{ color: '#ffffff' }} /> */}
+                        </div>
+                        <div className={cx('end')} onClick={leaveCall}>
+                            <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+            <div className={cx('end')} onClick={answerCall}>
+                <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#00000' }} />
+            </div>
         </div>
     );
 };

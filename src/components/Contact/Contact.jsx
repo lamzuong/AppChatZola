@@ -157,7 +157,6 @@ const Contact = (props) => {
             for (let i = 0; i < user.friends.length; i++) {
                 try {
                     let res = await axiosCilent.get('/zola/users/' + user.friends[i]);
-
                     listFriend.push(res);
                     //console.log(listFriend);
                     if (i === user.friends.length - 1) {

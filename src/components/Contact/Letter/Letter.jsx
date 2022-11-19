@@ -10,7 +10,6 @@ const cx = classNames.bind(styles);
 const Letter = ({ id }) => {
     const [user0, setUser0] = useState({});
     const { user, dispatch } = useContext(AuthContext);
-    console.log(user);
 
     useEffect(() => {
         const getInfoFriends = async () => {

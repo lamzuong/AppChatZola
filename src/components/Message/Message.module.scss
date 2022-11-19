@@ -83,3 +83,52 @@
         object-fit: cover;
     }
 }
+
+// callVideo
+.videoCall-parent {
+    position: relative;
+    // background-image: url('../../assets/calling.gif');
+    height: 85vh;
+}
+
+.friend-video {
+    height: 100%;
+    width: 100%;
+}
+
+.video-f {
+    height: 100%;
+    width: 100%;
+}
+
+.my-video {
+    position: absolute;
+    bottom: -80px;
+    right: 20px;
+}
+.video-m {
+    max-width: 350px;
+    max-height: 220px;
+    border-radius: 10px;
+}
+.callVideo-footer {
+    @include flex(unset, center);
+}
+
+.mic,
+.cam,
+.end {
+    @include flex(center, center);
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-left: 30px;
+    margin-top: 20px;
+    background-color: $main-color;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.end {
+    background-color: red;
+}

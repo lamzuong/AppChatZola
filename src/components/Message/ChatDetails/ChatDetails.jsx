@@ -113,11 +113,21 @@ const ChatDetails = (props) => {
     useEffect(() => {
         const getUsersInfo = async () => {
             let listTemp = [];
+            let creator = null;
             for (let i = 0; i < props.currentChat?.members.length; i++) {
                 const res = await axiosCilent.get(`/zola/users/` + props.currentChat.members[i]);
-                listTemp.push(res);
+                if (
+                    props.currentChat.members[i] === user.id &&
+                    props.currentChat.members[i] !== props.currentChat.creator
+                ) {
+                    listTemp.unshift(res);
+                } else if (props.currentChat.members[i] === props.currentChat.creator) {
+                    creator = res;
+                } else {
+                    listTemp.push(res);
+                }
             }
-            setListMemberInfo([...listTemp]);
+            setListMemberInfo([creator, ...listTemp]);
         };
         getUsersInfo();
     }, [props.currentChat?.members.length]);
