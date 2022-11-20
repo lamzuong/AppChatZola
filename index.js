@@ -47,6 +47,9 @@ io.on('connection', (socket) => {
     socket.on('send-to-addMem', (data) => {
         io.emit('server-send-to-addMem', data); //Gửi tất cả
     });
+    socket.on('send-to-acceptMem', (data) => {
+        io.emit('server-send-to-acceptMem', data); //Gửi tất cả
+    });
     socket.on('send-to-addGroup', (data) => {
         io.emit('server-send-to-addGroup', data); //Gửi tất cả
     });
@@ -58,6 +61,21 @@ io.on('connection', (socket) => {
     });
     socket.on('send-to-edit', (data) => {
         io.emit('server-send-to-edit', data); //Gửi tất cả
+    });
+
+    // call video
+    socket.emit('me', socket.id);
+
+    socket.on('disconnect', () => {
+        socket.broadcast.emit('callEnded');
+    });
+
+    socket.on('callUser', (data) => {
+        io.emit('callUser', { signal: data.signalData, from: data.from, name: data.name });
+    });
+
+    socket.on('answerCall', (data) => {
+        io.emit('callAccepted', data);
     });
 });
 
