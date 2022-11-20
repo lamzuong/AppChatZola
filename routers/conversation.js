@@ -26,6 +26,7 @@ router.post('/', (req, res) => {
                 creator: req.body.id,
                 date: date,
                 images: [],
+                waitAccept: [],
                 files: [],
             },
         };
@@ -102,12 +103,45 @@ router.put('/addMem', (req, res) => {
         Key: {
             id: conversationId,
         },
-        UpdateExpression: 'SET #members=list_append(#members,:members)',
+        UpdateExpression: 'SET #waitAccept=list_append(#waitAccept,:waitAccept)',
         ExpressionAttributeNames: {
-            '#members': 'members', //COLUMN NAME
+            '#waitAccept': 'waitAccept', //COLUMN NAME
         },
         ExpressionAttributeValues: {
-            ':members': listTempId,
+            ':waitAccept': listTempId,
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            console.log('Loi1' + err);
+        } else {
+            return res.send('Success');
+        }
+    });
+});
+
+// Chap nhan thanh vien
+router.put('/acceptMem', (req, res) => {
+    const { conversationId, user, member, listWaitInfo } = req.body;
+    var listWaitAccept = listWaitInfo
+        .reduce((list, user) => {
+            return list.concat(user.id);
+        }, [])
+        .filter((item) => item !== member.id);
+
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+        UpdateExpression: 'SET #members=list_append(#members,:members), #waitAccept=:waitAccept',
+        ExpressionAttributeNames: {
+            '#members': 'members', //COLUMN NAME
+            '#waitAccept': 'waitAccept',
+        },
+        ExpressionAttributeValues: {
+            ':members': [member.id],
+            ':waitAccept': listWaitAccept,
         },
     };
     docClient.update(params, (err, data) => {
@@ -121,7 +155,7 @@ router.put('/addMem', (req, res) => {
                     id: uuid(),
                     conversationID: conversationId,
                     sender: user.id,
-                    mess: `${user.fullName} đã thêm ${listTempInfo.toString()} vào nhóm.`,
+                    mess: `${user.fullName} đã thêm ${member.fullName} vào nhóm.`,
                     deleted: false,
                     handleGroup: true,
                     removePerson: [],
@@ -135,6 +169,37 @@ router.put('/addMem', (req, res) => {
                 }
                 console.log('thanh cong');
             });
+            return res.send('Success');
+        }
+    });
+});
+
+// Tu choi thanh vien
+router.put('/denyMem', (req, res) => {
+    const { conversationId, member, listWaitInfo } = req.body;
+    var listWaitAccept = listWaitInfo
+        .reduce((list, user) => {
+            return list.concat(user.id);
+        }, [])
+        .filter((item) => item !== member.id);
+
+    const params = {
+        TableName: 'conversation',
+        Key: {
+            id: conversationId,
+        },
+        UpdateExpression: 'SET #waitAccept=:waitAccept',
+        ExpressionAttributeNames: {
+            '#waitAccept': 'waitAccept', //COLUMN NAME
+        },
+        ExpressionAttributeValues: {
+            ':waitAccept': listWaitAccept,
+        },
+    };
+    docClient.update(params, (err, data) => {
+        if (err) {
+            console.log('Loi1' + err);
+        } else {
             return res.send('Success');
         }
     });
