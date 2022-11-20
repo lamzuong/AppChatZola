@@ -17,8 +17,8 @@ import { AuthContext } from "../context/AuthContext";
 import axiosCilent from "../api/axiosClient";
 
 export default function Login({ navigation }) {
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
+  const [email, setemail] = useState("lamzuong");
+  const [password, setpassword] = useState("L@mzuong2001");
   const [icon, seticon] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
   const [hidebtn, sethidebtn] = useState(false);

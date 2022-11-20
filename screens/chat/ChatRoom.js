@@ -17,7 +17,7 @@ import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./style/styleChatRoom";
 import { Ionicons } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
@@ -29,8 +29,12 @@ import { io } from "socket.io-client";
 import apiConfig from "../../api/apiConfig";
 import emotion from "../../data/emotion";
 import * as FileSystem from "expo-file-system";
+import { RNS3 } from "react-native-aws3";
+import * as DocumentPicker from "expo-document-picker";
+import uuid from "react-native-uuid";
 // import RNFetchBlob from "rn-fetch-blob";
 // import RNFS from "react-native-fs";
+// const { v4: uuid } = require("uuid");
 
 const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
@@ -40,6 +44,7 @@ export default function ChatRoom({ route }) {
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
+  const CLOUD_FRONT_URL = "https://d370tx6r1rzpl2.cloudfront.net/";
   useEffect(() => {
     if (route.params.rerenderTemp != null) {
       setRerender(rerenderTemp);
@@ -177,13 +182,8 @@ export default function ChatRoom({ route }) {
       // Chọn 1 ảnh
       arrShowImages.push(result);
       setImagesSelected(arrShowImages);
-      // console.log(result.uri);
+      console.log(result);
     }
-  };
-  const getBlob = async (uri) => {
-    const respone = await fetch(uri);
-    const blob = await respone.blob();
-    return blob;
   };
   const openCamera = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -200,6 +200,18 @@ export default function ChatRoom({ route }) {
       // console.log(arr);
     }
   };
+  const PickDocument = async () => {
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "application/*",
+    });
+    if (result.type != "cancel") {
+      setImagesSelected([result]);
+    }
+    // console.log(result);
+
+    // console.log(a);
+  };
+  console.log(imagesSelected);
   //======getConversation=======
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
@@ -227,15 +239,71 @@ export default function ChatRoom({ route }) {
         imagesSelected.forEach((e) => {
           const image = e.uri.split(".");
           const fileType = image[image.length - 1];
-          var obj = {
-            base64: `data:image/jpeg;base64,${e.base64}`,
-            fileType: fileType,
-            name: e.uri.split("/").slice(-1),
-            // blob: getBlob(e.uri),
-          };
-          listImg.push(obj);
+          if (fileType == "mp4") {
+            RNS3.put(
+              {
+                uri: e.uri,
+                name: e.uri.split("/").reverse()[0],
+                type: e.type + "/" + e.uri.split(".").reverse()[0],
+              },
+              {
+                keyPrefix: "",
+                bucket: "zola-chat",
+                region: "ap-southeast-1",
+                accessKey: "AKIA34KECLYEL2WGGHN2",
+                secretKey: "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",
+                successActionStatus: 201,
+              }
+            )
+              .then((response) => {
+                if (response.status !== 201)
+                  throw new Error("Failed to upload image to S3");
+                console.log(response.body);
+              })
+              .catch((error) => console.log(error));
+            listImg.push(e.uri.split("/").reverse()[0]);
+          } else if (
+            fileType == "docx" ||
+            fileType == "doc" ||
+            fileType == "xlsx" ||
+            fileType == "xls" ||
+            fileType == "csv" ||
+            fileType == "pptx" ||
+            fileType == "ppt" ||
+            fileType == "pdf" ||
+            fileType == "txt"
+          ) {
+            RNS3.put(
+              {
+                uri: e.uri,
+                name: uuid.v4() + "-" + e.name,
+                type: "application/" + fileType,
+              },
+              {
+                keyPrefix: "",
+                bucket: "zola-chat",
+                region: "ap-southeast-1",
+                accessKey: "AKIA34KECLYEL2WGGHN2",
+                secretKey: "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",
+                successActionStatus: 201,
+              }
+            )
+              .then((response) => {
+                if (response.status !== 201)
+                  throw new Error("Failed to upload image to S3");
+                console.log(response.body);
+              })
+              .catch((error) => console.log(error));
+            listImg.push(e.name);
+          } else {
+            var obj = {
+              base64: `data:image/jpeg;base64,${e.base64}`,
+              fileType: fileType,
+              name: e.uri.split("/").slice(-1),
+            };
+            listImg.push(obj);
+          }
         });
-        // console.log(listImg);
       }
       const message1 = {
         conversationID: conversation.id,
@@ -409,32 +477,68 @@ export default function ChatRoom({ route }) {
       </ScrollView> */}
       {/* Xem trước ảnh */}
       <View>
-        <FlatList
-          data={imagesSelected}
-          renderItem={({ item, index }) => (
-            <View style={{ flexDirection: "row", paddingTop: 10 }}>
-              <Image
-                source={{ uri: item.uri }}
-                style={{ width: 100, height: 100, marginHorizontal: 10 }}
-              />
-              <Pressable
-                style={styles.btnRemoveImg}
-                onPress={() => {
-                  const taskListTemp = imagesSelected;
-                  taskListTemp.splice(index, 1);
-                  setImagesSelected(taskListTemp);
-                  setRerender(!rerender);
-                }}
-              >
-                <Text style={{ padding: 5, fontSize: 15, marginTop: -5 }}>
-                  x
+        {imagesSelected[0]?.type == "success" ? (
+          <FlatList
+            data={imagesSelected}
+            renderItem={({ item, index }) => (
+              <View style={styles.viewFile}>
+                <FontAwesome
+                  name="file-text"
+                  size={24}
+                  color="black"
+                  style={styles.iconFile}
+                />
+                <Text
+                  style={{ fontWeight: "bold", maxWidth: 150, fontSize: 17 }}
+                >
+                  {item.name}
                 </Text>
-              </Pressable>
-            </View>
-          )}
-          keyExtractor={(item, index) => index}
-          horizontal={true}
-        />
+                <Pressable
+                  style={styles.btnRemoveFile}
+                  onPress={() => {
+                    const taskListTemp = imagesSelected;
+                    taskListTemp.splice(index, 1);
+                    setImagesSelected(taskListTemp);
+                    setRerender(!rerender);
+                  }}
+                >
+                  <Text style={{ padding: 5, fontSize: 15, marginTop: -5 }}>
+                    x
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+            keyExtractor={(item, index) => index}
+            horizontal={true}
+          />
+        ) : (
+          <FlatList
+            data={imagesSelected}
+            renderItem={({ item, index }) => (
+              <View style={{ flexDirection: "row", paddingTop: 10 }}>
+                <Image
+                  source={{ uri: item.uri }}
+                  style={{ width: 100, height: 100, marginHorizontal: 10 }}
+                />
+                <Pressable
+                  style={styles.btnRemoveImg}
+                  onPress={() => {
+                    const taskListTemp = imagesSelected;
+                    taskListTemp.splice(index, 1);
+                    setImagesSelected(taskListTemp);
+                    setRerender(!rerender);
+                  }}
+                >
+                  <Text style={{ padding: 5, fontSize: 15, marginTop: -5 }}>
+                    x
+                  </Text>
+                </Pressable>
+              </View>
+            )}
+            keyExtractor={(item, index) => index}
+            horizontal={true}
+          />
+        )}
       </View>
       {/* FOOTER */}
       <View style={styles.footer}>
@@ -442,6 +546,7 @@ export default function ChatRoom({ route }) {
           <View style={styles.iconBottom}>
             <TouchableOpacity
               style={{ justifyContent: "center", marginRight: 5 }}
+              onPress={PickDocument}
             >
               <Entypo name="attachment" size={24} color="rgb(0,145,255)" />
             </TouchableOpacity>

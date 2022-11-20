@@ -68,5 +68,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 100,
   },
+  viewFile: {
+    flexDirection: "row",
+    padding: 15,
+    backgroundColor: "rgb(245,245,245)",
+    borderRadius: 15,
+    marginHorizontal: 10,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  iconFile: {
+    paddingRight: 7,
+    paddingLeft: 5,
+  },
+  btnRemoveFile: {
+    marginTop: -40,
+    marginRight: -20,
+    backgroundColor: "grey",
+    height: 25,
+    width: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 100,
+  },
 });
 export default styles;

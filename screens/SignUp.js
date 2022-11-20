@@ -27,15 +27,15 @@ export default function SignUp({ navigation }) {
   const [icon1, seticon1] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
   const [hide1, sethide1] = React.useState(true);
-  const [errorUsername, seterrorUsername] = useState('Lỗi');
+  const [errorUsername, seterrorUsername] = useState("Lỗi");
   const [hideErrorUsername, sethideErrorUsername] = useState(false);
-  const [errorEmail, seterrorEmail] = useState('Lỗi');
+  const [errorEmail, seterrorEmail] = useState("Lỗi");
   const [hideErrorEmail, sethideErrorEmail] = useState(false);
-  const [errorFullname, seterrorFullname] = useState('Lỗi');
+  const [errorFullname, seterrorFullname] = useState("Lỗi");
   const [hideErrorFullname, sethideErrorFullname] = useState(false);
-  const [errorPassword, seterrorPassword] = useState('Lỗi');
+  const [errorPassword, seterrorPassword] = useState("Lỗi");
   const [hideErrorPassword, sethideErrorPassword] = useState(false);
-  const [errorRepassword, seterrorRepassword] = useState('Lỗi');
+  const [errorRepassword, seterrorRepassword] = useState("Lỗi");
   const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
   const [hidebtn, sethidebtn] = useState(false);
 
@@ -81,37 +81,37 @@ export default function SignUp({ navigation }) {
     const UsernamRegex = async (username) => {
       try {
         const listUsers = await axiosClient.get("/zola/users/");
-        listUsers.forEach(u => {
-          if (u.username === username){
+        listUsers.forEach((u) => {
+          if (u.username === username) {
             sethideErrorUsername(true);
-            seterrorUsername('Username đã tồn tại.');
+            seterrorUsername("Username đã tồn tại.");
             sethidebtn(false);
           }
         });
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     UsernamRegex(username);
-  },[username]);
+  }, [username]);
 
   useEffect(() => {
     const EmailRegex = async (email) => {
       try {
         const listUsers = await axiosClient.get("/zola/users/");
-        listUsers.forEach(u => {
-          if (u.email === email){
+        listUsers.forEach((u) => {
+          if (u.email === email) {
             sethideErrorEmail(true);
-            seterrorEmail('Email đã được đăng ký.');
+            seterrorEmail("Email đã được đăng ký.");
             sethidebtn(false);
           }
         });
       } catch (error) {
         console.log(error);
       }
-    }
+    };
     EmailRegex(email);
-  },[email]);
+  }, [email]);
 
   const isEmpty = (str) => {
     if (str.trim().length === 0) {
@@ -131,7 +131,7 @@ export default function SignUp({ navigation }) {
     return re.test(email);
   };
 
-  function removeAscent (str) {
+  function removeAscent(str) {
     if (str === null || str === undefined) return str;
     str = str.toLowerCase();
     str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -150,7 +150,8 @@ export default function SignUp({ navigation }) {
   };
 
   const validatePassword = (password) => {
-    var re = /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/;
+    var re =
+      /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/;
     return re.test(password);
   };
 
@@ -163,12 +164,18 @@ export default function SignUp({ navigation }) {
   };
 
   const hideBtnSignup = (username, email, fullName, password, repassword) => {
-    if (isEmpty(username) || isEmpty(email) || isEmpty(fullName) || isEmpty(password) || isEmpty(repassword)) {
+    if (
+      isEmpty(username) ||
+      isEmpty(email) ||
+      isEmpty(fullName) ||
+      isEmpty(password) ||
+      isEmpty(repassword)
+    ) {
       return true;
     } else {
       return false;
     }
-  }
+  };
 
   // hideBtnSignup(username, email, fullName, password, repassword);
 
@@ -189,17 +196,27 @@ export default function SignUp({ navigation }) {
               onChangeText={(text) => {
                 if (!validateUsername(text)) {
                   sethideErrorUsername(true);
-                  seterrorUsername('Username chỉ chứa chữ cái và số từ 4 đến 16 ký tự.');
+                  seterrorUsername(
+                    "Username chỉ chứa chữ cái và số từ 4 đến 16 ký tự."
+                  );
                   sethidebtn(false);
-               } else {
-                  seterrorUsername('');
+                } else {
+                  seterrorUsername("");
                   sethideErrorUsername(false);
-                  if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                  if (
+                    !hideBtnSignup(
+                      username,
+                      email,
+                      fullName,
+                      password,
+                      repassword
+                    )
+                  ) {
                     sethidebtn(true);
                   } else {
                     sethidebtn(false);
                   }
-               }
+                }
                 setusername(text);
               }}
             />
@@ -213,11 +230,21 @@ export default function SignUp({ navigation }) {
               >
                 <MaterialIcons name="clear" size={24} color="black" />
               </TouchableOpacity>
-            )} 
+            )}
           </View>
-          { hideErrorUsername && 
-              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorUsername}</Text>
-          }
+          {hideErrorUsername && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              {errorUsername}
+            </Text>
+          )}
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "90%" }}
@@ -227,17 +254,25 @@ export default function SignUp({ navigation }) {
               onChangeText={(text) => {
                 if (isEmpty(text)) {
                   sethideErrorEmail(true);
-                  seterrorEmail('Địa chỉ email không được rỗng.');
+                  seterrorEmail("Địa chỉ email không được rỗng.");
                   sethidebtn(false);
                 } else {
                   if (!validateEmail(text)) {
                     sethideErrorEmail(true);
-                    seterrorEmail('Địa chỉ email không hợp lệ.');
+                    seterrorEmail("Địa chỉ email không hợp lệ.");
                     sethidebtn(false);
                   } else {
-                    seterrorEmail('');
+                    seterrorEmail("");
                     sethideErrorEmail(false);
-                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                    if (
+                      !hideBtnSignup(
+                        username,
+                        email,
+                        fullName,
+                        password,
+                        repassword
+                      )
+                    ) {
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);
@@ -260,9 +295,19 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
-          { hideErrorEmail && 
-              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorEmail}</Text>
-          }
+          {hideErrorEmail && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              {errorEmail}
+            </Text>
+          )}
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "90%" }}
@@ -272,17 +317,27 @@ export default function SignUp({ navigation }) {
               onChangeText={(text) => {
                 if (isEmpty(text)) {
                   sethideErrorFullname(true);
-                  seterrorFullname('Tên đầy đủ không được rỗng.');
+                  seterrorFullname("Tên đầy đủ không được rỗng.");
                   sethidebtn(false);
                 } else {
                   if (!validateFullname(text)) {
                     sethideErrorFullname(true);
-                    seterrorFullname('Tên đầy đủ không bao gồm chữ số, ký tự đặc biệt và tối đa 30 ký tự.');
+                    seterrorFullname(
+                      "Tên đầy đủ không bao gồm chữ số, ký tự đặc biệt và tối đa 30 ký tự."
+                    );
                     sethidebtn(false);
                   } else {
-                    seterrorFullname('');
+                    seterrorFullname("");
                     sethideErrorFullname(false);
-                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                    if (
+                      !hideBtnSignup(
+                        username,
+                        email,
+                        fullName,
+                        password,
+                        repassword
+                      )
+                    ) {
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);
@@ -304,9 +359,19 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
-          { hideErrorFullname && 
-              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorFullname}</Text>
-          }
+          {hideErrorFullname && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              {errorFullname}
+            </Text>
+          )}
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -316,21 +381,33 @@ export default function SignUp({ navigation }) {
               onChangeText={(text) => {
                 if (isEmpty(text)) {
                   sethideErrorPassword(true);
-                  seterrorPassword('Mật khẩu không được rỗng.');
+                  seterrorPassword("Mật khẩu không được rỗng.");
                   sethidebtn(false);
                 } else {
                   if (!validatePassword(text)) {
                     sethideErrorPassword(true);
-                    seterrorPassword('Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 kỹ tự.');
+                    seterrorPassword(
+                      "Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 ký tự."
+                    );
                     sethidebtn(false);
                   } else {
-                    seterrorPassword('');
+                    seterrorPassword("");
                     sethideErrorPassword(false);
-                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                    if (
+                      !hideBtnSignup(
+                        username,
+                        email,
+                        fullName,
+                        password,
+                        repassword
+                      )
+                    ) {
                       if (!validateRepassword(text, repassword)) {
                         sethidebtn(false);
                         sethideErrorPassword(true);
-                        seterrorPassword('Mật khẩu và mật khẩu nhập lại phải giống nhau.');
+                        seterrorPassword(
+                          "Mật khẩu và mật khẩu nhập lại phải giống nhau."
+                        );
                       } else {
                         sethidebtn(true);
                       }
@@ -378,9 +455,19 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
-          { hideErrorPassword && 
-              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorPassword}</Text>
-          }
+          {hideErrorPassword && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              {errorPassword}
+            </Text>
+          )}
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -390,19 +477,27 @@ export default function SignUp({ navigation }) {
               onChangeText={(text) => {
                 if (isEmpty(text)) {
                   sethideErrorRepassword(true);
-                  seterrorRepassword('Nhập lại mật khẩu không được rỗng.');
+                  seterrorRepassword("Nhập lại mật khẩu không được rỗng.");
                   sethidebtn(false);
                 } else {
-                  if (!validateRepassword(password,text)) {
+                  if (!validateRepassword(password, text)) {
                     sethideErrorRepassword(true);
-                    seterrorRepassword('Nhập lại mật khẩu không đúng.');
+                    seterrorRepassword("Nhập lại mật khẩu không đúng.");
                     sethidebtn(false);
                   } else {
-                    seterrorRepassword('');
+                    seterrorRepassword("");
                     sethideErrorRepassword(false);
-                    if (!hideBtnSignup(username, email, fullName, password, repassword)) {
+                    if (
+                      !hideBtnSignup(
+                        username,
+                        email,
+                        fullName,
+                        password,
+                        repassword
+                      )
+                    ) {
                       sethideErrorPassword(false);
-                      sethideErrorPassword('')
+                      sethideErrorPassword("");
                       sethidebtn(true);
                     } else {
                       sethidebtn(false);
@@ -448,15 +543,24 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             )}
           </View>
-          { hideErrorRepassword && 
-              <Text style={{fontSize:14,color:"red", marginLeft:25,marginRight:25,marginTop:10}}>{errorRepassword}</Text>
-          }
-         
+          {hideErrorRepassword && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              {errorRepassword}
+            </Text>
+          )}
+
           {/* this.setState({showTheThing: true}) */}
-          
         </ScrollView>
       </SafeAreaView>
-     
+
       {/* <View style={styles.gender}>
              <RadioButton
                  value="true"
@@ -472,14 +576,17 @@ export default function SignUp({ navigation }) {
              /><Text style={styles.text}>Nữ</Text>
          </View> */}
       {/* { hidebtn &&  */}
-        <TouchableOpacity style={hidebtn ? styles.button : styles.buttonhide} onPress={conFirm} disabled={!hidebtn}>
-          <Image
-            source={require("../assets/next.png")}
-            style={styles.image}
-          ></Image>
-        </TouchableOpacity>
+      <TouchableOpacity
+        style={hidebtn ? styles.button : styles.buttonhide}
+        onPress={conFirm}
+        disabled={!hidebtn}
+      >
+        <Image
+          source={require("../assets/next.png")}
+          style={styles.image}
+        ></Image>
+      </TouchableOpacity>
       {/* } */}
-      
     </View>
   );
 }

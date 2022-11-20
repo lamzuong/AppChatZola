@@ -126,6 +126,7 @@ export default function MessageChat(props) {
     async function downloadFile(url) {
       await Linking.openURL(url);
     }
+    console.log(props);
     return (
       <TouchableOpacity
         style={styles.viewFile}
@@ -144,7 +145,7 @@ export default function MessageChat(props) {
           style={styles.iconFile}
         />
         <Text style={[styles.txtMess, { fontWeight: "bold" }]}>
-          {props.e.split("-")[5]}
+          {props.e.split("/").reverse()[0]}
         </Text>
       </TouchableOpacity>
     );
