@@ -591,4 +591,71 @@ router.delete('/deleteGroup', (req, res) => {
         }
     });
 });
+
+// Search Conversation
+router.get('/searchConversation/:id/:name', (req, res) => {
+    const { id, name } = req.params;
+    console.log(id, name);
+    var params = {
+        ExpressionAttributeValues: {
+            ':id': id,
+        },
+        ExpressionAttributeNames: { '#members': 'members' },
+        FilterExpression: 'contains(#members , :id)',
+        TableName: 'conversation',
+    };
+    docClient.scan(params, (err, data) => {
+        let paramsSearch = {};
+        if (err) {
+            console.log(err);
+            return res.status(500).send('Loi' + err);
+        } else {
+            for (let i = 0; i < data.Items.length; i++) {
+                if (data.Items[i].members > 2) {
+                    paramsSearch = {
+                        TableName: 'conversation',
+                        ExpressionAttributeNames: { '#groupName': 'groupName' },
+                        FilterExpression: 'contains(#groupName , :name)',
+                        ExpressionAttributeValues: {
+                            ':name': name,
+                        },
+                    };
+                } else {
+                    const params = {
+                        TableName: tableName,
+                        ExpressionAttributeNames: { '#fullName': 'fullName' },
+                        FilterExpression: 'contains(#fullName , :name)',
+                        ExpressionAttributeValues: {
+                            ':name': name,
+                        },
+                    };
+                    docClient.scan(params, (err, data) => {
+                        if (err) {
+                            return res.status(500).send('Loi' + err);
+                        } else {
+                            return res.send(data.Item);
+                        }
+                    });
+                    paramsSearch = {
+                        TableName: 'conversation',
+                        ExpressionAttributeNames: { '#groupName': 'groupName' },
+                        FilterExpression: 'contains(#groupName , :name)',
+                        ExpressionAttributeValues: {
+                            ':name': name,
+                        },
+                    };
+                }
+            }
+            docClient.scan(paramsSearch, (err, data) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send('Loi' + err);
+                } else {
+                    return res.status(200).json(data.Items);
+                }
+            });
+            return res.status(200).json(data.Items);
+        }
+    });
+});
 module.exports = router;
