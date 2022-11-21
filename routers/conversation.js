@@ -28,6 +28,7 @@ router.post('/', (req, res) => {
                 images: [],
                 waitAccept: [],
                 files: [],
+                group: true,
             },
         };
     } else {
@@ -39,6 +40,7 @@ router.post('/', (req, res) => {
                 date: date,
                 images: [],
                 files: [],
+                group: false,
             },
         };
     }
