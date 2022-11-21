@@ -108,6 +108,11 @@ export default function Rooms({ navigation, route }) {
         }
       } catch (error) {}
     });
+    socket.on("server-send-to-client", (data) => {
+      if (conversation.some((conv) => conv.id === data.conversationID)) {
+        setRerender(!rerender);
+      }
+    });
   });
   useEffect(() => {
     const getConversation = async () => {
@@ -195,9 +200,11 @@ export default function Rooms({ navigation, route }) {
         </View>
       ) : (
         <ScrollView>
-          {conversation.map((e, i) => (
-            <ChatList key={i} conversation={e} currentUser={user} />
-          ))}
+          {conversation
+            .sort((a, b) => b.date - a.date)
+            .map((e, i) => (
+              <ChatList key={i} conversation={e} currentUser={user} />
+            ))}
         </ScrollView>
       )}
     </SafeAreaView>

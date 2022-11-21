@@ -115,7 +115,7 @@ export default function AddGroup({ navigation, route }, props) {
     list[i] = [];
     sort_ListFriends.forEach((element) => {
       // lọc theo chữ cái
-      if (element.fullName.startsWith(listTitle[i])) {
+      if (element.fullName?.startsWith(listTitle[i])) {
         list[i].push(element);
       }
     });

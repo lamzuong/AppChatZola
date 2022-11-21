@@ -126,7 +126,7 @@ export default function MessageChat(props) {
     async function downloadFile(url) {
       await Linking.openURL(url);
     }
-    console.log(props);
+    // console.log(props);
     return (
       <TouchableOpacity
         style={styles.viewFile}

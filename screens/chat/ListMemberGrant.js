@@ -26,7 +26,7 @@ const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
 });
 export default function ListMemberGroup({ navigation, route }) {
-  const { conversation, name, ava, rerender } = route.params;
+  const { conversation, name, ava, rerender, wantOut } = route.params;
   const { user } = useContext(AuthContext);
   const [listMem, setListMem] = useState([]);
   const [conversationRender, setConversationRerender] = useState(conversation);
@@ -103,12 +103,28 @@ export default function ListMemberGroup({ navigation, route }) {
         conversationID: conversation.id,
         members: conversationRender.members,
       });
-      navigation.navigate("ChatInfoGroup", {
-        conversation: conversationRender,
-        name: name,
-        ava: ava,
-        tempRender: !rerender,
-      });
+      if (wantOut == true) {
+        await axiosCilent.put("/zola/conversation/outGroup", {
+          conversationId: conversation.id,
+          user: user,
+          members: conversationRender.members,
+        });
+        socket.emit("send-to-server", {
+          conversationID: conversation.id,
+        });
+        navigation.navigate("Rooms", {
+          conId: conversation.id + user.id,
+          nameGroup: name + user.id,
+          avaGroup: ava + user.id,
+        });
+      } else {
+        navigation.navigate("ChatInfoGroup", {
+          conversation: conversationRender,
+          name: name,
+          ava: ava,
+          tempRender: !rerender,
+        });
+      }
     } catch (error) {}
   };
   const ListMem = (props) => {

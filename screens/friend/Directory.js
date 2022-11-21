@@ -16,7 +16,6 @@ export default function Directory({ navigation }) {
   const [currentUser, setCurrentUser] = useState({});
   const [renderUser, setRenderUser] = useState(false);
   const [listFriendsId, setListFriendsId] = useState([]);
-  // console.log("zxc" + renderUser);
   // if (isFocused) {
   useEffect(() => {
     const getInfoUser = async () => {
@@ -111,7 +110,7 @@ export default function Directory({ navigation }) {
     list[i] = [];
     sort_ListFriends.forEach((element) => {
       // lọc theo chữ cái
-      if (element.fullName.startsWith(listTitle[i])) {
+      if (element.fullName?.startsWith(listTitle[i])) {
         list[i].push(element);
       }
     });

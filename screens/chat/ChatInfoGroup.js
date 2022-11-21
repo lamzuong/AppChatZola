@@ -330,21 +330,25 @@ export default function ChatInfoGroup({ navigation, route }) {
   };
   //==================
   const outGroup = async () => {
-    try {
-      await axiosCilent.put("/zola/conversation/outGroup", {
-        conversationId: conversation.id,
-        user: user,
-        members: conversationRender.members,
-      });
-      socket.emit("send-to-server", {
-        conversationID: conversation.id,
-      });
-      navigation.navigate("Rooms", {
-        conId: conversation.id + user.id,
-        nameGroup: nameRender + user.id,
-        avaGroup: avaRender + user.id,
-      });
-    } catch (error) {}
+    if (conversationRender.members.length > 1) {
+      try {
+        await axiosCilent.put("/zola/conversation/outGroup", {
+          conversationId: conversation.id,
+          user: user,
+          members: conversationRender.members,
+        });
+        socket.emit("send-to-server", {
+          conversationID: conversation.id,
+        });
+        navigation.navigate("Rooms", {
+          conId: conversation.id + user.id,
+          nameGroup: nameRender + user.id,
+          avaGroup: avaRender + user.id,
+        });
+      } catch (error) {}
+    } else {
+      deleteGroup();
+    }
   };
   //==================
   const deleteGroup = async () => {
@@ -641,7 +645,8 @@ export default function ChatInfoGroup({ navigation, route }) {
             <Text style={styles.txtInfoGr}>Ảnh/Video, File</Text>
           </View>
         </TouchableOpacity>
-        {conversationRender.creator == user?.id ? (
+        {conversationRender.creator == user?.id &&
+        conversationRender.members.length > 1 ? (
           <TouchableOpacity
             style={styles.btnInfoGr}
             onPress={() => {
@@ -663,23 +668,36 @@ export default function ChatInfoGroup({ navigation, route }) {
           style={styles.btnInfoGr}
           onPress={() => {
             checkCreator()
-              ? Alert.alert(
-                  "Thông báo",
-                  "Bạn là trưởng nhóm nên phải ủy quyền cho người khác mới được rời khỏi nhóm",
-                  [
-                    {},
-                    {
-                      text: "OK",
-                      onPress: () =>
-                        navigation.navigate("ListMemberGrant", {
-                          conversation: conversationRender,
-                          name: nameRender,
-                          ava: avaRender,
-                          rerender: rerender,
-                        }),
-                    },
-                  ]
-                )
+              ? conversationRender.members.length > 1
+                ? Alert.alert(
+                    "Thông báo",
+                    "Bạn là trưởng nhóm nên phải ủy quyền cho người khác mới được rời khỏi nhóm",
+                    [
+                      {},
+                      {
+                        text: "OK",
+                        onPress: () =>
+                          navigation.navigate("ListMemberGrant", {
+                            conversation: conversationRender,
+                            name: nameRender,
+                            ava: avaRender,
+                            rerender: rerender,
+                            wantOut: true,
+                          }),
+                      },
+                    ]
+                  )
+                : Alert.alert(
+                    "Cảnh báo",
+                    "Bạn có chắc muốn rời khỏi nhóm không?",
+                    [
+                      {
+                        text: "Hủy",
+                        onPress: () => {},
+                      },
+                      { text: "OK", onPress: () => outGroup() },
+                    ]
+                  )
               : Alert.alert(
                   "Cảnh báo",
                   "Bạn có chắc muốn rời khỏi nhóm không?",

@@ -28,13 +28,9 @@ import { AuthContext } from "../../context/AuthContext";
 import { io } from "socket.io-client";
 import apiConfig from "../../api/apiConfig";
 import emotion from "../../data/emotion";
-import * as FileSystem from "expo-file-system";
 import { RNS3 } from "react-native-aws3";
 import * as DocumentPicker from "expo-document-picker";
 import uuid from "react-native-uuid";
-// import RNFetchBlob from "rn-fetch-blob";
-// import RNFS from "react-native-fs";
-// const { v4: uuid } = require("uuid");
 
 const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
@@ -44,7 +40,6 @@ export default function ChatRoom({ route }) {
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
-  const CLOUD_FRONT_URL = "https://d370tx6r1rzpl2.cloudfront.net/";
   useEffect(() => {
     if (route.params.rerenderTemp != null) {
       setRerender(rerenderTemp);
@@ -58,7 +53,7 @@ export default function ChatRoom({ route }) {
         );
         // console.log(res.members.length);
         setConversationRerender(res);
-        if (res.members > 2) {
+        if (res.group) {
           setAvaRerender(res.avatarGroup);
           setNameRerender(res.groupName);
           setNameInChat(res.groupName);
@@ -101,7 +96,7 @@ export default function ChatRoom({ route }) {
     });
     socket.on("server-send-to-out", (data) => {
       try {
-        console.log(data.conversation);
+        // console.log(data.conversation);
         if (data.idDelete == user.id) {
           navigation.navigate("Rooms");
         }
@@ -182,7 +177,7 @@ export default function ChatRoom({ route }) {
       // Chọn 1 ảnh
       arrShowImages.push(result);
       setImagesSelected(arrShowImages);
-      console.log(result);
+      // console.log(result);
     }
   };
   const openCamera = async () => {
@@ -207,11 +202,7 @@ export default function ChatRoom({ route }) {
     if (result.type != "cancel") {
       setImagesSelected([result]);
     }
-    // console.log(result);
-
-    // console.log(a);
   };
-  console.log(imagesSelected);
   //======getConversation=======
   const { user } = useContext(AuthContext);
   const [message, setMessage] = useState([]);
@@ -232,7 +223,6 @@ export default function ChatRoom({ route }) {
   const handleSendMessage = async (e) => {
     if (valueInput.trim() === "" && imagesSelected.length == 0) {
     } else {
-      console.log(valueInput);
       e.preventDefault();
       let listImg = [];
       if (imagesSelected.length !== 0) {
@@ -332,7 +322,7 @@ export default function ChatRoom({ route }) {
   };
   //========ChatInfo======
   let chatInfo = "ChatInfo";
-  if (conversation.members.length > 2) chatInfo = "ChatInfoGroup";
+  if (conversation.group) chatInfo = "ChatInfoGroup";
   //=====Sroll to end=======
   const flatlistRef = useRef();
   const [timeScroll, setTimeScroll] = useState(2000);
@@ -457,7 +447,7 @@ export default function ChatRoom({ route }) {
         renderItem={({ item }) => (
           <MessageChat
             time={item.date}
-            group={conversation.members.length > 2}
+            group={conversation.group}
             item={item}
           />
         )}

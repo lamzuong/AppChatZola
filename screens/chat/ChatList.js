@@ -38,7 +38,7 @@ export default function ChatList(props) {
   }, [props.conversation.members, props.currentUser]);
   let img = "";
   let name = "";
-  if (props.conversation.members.length > 2) {
+  if (props.conversation.group) {
     img = props.conversation.avatarGroup;
     name = props.conversation.groupName;
   } else {
@@ -49,39 +49,41 @@ export default function ChatList(props) {
   const [message, setMessage] = useState([]);
   const [messageLast, setMessageLast] = useState("");
   const [imgLast, setImgLast] = useState("");
-  useEffect(() => {
-    socket.off();
-    socket.on("server-send-to-client", (data) => {
-      let conversationIDChat;
-      try {
-        conversationIDChat = conversation.id;
-        if (
-          data.conversationID == conversationIDChat &&
-          typeof data.fullName !== "undefined"
-        ) {
-          let nameShow = data?.fullName.split(" ").slice(-1);
-          if (data.imgs > 0) {
-            if (data.senderId == user.id)
-              setMessageLast("Bạn đã gửi " + data.imgs + " tập tin");
-            else setMessageLast(nameShow + " đã gửi " + data.imgs + " tập tin");
-          } else {
-            if (data.senderId == user.id) {
-              setMessageLast("Bạn: " + data.mess);
-            } else if (data.group) {
-              setMessageLast(nameShow + ": " + data.mess);
-            } else setMessageLast(data.mess);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
-  });
+  // useEffect(() => {
+  //   socket.off();
+  //   socket.on("server-send-to-client", (data) => {
+  //     let conversationIDChat;
+
+  //     try {
+  //       conversationIDChat = conversation.id;
+  //       if (
+  //         data.conversationID == conversationIDChat &&
+  //         typeof data.fullName !== "undefined"
+  //       ) {
+  //         console.log(data);
+  //         let nameShow = data?.fullName.split(" ").slice(-1);
+  //         if (data.imgs > 0) {
+  //           if (data.senderId == user.id)
+  //             setMessageLast("Bạn đã gửi " + data.imgs + " tập tin");
+  //           else setMessageLast(nameShow + " đã gửi " + data.imgs + " tập tin");
+  //         } else {
+  //           if (data.senderId == user.id) {
+  //             setMessageLast("Bạn: " + data.mess);
+  //           } else if (data.group) {
+  //             setMessageLast(nameShow + ": " + data.mess);
+  //           } else setMessageLast(data.mess);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  // });
   useEffect(() => {
     const getMess = async () => {
       try {
         const res = await axiosCilent.get("/zola/message/" + conversation.id);
-        setMessage(res);
+        setMessage(res.sort((a, b) => a.date - b.date));
       } catch (error) {
         console.log(error);
       }
@@ -90,7 +92,7 @@ export default function ChatList(props) {
   }, [conversation.id]);
   message.sort((a, b) => a.date - b.date);
 
-  let numMembers = conversation.members.length;
+  let group = conversation.group;
   let lastMess = "";
   if (message.slice(-1).length > 0) {
     let foo = message.slice(-1);
@@ -104,7 +106,7 @@ export default function ChatList(props) {
     } else {
       if (senderID == user.id) {
         lastMess = "Bạn: " + foo[0].mess;
-      } else if (numMembers > 2) {
+      } else if (group == true) {
         lastMess = nameShow + ": " + foo[0].mess;
       } else lastMess = foo[0].mess;
     }

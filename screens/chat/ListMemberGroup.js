@@ -31,6 +31,7 @@ export default function ListMemberGroup({ navigation, route }) {
   const [listMem, setListMem] = useState([]);
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [rerenderList, setRerender] = useState(false);
+  const [creator, setCreator] = useState({});
   //=======Button Back============
   useEffect(() => {
     const backAction = () => {
@@ -84,6 +85,8 @@ export default function ListMemberGroup({ navigation, route }) {
           "/zola/conversation/idCon/" + conversation.id
         );
         setConversationRerender(res);
+        const res2 = await axiosCilent.get("/zola/users/" + res.creator);
+        setCreator(res2);
       } catch (error) {
         console.log(error);
       }
@@ -212,7 +215,7 @@ export default function ListMemberGroup({ navigation, route }) {
             </View>
           </TouchableWithoutFeedback>
         </Modal>
-        {props.members.id == props.currentUser.id ? null : (
+        {props.conversation.creator == props.members.id ? null : (
           <View style={styles.itemContainer}>
             <View>
               <TouchableOpacity
@@ -228,12 +231,10 @@ export default function ListMemberGroup({ navigation, route }) {
                   style={styles.imgAvaMini}
                 />
                 <Text style={styles.txtNameMember}>
-                  {props.members.fullName}
-                  {props.conversation.creator == props.members.id ? (
-                    <Entypo name="key" size={22} color="yellow" />
-                  ) : (
-                    ""
-                  )}
+                  {props.members.fullName}{" "}
+                  {props.members.id == user.id ? (
+                    <Text style={{ color: "rgb(200,200,200)" }}>(Tôi)</Text>
+                  ) : null}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -267,7 +268,7 @@ export default function ListMemberGroup({ navigation, route }) {
       </View>
     );
   };
-  const MySelf = (props) => {
+  const Creator = (props) => {
     return (
       <View>
         <TouchableOpacity style={styles.itemMember}>
@@ -277,12 +278,10 @@ export default function ListMemberGroup({ navigation, route }) {
           />
           <Text style={styles.txtNameMember}>
             {props.currentUser.fullName}{" "}
-            {conversationRender.creator == props.currentUser.id ? (
-              <Entypo name="key" size={22} color="yellow" />
-            ) : (
-              ""
-            )}
-            <Text style={{ color: "rgb(200,200,200)" }}>(Tôi)</Text>
+            {props.currentUser.id == user.id ? (
+              <Text style={{ color: "rgb(200,200,200)" }}>(Tôi)</Text>
+            ) : null}{" "}
+            <Entypo name="key" size={22} color="yellow" />
           </Text>
         </TouchableOpacity>
       </View>
@@ -317,7 +316,7 @@ export default function ListMemberGroup({ navigation, route }) {
           </Text>
         </View>
       </View>
-      <MySelf currentUser={user} />
+      <Creator currentUser={creator} />
       <FlatList
         data={listMem}
         renderItem={({ item }) => (
