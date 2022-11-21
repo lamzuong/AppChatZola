@@ -309,7 +309,7 @@ export default function ChatRoom({ route }) {
           conversationID: conversation.id,
           imgs: imagesSelected.length,
           fullName: user.fullName,
-          group: conversation.members.length > 2,
+          group: conversation.group,
         });
         setValueInput("");
         setImagesSelected([]);

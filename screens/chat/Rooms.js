@@ -35,6 +35,7 @@ export default function Rooms({ navigation, route }) {
   const [conversation, setConversation] = useState([]);
   const { user } = useContext(AuthContext);
   const [rerender, setRerender] = useState(false);
+  const [rerender2, setRerender2] = useState(false);
   const [conIdReceive, setConIdReceive] = useState("");
   const [nameReceive, setNameReceive] = useState("");
   const [avaReceive, setAvaReceive] = useState("");
@@ -110,16 +111,19 @@ export default function Rooms({ navigation, route }) {
     });
     socket.on("server-send-to-client", (data) => {
       if (conversation.some((conv) => conv.id === data.conversationID)) {
+        console.log(data);
         setRerender(!rerender);
       }
     });
   });
+
   useEffect(() => {
     const getConversation = async () => {
       try {
         const res = await axiosCilent.get("/zola/conversation/" + user.id);
-        setConversation(res);
+        setConversation(res.sort((a, b) => b.date - a.date));
         setRerender(false);
+        // console.log(rerender);
       } catch (error) {
         console.log(error);
       }
@@ -200,11 +204,9 @@ export default function Rooms({ navigation, route }) {
         </View>
       ) : (
         <ScrollView>
-          {conversation
-            .sort((a, b) => b.date - a.date)
-            .map((e, i) => (
-              <ChatList key={i} conversation={e} currentUser={user} />
-            ))}
+          {conversation.map((e, i) => (
+            <ChatList key={i} conversation={e} currentUser={user} />
+          ))}
         </ScrollView>
       )}
     </SafeAreaView>

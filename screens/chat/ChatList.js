@@ -49,66 +49,76 @@ export default function ChatList(props) {
   const [message, setMessage] = useState([]);
   const [messageLast, setMessageLast] = useState("");
   const [imgLast, setImgLast] = useState("");
-  // useEffect(() => {
-  //   socket.off();
-  //   socket.on("server-send-to-client", (data) => {
-  //     let conversationIDChat;
 
-  //     try {
-  //       conversationIDChat = conversation.id;
-  //       if (
-  //         data.conversationID == conversationIDChat &&
-  //         typeof data.fullName !== "undefined"
-  //       ) {
-  //         console.log(data);
-  //         let nameShow = data?.fullName.split(" ").slice(-1);
-  //         if (data.imgs > 0) {
-  //           if (data.senderId == user.id)
-  //             setMessageLast("Bạn đã gửi " + data.imgs + " tập tin");
-  //           else setMessageLast(nameShow + " đã gửi " + data.imgs + " tập tin");
-  //         } else {
-  //           if (data.senderId == user.id) {
-  //             setMessageLast("Bạn: " + data.mess);
-  //           } else if (data.group) {
-  //             setMessageLast(nameShow + ": " + data.mess);
-  //           } else setMessageLast(data.mess);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   });
-  // });
+  const [rerender, setRerender] = useState(false);
+  const [convIdSocket, setConvIdSocket] = useState(conversation.id);
+
+  useEffect(() => {
+    socket.off();
+    socket.on("server-send-to-client", (data) => {
+      let conversationIDChat;
+      try {
+        conversationIDChat = conversation.id;
+        // console.log(data.conversationID + "____" + conversation.id);
+        // if (data.conversationID == conversationIDChat) {
+        setRerender(!rerender);
+        setConvIdSocket(data.conversationID);
+        // console.log("abc");
+
+        // let nameShow = data?.fullName.split(" ").slice(-1);
+        // if (data.imgs > 0) {
+        //   if (data.senderId == user.id)
+        //     setMessageLast("Bạn đã gửi " + data.imgs + " tập tin");
+        //   else setMessageLast(nameShow + " đã gửi " + data.imgs + " tập tin");
+        // } else {
+        //   if (data.senderId == user.id) {
+        //     setMessageLast("Bạn: " + data.mess);
+        //   } else if (data.group) {
+        //     setMessageLast(nameShow + ": " + data.mess);
+        //   } else setMessageLast(data.mess);
+        // }
+        // }
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  });
   useEffect(() => {
     const getMess = async () => {
       try {
         const res = await axiosCilent.get("/zola/message/" + conversation.id);
         setMessage(res.sort((a, b) => a.date - b.date));
+        console.log(2);
       } catch (error) {
         console.log(error);
       }
     };
     getMess();
-  }, [conversation.id]);
+  }, [conversation.id, rerender]);
   message.sort((a, b) => a.date - b.date);
 
   let group = conversation.group;
   let lastMess = "";
   if (message.slice(-1).length > 0) {
     let foo = message.slice(-1);
+    // console.log(foo[0].mess + foo[0].deleted);
     let senderID = foo[0].sender;
     let nameShow = foo[0].infoSender.fullName.split(" ").slice(-1);
-    if (foo[0].img_url.length > 0 && typeof foo[0].img_url !== "undefined") {
-      if (senderID == user.id)
-        lastMess = "Bạn đã gửi " + foo[0].img_url.length + " tập tin";
-      else
-        lastMess = nameShow + " đã gửi " + foo[0].img_url.length + " tập tin";
+    if (foo[0].deleted == true) {
+      lastMess = "Đã thu hồi";
     } else {
-      if (senderID == user.id) {
-        lastMess = "Bạn: " + foo[0].mess;
-      } else if (group == true) {
-        lastMess = nameShow + ": " + foo[0].mess;
-      } else lastMess = foo[0].mess;
+      if (foo[0].img_url.length > 0 && typeof foo[0].img_url !== "undefined") {
+        if (senderID == user.id)
+          lastMess = "Bạn đã gửi " + foo[0].img_url.length + " tập tin";
+        else
+          lastMess = nameShow + " đã gửi " + foo[0].img_url.length + " tập tin";
+      } else {
+        if (senderID == user.id) {
+          lastMess = "Bạn: " + foo[0].mess;
+        } else if (group == true) {
+          lastMess = nameShow + ": " + foo[0].mess;
+        } else lastMess = foo[0].mess;
+      }
     }
   } else {
     lastMess = "Hãy bắt đầu cuộc trò chuyện !";
