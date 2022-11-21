@@ -65,6 +65,9 @@ export default function AddGroup({ navigation, route }, props) {
   const [listFriendsId, setListFriendsId] = useState([]);
   const [renderUser, setRenderUser] = useState(false);
   const [itemChoose, setItemChoose] = useState([]);
+  const [listAllFriends, setListAllFriends] = useState([]);
+  const [appearX, setAppearX] = useState("");
+
   let { rerender } = route.params;
   //=======================
   useEffect(() => {
@@ -105,6 +108,7 @@ export default function AddGroup({ navigation, route }, props) {
     }
   }, [listFriendsId]);
   //=======================
+
   const sort_ListFriends = [...listMem].sort((a, b) =>
     a.fullName > b.fullName ? 1 : -1
   );
@@ -127,6 +131,7 @@ export default function AddGroup({ navigation, route }, props) {
   for (let i = 0; i < listTitle.length; i++) {
     listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
   }
+
   //======Button Back=======
   useEffect(() => {
     const backAction = () => {
@@ -150,7 +155,20 @@ export default function AddGroup({ navigation, route }, props) {
     return () => backHandler.remove();
   }, [itemChoose]);
   //========================
+  useEffect(() => {
+    if (appearX == "") setListAllFriends(listMem);
+    else {
+      var list = [];
+      listMem.forEach((e) => {
+        if (e.fullName.toLowerCase().includes(appearX.toLowerCase())) {
+          list.push(e);
+        }
+      });
+      setListAllFriends(list);
+    }
+  }, [appearX, listMem]);
 
+  //========================
   const AllFriends = () => {
     return (
       <ScrollView>
@@ -219,12 +237,55 @@ export default function AddGroup({ navigation, route }, props) {
     }
   };
   return (
-    <View>
-      <Header />
-      <View style={{ height: "68%", marginBottom: 5 }}>
-        <AllFriends />
+    <View style={{ flex: 1 }}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.iconBack}
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        >
+          <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
+        </TouchableOpacity>
+        {/* <SearchBar title="Nhập tên cần tìm..." /> */}
+        <View style={styles.txtSearch}>
+          <EvilIcons
+            name="search"
+            size={30}
+            color="white"
+            style={{ paddingRight: 5 }}
+          />
+          <TextInput
+            placeholder="Nhập email hoặc tên cần tìm..."
+            style={{ fontSize: 18, color: "white", width: "80%" }}
+            placeholderTextColor="rgb(124,189,255)"
+            value={appearX}
+            onChangeText={(appearX) => setAppearX(appearX)}
+            autoFocus={true}
+          />
+          {appearX && (
+            <TouchableOpacity
+              onPress={() => {
+                setAppearX("");
+              }}
+            >
+              <MaterialIcons name="clear" size={24} color="white" />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
-      <View style={[styles.reviewItem, { height: "7%" }]}>
+      {/* Body */}
+      {/* <View style={{ height: "68%", marginBottom: 5 }}> */}
+      {/* <AllFriends /> */}
+      <FlatList
+        data={listAllFriends.sort((a, b) => (a.fullName > b.fullName ? 1 : -1))}
+        renderItem={({ item }) => {
+          return <ItemFriend user={item} />;
+        }}
+        keyExtractor={(item, index) => index}
+      />
+      {/* </View> */}
+      <View style={[styles.reviewItem, { height: 60, paddingTop: 5 }]}>
         <FlatList
           data={itemChoose}
           renderItem={({ item }) => {
@@ -245,50 +306,6 @@ export default function AddGroup({ navigation, route }, props) {
     </View>
   );
 }
-
-const Header = () => {
-  const navigation = useNavigation();
-  const [appearX, setAppearX] = useState("");
-  return (
-    <View style={styles.header}>
-      <TouchableOpacity
-        style={styles.iconBack}
-        onPress={() => {
-          navigation.navigate("Home");
-        }}
-      >
-        <Ionicons name="md-arrow-back-sharp" size={40} color="white" />
-      </TouchableOpacity>
-      {/* <SearchBar title="Nhập tên cần tìm..." /> */}
-      <View style={styles.txtSearch}>
-        <EvilIcons
-          name="search"
-          size={30}
-          color="white"
-          style={{ paddingRight: 5 }}
-        />
-        <TextInput
-          placeholder="Nhập email hoặc tên cần tìm..."
-          style={{ fontSize: 18, color: "white", width: "80%" }}
-          placeholderTextColor="rgb(124,189,255)"
-          value={appearX}
-          onChangeText={(appearX) => setAppearX(appearX)}
-          autoFocus={true}
-        />
-
-        {appearX && (
-          <TouchableOpacity
-            onPress={() => {
-              setAppearX("");
-            }}
-          >
-            <MaterialIcons name="clear" size={24} color="white" />
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
-};
 const Footer = (props) => {
   const { user } = useContext(AuthContext);
   const navigation = useNavigation();

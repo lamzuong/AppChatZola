@@ -88,7 +88,7 @@ export default function ChatList(props) {
       try {
         const res = await axiosCilent.get("/zola/message/" + conversation.id);
         setMessage(res.sort((a, b) => a.date - b.date));
-        console.log(2);
+        // console.log(2);
       } catch (error) {
         console.log(error);
       }
