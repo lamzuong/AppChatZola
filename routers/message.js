@@ -132,11 +132,13 @@ router.post('/mobile', (req, res) => {
     } else {
         for (let i = 0; i < listImg.length; i++) {
             if (typeof listImg[i].base64 == 'undefined') {
-                img_url.push(listImg[i]);
+                // img_url.push(listImg[i]);
+                img_url.push(`${CLOUD_FRONT_URL}${listImg[i]}`);
             } else {
                 var buffer = Buffer.from(listImg[i].base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
                 const fileType = listImg[i].fileType;
                 var filePath = `${uuid() + '-' + listImg[i].name}`;
+                console.log('anh');
                 const uploadS3 = {
                     Bucket: 'zola-chat',
                     Key: filePath,
@@ -165,6 +167,7 @@ router.post('/mobile', (req, res) => {
             removePerson: [],
             img_url: listImg.length > 0 ? img_url : '',
             date: new Date().getTime(),
+            handleGroup: false,
         },
     };
     docClient.put(params, (err, data) => {
