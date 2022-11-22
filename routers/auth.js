@@ -89,6 +89,7 @@ router.post('/login', (req, res) => {
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
             var accessToken = result;
+            console.log(accessToken.getAccessToken());
             const params = {
                 TableName: tableName,
                 Key: {
@@ -107,10 +108,41 @@ router.post('/login', (req, res) => {
         },
     });
 });
-// changePassword
-router.post('/changePassword/:params', (req, res) => {
-    const { oldPassword, date } = req.body;
-    console.log(req.params);
-    console.log(oldPassword, date);
+// deleteUser
+router.post('/deleteUser', (req, res) => {
+    const cognito = new AWS.CognitoIdentityServiceProvider();
+    cognito.adminDeleteUser(
+        {
+            UserPoolId: process.env.USER_POOL_ID,
+            Username: req.body.username,
+        },
+        (err, data) => {
+            if (err) {
+                res.status(500).send('Loi: ', err.stack);
+            } else {
+                res.status(200).send('Success');
+            }
+        },
+    );
 });
+
+// changePassword
+router.post('/changePassword', (req, res) => {
+    const cognito = new AWS.CognitoIdentityServiceProvider();
+    var changePasswordParams = {
+        Password: req.body.password,
+        Permanent: true,
+        Username: req.body.username,
+        UserPoolId: process.env.USER_POOL_ID,
+    };
+    let data = cognito.adminSetUserPassword(changePasswordParams, (err, data) => {
+        if (err) {
+            res.status(500).send('Loi: ', err.stack);
+        } else {
+            res.status(200).send('Success');
+        }
+    });
+    return data;
+});
+
 module.exports = router;
