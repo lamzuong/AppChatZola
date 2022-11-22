@@ -101,7 +101,26 @@ export default function ChatList(props) {
     let senderID = foo[0].sender;
     let nameShow = foo[0].infoSender.fullName.split(" ").slice(-1);
     if (foo[0].deleted == true) {
-      lastMess = "Đã thu hồi";
+      if (senderID == user.id) lastMess = "Bạn đã thu hồi tin nhắn";
+      else lastMess = nameShow + " đã thu hồi tin nhắn";
+    } else if (foo[0].removePerson.includes(user.id)) {
+      message.forEach((e) => {
+        if (!e.removePerson.includes(user.id)) {
+          if (e.img_url.length > 0 && typeof e.img_url !== "undefined") {
+            if (e.sender == user.id)
+              lastMess = "Bạn đã gửi " + e.img_url.length + " tập tin";
+            else
+              lastMess = nameShow + " đã gửi " + e.img_url.length + " tập tin";
+          } else {
+            if (e.sender == user.id) {
+              lastMess = "Bạn: " + e.mess;
+            } else if (group == true) {
+              lastMess = nameShow + ": " + e.mess;
+            } else lastMess = e.mess;
+          }
+        }
+      });
+      if (lastMess == "") lastMess = "Hãy bắt đầu cuộc trò chuyện !";
     } else {
       if (foo[0].img_url.length > 0 && typeof foo[0].img_url !== "undefined") {
         if (senderID == user.id)

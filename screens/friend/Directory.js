@@ -9,14 +9,14 @@ import {
 import React, { useState, useContext, useEffect, useRef } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 export default function Directory({ navigation }) {
-  // const isFocused = useIsFocused();
-  const { user, dispatch } = useContext(AuthContext);
+  const isFocused = useIsFocused();
+  const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState({});
   const [renderUser, setRenderUser] = useState(false);
   const [listFriendsId, setListFriendsId] = useState([]);
-  // if (isFocused) {
   useEffect(() => {
     const getInfoUser = async () => {
       try {
@@ -28,18 +28,14 @@ export default function Directory({ navigation }) {
       }
     };
     getInfoUser();
-  }, [renderUser]);
-  // }
+  }, [renderUser, isFocused]);
   //========================
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("tabPress", (e) => {
-      setRenderUser(true);
-      // console.log(renderUser);
-    });
-    return unsubscribe;
-  }, [navigation]);
-  // console.log(renderUser);
-
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener("tabPress", (e) => {
+  //     setRenderUser(true);
+  //   });
+  //   return unsubscribe;
+  // }, [navigation]);
   //========================
   var listFriends = [];
   const [listMem, setListMem] = useState([]);
@@ -151,13 +147,34 @@ const ViewListFriend = (props) => {
   );
 };
 const ItemFriend = (props) => {
+  const { user } = useContext(AuthContext);
   const [showName, setShowName] = React.useState(props.name);
+  const navigation = useNavigation();
   const strName = new String(showName);
   if (strName.length > 25) {
     setShowName(strName.slice(0, 22) + "...");
   }
+  const navigateChatRoom = async (id, name, ava) => {
+    try {
+      const res = await axiosCilent.get(
+        `/zola/conversation/conversationId/${user.id}/${id}`
+      );
+      const res2 = await axiosCilent.get(
+        "/zola/conversation/idCon/" + res[0].id
+      );
+      navigation.navigate("ChatRoom", {
+        nickname: name,
+        avatar: ava,
+        conversation: res2,
+      });
+    } catch (error) {}
+  };
   return (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() => {
+        navigateChatRoom(props.id, props.name, props.ava);
+      }}
+    >
       <View style={styles.items}>
         <Image
           source={{

@@ -10,11 +10,14 @@ import React, { useState, useContext, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function InviteAddFrReceive() {
   const { user, dispatch } = useContext(AuthContext);
   const [renderUser, setRenderUser] = useState(false);
   const [listInvite, setListInvite] = useState([]);
+  const isFocused = useIsFocused();
+  // console.log(user);
   useEffect(() => {
     const getInfoUser = async () => {
       try {
@@ -26,7 +29,7 @@ export default function InviteAddFrReceive() {
       }
     };
     getInfoUser();
-  }, [renderUser]);
+  }, [renderUser, isFocused]);
   //========================
   var listReceive = [];
   const [listMem, setListMem] = useState([]);
@@ -54,7 +57,6 @@ export default function InviteAddFrReceive() {
     }
   }, [listInvite]);
   //========================
-  console.log(user.listReceiver);
   const denyInvite = async (id) => {
     try {
       await axiosCilent.put("/zola/users/denyFriend", {
@@ -82,6 +84,16 @@ export default function InviteAddFrReceive() {
       dispatch({ type: "LOGIN_SUCCESS", payload: res });
       const res2 = await axiosCilent.get("/zola/users/" + user.id);
       setListInvite(res2.listReceiver);
+      //======Kiểm tra có cuộc trò chuyện chưa===
+      const res3 = await axiosCilent.get(
+        `/zola/conversation/conversationId/${user.id}/${id}`
+      );
+      console.log(res3);
+      if (res3.length == 0) {
+        await axiosCilent.post("/zola/conversation", {
+          members: [user.id, id],
+        });
+      }
     } catch (err) {
       console.log(err);
     }

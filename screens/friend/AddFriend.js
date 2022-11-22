@@ -45,15 +45,14 @@ export default function AddFriend({ navigation }, props) {
         const res = await axiosCilent.get("/zola/users/search/" + appearX);
         setListPeople(res);
         const res2 = await axiosCilent.get(
-          "/zola/conversation/search/group/" + appearX
+          `/zola/conversation/search/group/${user.id}/${appearX}`
         );
         setListGroup(res2);
-        // console.log(res);
       } catch (error) {
         console.log(error);
       }
     };
-    if (appearX.length > 1) getPeople();
+    if (appearX.length > 0) getPeople();
     if (appearX.length == 0) {
       setListPeople([]);
       setListGroup([]);
@@ -422,7 +421,7 @@ export default function AddFriend({ navigation }, props) {
             </View>
             {listGroup.map((item, index) => (
               <Group
-                key={index}
+                key={item.id}
                 id={item.id}
                 name={item.groupName}
                 ava={item.avatarGroup}

@@ -118,6 +118,9 @@ export default function MessageChat(props) {
         id: item.id,
         userId: user.id,
       });
+      socket.emit("send-to-server", {
+        conversationID: item.conversationID,
+      });
     } catch (err) {
       console.log(err);
     }

@@ -23,6 +23,7 @@ import { useState, useEffect, useContext } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { io } from "socket.io-client";
 import apiConfig from "../../api/apiConfig";
+import { useIsFocused } from "@react-navigation/native";
 
 const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
@@ -31,11 +32,11 @@ export default function Rooms({ navigation, route }) {
   const [visible, setVisible] = useState(false);
   const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const isFocused = useIsFocused();
 
   const [conversation, setConversation] = useState([]);
   const { user } = useContext(AuthContext);
   const [rerender, setRerender] = useState(false);
-  const [rerender2, setRerender2] = useState(false);
   const [conIdReceive, setConIdReceive] = useState("");
   const [nameReceive, setNameReceive] = useState("");
   const [avaReceive, setAvaReceive] = useState("");
@@ -129,7 +130,7 @@ export default function Rooms({ navigation, route }) {
       }
     };
     getConversation();
-  }, [user.id, rerender, conIdReceive, nameReceive, avaReceive]);
+  }, [user.id, rerender, conIdReceive, nameReceive, avaReceive, isFocused]);
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />

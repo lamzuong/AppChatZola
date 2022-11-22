@@ -36,7 +36,7 @@ export default function TransferList(props) {
   }, [conversation.members, props.currentUser]);
   let img = "";
   let name = "";
-  if (conversation.members.length > 2) {
+  if (conversation.group) {
     img = conversation.avatarGroup;
     name = conversation.groupName;
   } else {
