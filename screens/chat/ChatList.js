@@ -51,20 +51,16 @@ export default function ChatList(props) {
   const [imgLast, setImgLast] = useState("");
 
   const [rerender, setRerender] = useState(false);
-  const [convIdSocket, setConvIdSocket] = useState(conversation.id);
 
   useEffect(() => {
     socket.off();
     socket.on("server-send-to-client", (data) => {
       let conversationIDChat;
       try {
-        conversationIDChat = conversation.id;
+        // conversationIDChat = conversation.id;
         // console.log(data.conversationID + "____" + conversation.id);
         // if (data.conversationID == conversationIDChat) {
         setRerender(!rerender);
-        setConvIdSocket(data.conversationID);
-        // console.log("abc");
-
         // let nameShow = data?.fullName.split(" ").slice(-1);
         // if (data.imgs > 0) {
         //   if (data.senderId == user.id)
@@ -94,7 +90,7 @@ export default function ChatList(props) {
       }
     };
     getMess();
-  }, [conversation.id, rerender]);
+  }, [conversation, rerender]);
   message.sort((a, b) => a.date - b.date);
 
   let group = conversation.group;

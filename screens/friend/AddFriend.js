@@ -38,17 +38,26 @@ export default function AddFriend({ navigation }, props) {
   //===========Search===============
   const [appearX, setAppearX] = useState("");
   const [listPeople, setListPeople] = useState([]);
+  const [listGroup, setListGroup] = useState([]);
   useEffect(() => {
     const getPeople = async () => {
       try {
         const res = await axiosCilent.get("/zola/users/search/" + appearX);
         setListPeople(res);
+        const res2 = await axiosCilent.get(
+          "/zola/conversation/search/group/" + appearX
+        );
+        setListGroup(res2);
         // console.log(res);
       } catch (error) {
         console.log(error);
       }
     };
-    getPeople();
+    if (appearX.length > 1) getPeople();
+    if (appearX.length == 0) {
+      setListPeople([]);
+      setListGroup([]);
+    }
   }, [appearX]);
   //==========Get List Receive/Sender/Friends=================
   const { user } = useContext(AuthContext);
@@ -66,7 +75,7 @@ export default function AddFriend({ navigation }, props) {
         setListSender(res.listSender);
         setListReceive(res.listReceiver);
         setListFriends(res.friends);
-        console.log(res);
+        // console.log(res);
       } catch (error) {
         console.log(error);
       }
@@ -149,6 +158,34 @@ export default function AddFriend({ navigation }, props) {
     setInListReceiveFr(false);
     setInListFr(false);
   }
+  //=======Navigate conversation============
+  const getConversation = async (id, name, ava) => {
+    try {
+      const res = await axiosCilent.get("/zola/conversation/idCon/" + id);
+      navigation.navigate("ChatRoom", {
+        nickname: name,
+        avatar: ava,
+        conversation: res,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const navigateChatRoom = async (id, name, ava) => {
+    try {
+      const res = await axiosCilent.get(
+        `/zola/conversation/conversationId/${user.id}/${id}`
+      );
+      const res2 = await axiosCilent.get(
+        "/zola/conversation/idCon/" + res[0].id
+      );
+      navigation.navigate("ChatRoom", {
+        nickname: name,
+        avatar: ava,
+        conversation: res2,
+      });
+    } catch (error) {}
+  };
   //====================
   const [modalVisible, setModalVisible] = useState(false);
   const [idPeople, setIdPeople] = useState("");
@@ -166,6 +203,19 @@ export default function AddFriend({ navigation }, props) {
           isInListSender(id);
           isInListReceive(id);
           isInListFriends(id);
+        }}
+      >
+        <Image source={{ uri: ava }} style={styles.imageAva} />
+        <Text style={styles.nickname}>{name}</Text>
+      </TouchableOpacity>
+    );
+  };
+  const Group = ({ id, name, ava }) => {
+    return (
+      <TouchableOpacity
+        style={styles.itemPeople}
+        onPress={() => {
+          getConversation(id, name, ava);
         }}
       >
         <Image source={{ uri: ava }} style={styles.imageAva} />
@@ -277,7 +327,13 @@ export default function AddFriend({ navigation }, props) {
 
                             <TouchableOpacity
                               style={[styles.btnAddFr, { marginLeft: 10 }]}
-                              onPress={() => {}}
+                              onPress={() => {
+                                navigateChatRoom(
+                                  idPeople,
+                                  namePeople,
+                                  imgPeople
+                                );
+                              }}
                             >
                               <Text style={styles.txtAddFr}>Nhắn tin</Text>
                             </TouchableOpacity>
@@ -342,16 +398,38 @@ export default function AddFriend({ navigation }, props) {
         </View>
       </View>
       <ScrollView>
-        {listPeople.length > 0
-          ? listPeople.map((user) => (
+        {listPeople.length > 0 ? (
+          <>
+            <View style={styles.title}>
+              <Text style={{ fontWeight: "bold", color: "grey" }}>
+                Mọi người
+              </Text>
+            </View>
+            {listPeople.map((user) => (
               <People
                 key={user.id}
                 id={user.id}
                 name={user.fullName}
                 ava={user.img}
               />
-            ))
-          : null}
+            ))}
+          </>
+        ) : null}
+        {listGroup.length > 0 ? (
+          <>
+            <View style={styles.title}>
+              <Text style={{ fontWeight: "bold", color: "grey" }}>Nhóm</Text>
+            </View>
+            {listGroup.map((item, index) => (
+              <Group
+                key={index}
+                id={item.id}
+                name={item.groupName}
+                ava={item.avatarGroup}
+              />
+            ))}
+          </>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -405,6 +483,12 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginLeft: 20,
     marginTop: 7,
+  },
+  title: {
+    paddingLeft: 10,
+    paddingVertical: 5,
+    backgroundColor: "rgb(245,245,245)",
+    marginBottom: 5,
   },
   //=======Modal========
   centeredView: {
