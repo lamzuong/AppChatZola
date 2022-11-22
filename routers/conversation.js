@@ -593,4 +593,45 @@ router.delete('/deleteGroup', (req, res) => {
         }
     });
 });
+// Search with group name
+router.get('/search/group/:groupName', (req, res) => {
+    const { groupName } = req.params;
+    console.log(req.body);
+    var params = {
+        ExpressionAttributeValues: {
+            ':groupName': groupName,
+        },
+        ExpressionAttributeNames: { '#groupName': 'groupName' },
+        FilterExpression: 'contains(#groupName , :groupName)',
+        TableName: 'conversation',
+    };
+    docClient.scan(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi' + err);
+        } else {
+            return res.status(200).json(data.Items);
+        }
+    });
+});
+// Search conversation id with idUser and idFriend
+router.get('/conversationId/:idUser/:idFriend', (req, res) => {
+    const { idUser, idFriend } = req.params;
+    console.log(req.body);
+    var params = {
+        ExpressionAttributeValues: {
+            ':idUser': idUser,
+            ':idFriend': idFriend,
+        },
+        ExpressionAttributeNames: { '#members': 'members' },
+        FilterExpression: 'contains(#members , :idUser) AND contains(#members , :idFriend)',
+        TableName: 'conversation',
+    };
+    docClient.scan(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi' + err);
+        } else {
+            return res.status(200).json(data.Items.filter((item) => !item.group));
+        }
+    });
+});
 module.exports = router;
