@@ -594,22 +594,29 @@ router.delete('/deleteGroup', (req, res) => {
     });
 });
 // Search with group name
-router.get('/search/group/:groupName', (req, res) => {
-    const { groupName } = req.params;
+router.get('/search/group/:id/:groupName', (req, res) => {
+    const { groupName, id } = req.params;
     console.log(req.body);
     var params = {
         ExpressionAttributeValues: {
-            ':groupName': groupName,
+            ':id': id,
         },
-        ExpressionAttributeNames: { '#groupName': 'groupName' },
-        FilterExpression: 'contains(#groupName , :groupName)',
+        ExpressionAttributeNames: { '#members': 'members' },
+        FilterExpression: 'contains(#members , :id)',
         TableName: 'conversation',
     };
     docClient.scan(params, (err, data) => {
         if (err) {
+            console.log(err);
             return res.status(500).send('Loi' + err);
         } else {
-            return res.status(200).json(data.Items);
+            var list = [];
+            for (let i = 0; i < data.Items.length; i++) {
+                if (data.Items[i].group) {
+                    if (data.Items[i].groupName.includes(groupName)) list.push(data.Items[i]);
+                }
+            }
+            return res.status(200).json(list);
         }
     });
 });
