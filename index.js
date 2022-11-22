@@ -71,11 +71,15 @@ io.on('connection', (socket) => {
     });
 
     socket.on('callUser', (data) => {
-        io.emit('callUser', { signal: data.signalData, from: data.from, name: data.name });
+        io.emit('callUser', data);
     });
 
     socket.on('answerCall', (data) => {
         io.emit('callAccepted', data);
+    });
+
+    socket.on('leaveCall', (data) => {
+        io.emit('leaveCall', data);
     });
 });
 
