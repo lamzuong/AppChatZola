@@ -27,7 +27,7 @@ export default function GroupFriends() {
       }
     };
     getConversation();
-  }, [user.id, rerender]);
+  }, [user.id, rerender, isFocused]);
 
   return (
     <View>

@@ -5,16 +5,19 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Modal,
+  Alert,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Directory({ navigation }) {
   const isFocused = useIsFocused();
   const { user } = useContext(AuthContext);
-  const [currentUser, setCurrentUser] = useState({});
   const [renderUser, setRenderUser] = useState(false);
   const [listFriendsId, setListFriendsId] = useState([]);
   useEffect(() => {
@@ -118,75 +121,134 @@ export default function Directory({ navigation }) {
   for (let i = 0; i < listTitle.length; i++) {
     listAll[i] = { title: listTitle[i], show: setShow[i], listFr: list[i] };
   }
-  //========================
-
+  //===========================
+  const ItemFriend = (props) => {
+    const { user } = useContext(AuthContext);
+    const [showName, setShowName] = useState(props.name);
+    const [modalVisible, setModalVisible] = useState(false);
+    const navigation = useNavigation();
+    const strName = new String(showName);
+    if (strName.length > 25) {
+      setShowName(strName.slice(0, 22) + "...");
+    }
+    const navigateChatRoom = async (id, name, ava) => {
+      try {
+        const res = await axiosCilent.get(
+          `/zola/conversation/conversationId/${user.id}/${id}`
+        );
+        const res2 = await axiosCilent.get(
+          "/zola/conversation/idCon/" + res[0].id
+        );
+        navigation.navigate("ChatRoom", {
+          nickname: name,
+          avatar: ava,
+          conversation: res2,
+        });
+      } catch (error) {}
+    };
+    const deleteFriend = async (id) => {
+      await axiosCilent.put("/zola/users/deleteFriend", {
+        userId: user.id,
+        friendId: id,
+        friends: user.friends,
+      });
+      setRenderUser(!renderUser);
+    };
+    return (
+      <>
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  style={styles.itemModal}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    navigateChatRoom(props.id, props.name, props.ava);
+                  }}
+                >
+                  <View style={{ paddingHorizontal: 20 }}>
+                    <MaterialIcons name="message" size={24} color="black" />
+                  </View>
+                  <View>
+                    <Text style={[styles.txtModal, { color: "black" }]}>
+                      Nhắn tin
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.itemModal}
+                  onPress={() => {
+                    setModalVisible(!modalVisible);
+                    Alert.alert(
+                      "Thông báo",
+                      `Bạn muốn hủy kết bạn với ${props.name} không?`,
+                      [
+                        {
+                          text: "Hủy",
+                          onPress: () => console.log("Cancel Pressed"),
+                          style: "cancel",
+                        },
+                        {
+                          text: "OK",
+                          onPress: () => deleteFriend(props.id),
+                        },
+                      ]
+                    );
+                  }}
+                >
+                  <View style={{ paddingHorizontal: 20 }}>
+                    <MaterialIcons name="delete" size={24} color="red" />
+                  </View>
+                  <View>
+                    <Text style={styles.txtModal}>Hủy kết bạn</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+        <TouchableOpacity
+          onPress={() => {
+            navigateChatRoom(props.id, props.name, props.ava);
+          }}
+          onLongPress={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.items}>
+            <Image
+              source={{
+                uri: props.ava,
+              }}
+              style={styles.imageAva}
+            />
+            <Text style={styles.nickname}>{showName}</Text>
+          </View>
+        </TouchableOpacity>
+      </>
+    );
+  };
   return (
     <View>
       <ScrollView>
         {listAll.map((e, i) => (
-          <ViewListFriend
-            key={i}
-            title={e.title}
-            show={e.show}
-            list={e.listFr}
-          />
+          <View key={i}>
+            {e.show ? <Text style={styles.title}>{e.title}</Text> : null}
+            {e.listFr.map((e1, i1) => (
+              <ItemFriend key={i1} id={e1.id} ava={e1.img} name={e1.fullName} />
+            ))}
+          </View>
         ))}
       </ScrollView>
     </View>
   );
 }
 
-const ViewListFriend = (props) => {
-  return (
-    <View>
-      {props.show ? <Text style={styles.title}>{props.title}</Text> : null}
-      {props.list.map((e, i) => (
-        <ItemFriend key={i} id={e.id} ava={e.img} name={e.fullName} />
-      ))}
-    </View>
-  );
-};
-const ItemFriend = (props) => {
-  const { user } = useContext(AuthContext);
-  const [showName, setShowName] = React.useState(props.name);
-  const navigation = useNavigation();
-  const strName = new String(showName);
-  if (strName.length > 25) {
-    setShowName(strName.slice(0, 22) + "...");
-  }
-  const navigateChatRoom = async (id, name, ava) => {
-    try {
-      const res = await axiosCilent.get(
-        `/zola/conversation/conversationId/${user.id}/${id}`
-      );
-      const res2 = await axiosCilent.get(
-        "/zola/conversation/idCon/" + res[0].id
-      );
-      navigation.navigate("ChatRoom", {
-        nickname: name,
-        avatar: ava,
-        conversation: res2,
-      });
-    } catch (error) {}
-  };
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        navigateChatRoom(props.id, props.name, props.ava);
-      }}
-    >
-      <View style={styles.items}>
-        <Image
-          source={{
-            uri: props.ava,
-          }}
-          style={styles.imageAva}
-        />
-        <Text style={styles.nickname}>{showName}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
 const styles = StyleSheet.create({
   title: {
     marginTop: 10,
@@ -210,4 +272,39 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 7,
   },
+
+  //=======Modal========
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    width: "70%",
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    borderRadius: 10,
+  },
+  txtModal: {
+    paddingVertical: 10,
+    fontSize: 20,
+    color: "red",
+  },
+  itemModal: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  modalViewBonus: {
+    width: "80%",
+    paddingVertical: 10,
+    paddingLeft: 10,
+  },
+  //================
 });

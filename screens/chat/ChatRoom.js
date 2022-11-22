@@ -12,6 +12,7 @@ import {
   Pressable,
   Dimensions,
   Keyboard,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState, useContext, useRef, useMemo } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -40,6 +41,7 @@ export default function ChatRoom({ route }) {
   const [conversationRender, setConversationRerender] = useState(conversation);
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
+  const [friendDeleted, setFriendDeleted] = useState(false);
   useEffect(() => {
     if (route.params.rerenderTemp != null) {
       setRerender(rerenderTemp);
@@ -62,12 +64,22 @@ export default function ChatRoom({ route }) {
           setNameRerender(nickname);
           setNameInChat(nickname);
         }
+        //=====================
+        if (
+          !user.friends.includes(
+            res.members.filter((id) => id != user.id)[0]
+          ) &&
+          res.members.length == 2
+        ) {
+          setFriendDeleted(true);
+        } else setFriendDeleted(false);
       } catch (error) {
         console.log(error);
       }
     };
     getConversation();
   }, [rerender, conversation]);
+  // console.log(friendDeleted);
   //=============================
   const [rerender, setRerender] = useState(false);
   useEffect(() => {
@@ -221,102 +233,110 @@ export default function ChatRoom({ route }) {
   message.sort((a, b) => a.date - b.date);
   //====Send Message======
   const handleSendMessage = async (e) => {
-    if (valueInput.trim() === "" && imagesSelected.length == 0) {
+    if (friendDeleted) {
+      Alert.alert(
+        "Thông báo",
+        `Bạn với người dùng này không phải là bạn bè!${"\n"}Nếu muốn nhắn tin xin hãy kết bạn với người dùng này!`
+      );
     } else {
-      e.preventDefault();
-      let listImg = [];
-      if (imagesSelected.length !== 0) {
-        imagesSelected.forEach((e) => {
-          const image = e.uri.split(".");
-          const fileType = image[image.length - 1];
-          if (fileType == "mp4") {
-            RNS3.put(
-              {
-                uri: e.uri,
-                name: e.uri.split("/").reverse()[0],
-                type: e.type + "/" + e.uri.split(".").reverse()[0],
-              },
-              {
-                keyPrefix: "",
-                bucket: "zola-chat",
-                region: "ap-southeast-1",
-                accessKey: "AKIA34KECLYEL2WGGHN2",
-                secretKey: "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",
-                successActionStatus: 201,
-              }
-            )
-              .then((response) => {
-                if (response.status !== 201)
-                  throw new Error("Failed to upload image to S3");
-                console.log(response.body);
-              })
-              .catch((error) => console.log(error));
-            listImg.push(e.uri.split("/").reverse()[0]);
-          } else if (
-            fileType == "docx" ||
-            fileType == "doc" ||
-            fileType == "xlsx" ||
-            fileType == "xls" ||
-            fileType == "csv" ||
-            fileType == "pptx" ||
-            fileType == "ppt" ||
-            fileType == "pdf" ||
-            fileType == "txt"
-          ) {
-            RNS3.put(
-              {
-                uri: e.uri,
-                name: uuid.v4() + "-" + e.name,
-                type: "application/" + fileType,
-              },
-              {
-                keyPrefix: "",
-                bucket: "zola-chat",
-                region: "ap-southeast-1",
-                accessKey: "AKIA34KECLYEL2WGGHN2",
-                secretKey: "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",
-                successActionStatus: 201,
-              }
-            )
-              .then((response) => {
-                if (response.status !== 201)
-                  throw new Error("Failed to upload image to S3");
-                console.log(response.body);
-              })
-              .catch((error) => console.log(error));
-            listImg.push(e.name);
-          } else {
-            var obj = {
-              base64: `data:image/jpeg;base64,${e.base64}`,
-              fileType: fileType,
-              name: e.uri.split("/").slice(-1),
-            };
-            listImg.push(obj);
-          }
-        });
-      }
-      const message1 = {
-        conversationID: conversation.id,
-        sender: user.id,
-        mess: valueInput,
-        listImg: listImg,
-      };
-      try {
-        await axiosCilent.post("/zola/message/mobile", message1);
-        socket.emit("send-to-server", {
-          mess: valueInput,
-          senderId: user.id,
+      if (valueInput.trim() === "" && imagesSelected.length == 0) {
+      } else {
+        e.preventDefault();
+        let listImg = [];
+        if (imagesSelected.length !== 0) {
+          imagesSelected.forEach((e) => {
+            // console.log(e);
+            const image = e.uri.split(".");
+            const fileType = image[image.length - 1];
+            if (fileType == "mp4") {
+              RNS3.put(
+                {
+                  uri: e.uri,
+                  name: e.uri.split("/").reverse()[0],
+                  type: e.type + "/" + e.uri.split(".").reverse()[0],
+                },
+                {
+                  keyPrefix: "",
+                  bucket: "zola-chat",
+                  region: "ap-southeast-1",
+                  accessKey: "AKIA34KECLYEL2WGGHN2",
+                  secretKey: "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",
+                  successActionStatus: 201,
+                }
+              )
+                .then((response) => {
+                  if (response.status !== 201)
+                    throw new Error("Failed to upload image to S3");
+                  console.log(response.body);
+                })
+                .catch((error) => console.log(error));
+              listImg.push(e.uri.split("/").reverse()[0]);
+            } else if (
+              fileType == "docx" ||
+              fileType == "doc" ||
+              fileType == "xlsx" ||
+              fileType == "xls" ||
+              fileType == "csv" ||
+              fileType == "pptx" ||
+              fileType == "ppt" ||
+              fileType == "pdf" ||
+              fileType == "txt"
+            ) {
+              RNS3.put(
+                {
+                  uri: e.uri,
+                  name: uuid.v4() + "-" + e.name,
+                  type: "application/" + fileType,
+                },
+                {
+                  keyPrefix: "",
+                  bucket: "zola-chat",
+                  region: "ap-southeast-1",
+                  accessKey: "AKIA34KECLYEL2WGGHN2",
+                  secretKey: "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",
+                  successActionStatus: 201,
+                }
+              )
+                .then((response) => {
+                  if (response.status !== 201)
+                    throw new Error("Failed to upload image to S3");
+                  console.log(response.body);
+                })
+                .catch((error) => console.log(error));
+              listImg.push(e.name);
+            } else {
+              var obj = {
+                base64: `data:image/jpeg;base64,${e.base64}`,
+                fileType: fileType,
+                name: e.uri.split("/").slice(-1),
+              };
+              listImg.push(obj);
+            }
+          });
+        }
+        const message1 = {
           conversationID: conversation.id,
-          imgs: imagesSelected.length,
-          fullName: user.fullName,
-          group: conversation.group,
-        });
-        setValueInput("");
-        setImagesSelected([]);
-        setRerender(!rerender);
-        setRender2(!render2);
-      } catch (err) {
-        console.log(err);
+          sender: user.id,
+          mess: valueInput,
+          listImg: listImg,
+        };
+        try {
+          await axiosCilent.post("/zola/message/mobile", message1);
+          socket.emit("send-to-server", {
+            mess: valueInput,
+            senderId: user.id,
+            conversationID: conversation.id,
+            imgs: imagesSelected.length,
+            fullName: user.fullName,
+            group: conversation.group,
+          });
+          setValueInput("");
+          setImagesSelected([]);
+          setRerender(!rerender);
+          setRender2(!render2);
+        } catch (err) {
+          console.log(err);
+        }
       }
     }
   };

@@ -112,7 +112,6 @@ export default function Rooms({ navigation, route }) {
     });
     socket.on("server-send-to-client", (data) => {
       if (conversation.some((conv) => conv.id === data.conversationID)) {
-        // console.log(data);
         setRerender(!rerender);
       }
     });
@@ -124,7 +123,6 @@ export default function Rooms({ navigation, route }) {
         const res = await axiosCilent.get("/zola/conversation/" + user.id);
         setConversation(res.sort((a, b) => b.date - a.date));
         setRerender(false);
-        // console.log(rerender);
       } catch (error) {
         console.log(error);
       }
