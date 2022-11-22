@@ -593,11 +593,10 @@ router.delete('/deleteGroup', (req, res) => {
         }
     });
 });
-
-// Search Conversation
-router.get('/searchConversation/:id/:name', (req, res) => {
-    const { id, name } = req.params;
-    console.log(id, name);
+// Search with group name
+router.get('/search/group/:id/:groupName', (req, res) => {
+    const { groupName, id } = req.params;
+    console.log(req.body);
     var params = {
         ExpressionAttributeValues: {
             ':id': id,
@@ -607,56 +606,38 @@ router.get('/searchConversation/:id/:name', (req, res) => {
         TableName: 'conversation',
     };
     docClient.scan(params, (err, data) => {
-        let paramsSearch = {};
         if (err) {
             console.log(err);
             return res.status(500).send('Loi' + err);
         } else {
+            var list = [];
             for (let i = 0; i < data.Items.length; i++) {
-                if (data.Items[i].members > 2) {
-                    paramsSearch = {
-                        TableName: 'conversation',
-                        ExpressionAttributeNames: { '#groupName': 'groupName' },
-                        FilterExpression: 'contains(#groupName , :name)',
-                        ExpressionAttributeValues: {
-                            ':name': name,
-                        },
-                    };
-                } else {
-                    const params = {
-                        TableName: tableName,
-                        ExpressionAttributeNames: { '#fullName': 'fullName' },
-                        FilterExpression: 'contains(#fullName , :name)',
-                        ExpressionAttributeValues: {
-                            ':name': name,
-                        },
-                    };
-                    docClient.scan(params, (err, data) => {
-                        if (err) {
-                            return res.status(500).send('Loi' + err);
-                        } else {
-                            return res.send(data.Item);
-                        }
-                    });
-                    paramsSearch = {
-                        TableName: 'conversation',
-                        ExpressionAttributeNames: { '#groupName': 'groupName' },
-                        FilterExpression: 'contains(#groupName , :name)',
-                        ExpressionAttributeValues: {
-                            ':name': name,
-                        },
-                    };
+                if (data.Items[i].group) {
+                    if (data.Items[i].groupName.includes(groupName)) list.push(data.Items[i]);
                 }
             }
-            docClient.scan(paramsSearch, (err, data) => {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send('Loi' + err);
-                } else {
-                    return res.status(200).json(data.Items);
-                }
-            });
-            return res.status(200).json(data.Items);
+            return res.status(200).json(list);
+        }
+    });
+});
+// Search conversation id with idUser and idFriend
+router.get('/conversationId/:idUser/:idFriend', (req, res) => {
+    const { idUser, idFriend } = req.params;
+    console.log(req.body);
+    var params = {
+        ExpressionAttributeValues: {
+            ':idUser': idUser,
+            ':idFriend': idFriend,
+        },
+        ExpressionAttributeNames: { '#members': 'members' },
+        FilterExpression: 'contains(#members , :idUser) AND contains(#members , :idFriend)',
+        TableName: 'conversation',
+    };
+    docClient.scan(params, (err, data) => {
+        if (err) {
+            return res.status(500).send('Loi' + err);
+        } else {
+            return res.status(200).json(data.Items.filter((item) => !item.group));
         }
     });
 });
