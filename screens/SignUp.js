@@ -39,16 +39,17 @@ export default function SignUp({ navigation }) {
   const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
   const [hidebtn, sethidebtn] = useState(false);
 
+  const [countdown, setCountdown] = useState()
+  const [hideCountdown, sethideCountdown] = useState(false);
   function conFirm() {
     const register = async () => {
       try {
         await axiosClient.post("/zola/auth/register", {
-          username,
           email,
           fullName,
           password,
         });
-        navigation.navigate("Login");
+        // navigation.navigate("Login");
       } catch (error) {
         Alert.alert("Cảnh báo", "Username đã tồn tại!", [
           {
@@ -70,12 +71,50 @@ export default function SignUp({ navigation }) {
         {
           text: "Xác nhận",
           onPress: () => {
+            sethidebtn(false);
+            sethideCountdown(true);
+            setCountdown(60)
             register();
           },
         },
       ]
     );
   }
+  async function login() {
+      try {
+        const res = await axiosClient.post("/zola/auth/login", {
+          email: email,
+          password: password,
+        });
+        setCountdown();
+        navigation.navigate("LogInFirst");
+
+      } catch (error) {
+
+      }
+  }
+
+  useEffect(() => {
+    if(countdown==0){
+      Alert.alert("Cảnh báo", "Vui lòng đăng ký lại!", [
+        {
+          text: "Xác nhận",
+          style: "cancel",
+          onPress: () =>{
+            sethideCountdown(false);
+            sethidebtn(true)
+          }
+        },
+      ]);
+      
+      return;
+    }
+    const timerId = setInterval(() => {
+      login();
+      setCountdown((prev) => prev -1);
+    },1000);
+    return() => clearInterval(timerId);
+  },[countdown>0]);
 
   useEffect(() => {
     const UsernamRegex = async (username) => {
@@ -121,10 +160,10 @@ export default function SignUp({ navigation }) {
     }
   };
 
-  const validateUsername = (username) => {
-    var re = /^[a-zA-Z0-9]{4,16}$/;
-    return re.test(username);
-  };
+  // const validateUsername = (username) => {
+  //   var re = /^[a-zA-Z0-9]{4,16}$/;
+  //   return re.test(username);
+  // };
 
   const validateEmail = (email) => {
     var re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
@@ -163,9 +202,8 @@ export default function SignUp({ navigation }) {
     }
   };
 
-  const hideBtnSignup = (username, email, fullName, password, repassword) => {
+  const hideBtnSignup = (email, fullName, password, repassword) => {
     if (
-      isEmpty(username) ||
       isEmpty(email) ||
       isEmpty(fullName) ||
       isEmpty(password) ||
@@ -183,11 +221,11 @@ export default function SignUp({ navigation }) {
     <View style={styles.container}>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.signup}>
-        Vui lòng nhập username, email, tên đầy đủ và mật khẩu để đăng ký.
+        Vui lòng nhập Email, tên đầy đủ và mật khẩu để đăng ký.
       </Text>
       <SafeAreaView>
         <ScrollView style={{ height: "auto", marginBottom: 150 }}>
-          <View style={styles.input}>
+          {/* <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "90%" }}
               value={username}
@@ -244,7 +282,7 @@ export default function SignUp({ navigation }) {
             >
               {errorUsername}
             </Text>
-          )}
+          )} */}
           <View style={styles.input}>
             <TextInput
               style={{ fontSize: 18, color: "black", width: "90%" }}
@@ -266,7 +304,6 @@ export default function SignUp({ navigation }) {
                     sethideErrorEmail(false);
                     if (
                       !hideBtnSignup(
-                        username,
                         email,
                         fullName,
                         password,
@@ -331,7 +368,6 @@ export default function SignUp({ navigation }) {
                     sethideErrorFullname(false);
                     if (
                       !hideBtnSignup(
-                        username,
                         email,
                         fullName,
                         password,
@@ -395,7 +431,6 @@ export default function SignUp({ navigation }) {
                     sethideErrorPassword(false);
                     if (
                       !hideBtnSignup(
-                        username,
                         email,
                         fullName,
                         password,
@@ -489,7 +524,6 @@ export default function SignUp({ navigation }) {
                     sethideErrorRepassword(false);
                     if (
                       !hideBtnSignup(
-                        username,
                         email,
                         fullName,
                         password,
@@ -554,6 +588,19 @@ export default function SignUp({ navigation }) {
               }}
             >
               {errorRepassword}
+            </Text>
+          )}
+          {hideCountdown && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              Vui lòng xác nhận Email trong: {countdown} giây
             </Text>
           )}
 

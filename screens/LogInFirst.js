@@ -219,7 +219,7 @@ export default function LogInFirst({ navigation }) {
           <TouchableOpacity
             style={styles.iconBack}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate("Welcome");
             }}
           >
             <Ionicons name="md-arrow-back-sharp" size={30} color="white" />
