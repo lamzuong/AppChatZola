@@ -26,7 +26,6 @@ router.post('/', (req, res) => {
                 creator: req.body.id,
                 date: date,
                 images: [],
-                waitAccept: [],
                 files: [],
                 group: true,
             },
@@ -105,59 +104,26 @@ router.put('/addMem', (req, res) => {
         Key: {
             id: conversationId,
         },
-        UpdateExpression: 'SET #waitAccept=list_append(#waitAccept,:waitAccept)',
-        ExpressionAttributeNames: {
-            '#waitAccept': 'waitAccept', //COLUMN NAME
-        },
-        ExpressionAttributeValues: {
-            ':waitAccept': listTempId,
-        },
-    };
-    docClient.update(params, (err, data) => {
-        if (err) {
-            console.log('Loi1' + err);
-        } else {
-            return res.send('Success');
-        }
-    });
-});
-
-// Chap nhan thanh vien
-router.put('/acceptMem', (req, res) => {
-    const { conversationId, user, member, listWaitInfo } = req.body;
-    var listWaitAccept = listWaitInfo
-        .reduce((list, user) => {
-            return list.concat(user.id);
-        }, [])
-        .filter((item) => item !== member.id);
-
-    const params = {
-        TableName: 'conversation',
-        Key: {
-            id: conversationId,
-        },
-        UpdateExpression: 'SET #members=list_append(#members,:members), #waitAccept=:waitAccept',
+        UpdateExpression: 'SET #members=list_append(#members,:members)',
         ExpressionAttributeNames: {
             '#members': 'members', //COLUMN NAME
-            '#waitAccept': 'waitAccept',
         },
         ExpressionAttributeValues: {
-            ':members': [member.id],
-            ':waitAccept': listWaitAccept,
+            ':members': listTempId,
         },
     };
     docClient.update(params, (err, data) => {
         if (err) {
             console.log('Loi1' + err);
         } else {
-            // Send mess kick group
+            // Send mess add group
             const paramMess = {
                 TableName: 'message',
                 Item: {
                     id: uuid(),
                     conversationID: conversationId,
                     sender: user.id,
-                    mess: `${user.fullName} đã thêm ${member.fullName} vào nhóm.`,
+                    mess: `${user.fullName} đã thêm ${listTempInfo.toString()} vào nhóm.`,
                     deleted: false,
                     handleGroup: true,
                     removePerson: [],
@@ -171,37 +137,6 @@ router.put('/acceptMem', (req, res) => {
                 }
                 console.log('thanh cong');
             });
-            return res.send('Success');
-        }
-    });
-});
-
-// Tu choi thanh vien
-router.put('/denyMem', (req, res) => {
-    const { conversationId, member, listWaitInfo } = req.body;
-    var listWaitAccept = listWaitInfo
-        .reduce((list, user) => {
-            return list.concat(user.id);
-        }, [])
-        .filter((item) => item !== member.id);
-
-    const params = {
-        TableName: 'conversation',
-        Key: {
-            id: conversationId,
-        },
-        UpdateExpression: 'SET #waitAccept=:waitAccept',
-        ExpressionAttributeNames: {
-            '#waitAccept': 'waitAccept', //COLUMN NAME
-        },
-        ExpressionAttributeValues: {
-            ':waitAccept': listWaitAccept,
-        },
-    };
-    docClient.update(params, (err, data) => {
-        if (err) {
-            console.log('Loi1' + err);
-        } else {
             return res.send('Success');
         }
     });
@@ -637,7 +572,19 @@ router.get('/conversationId/:idUser/:idFriend', (req, res) => {
         if (err) {
             return res.status(500).send('Loi' + err);
         } else {
-            return res.status(200).json(data.Items.filter((item) => !item.group));
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: data.Items.filter((item) => !item.group)[0].id,
+                },
+            };
+            docClient.get(paramsConversation, (err, data) => {
+                if (err) {
+                    return res.status(500).send('Loi' + err);
+                } else {
+                    return res.send(data.Item);
+                }
+            });
         }
     });
 });

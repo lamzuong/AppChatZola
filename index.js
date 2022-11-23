@@ -47,9 +47,6 @@ io.on('connection', (socket) => {
     socket.on('send-to-addMem', (data) => {
         io.emit('server-send-to-addMem', data); //Gửi tất cả
     });
-    socket.on('send-to-acceptMem', (data) => {
-        io.emit('server-send-to-acceptMem', data); //Gửi tất cả
-    });
     socket.on('send-to-addGroup', (data) => {
         io.emit('server-send-to-addGroup', data); //Gửi tất cả
     });
