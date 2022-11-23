@@ -47,9 +47,6 @@ io.on('connection', (socket) => {
     socket.on('send-to-addMem', (data) => {
         io.emit('server-send-to-addMem', data); //Gửi tất cả
     });
-    socket.on('send-to-acceptMem', (data) => {
-        io.emit('server-send-to-acceptMem', data); //Gửi tất cả
-    });
     socket.on('send-to-addGroup', (data) => {
         io.emit('server-send-to-addGroup', data); //Gửi tất cả
     });
@@ -71,11 +68,15 @@ io.on('connection', (socket) => {
     });
 
     socket.on('callUser', (data) => {
-        io.emit('callUser', { signal: data.signalData, from: data.from, name: data.name });
+        io.emit('callUser', data);
     });
 
     socket.on('answerCall', (data) => {
         io.emit('callAccepted', data);
+    });
+
+    socket.on('leaveCall', (data) => {
+        io.emit('leaveCall', data);
     });
 });
 
