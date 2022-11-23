@@ -344,3 +344,13 @@
         background-color: #e5efff;
     }
 }
+
+.listSearch {
+    width: 100%;
+}
+
+.listPerson {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+}

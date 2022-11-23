@@ -53,6 +53,9 @@ const OptionMess = ({ noOwn, conversation, mess }) => {
         const req = { id: mess.id, userId: user.id };
         try {
             await axiosCilent.put('/zola/message/deleteMess', req);
+            socket.emit('send-to-server', {
+                conversationID: mess.conversationID,
+            });
         } catch (error) {
             console.log(error);
         }

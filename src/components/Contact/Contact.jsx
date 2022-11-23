@@ -135,6 +135,7 @@ const Contact = (props) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState({});
     const [listMem, setListMem] = useState([]);
+    const [listGroup, setListGroup] = useState([]);
     const openModal = () => {
         setModalIsOpen(true);
     };
@@ -169,6 +170,21 @@ const Contact = (props) => {
             }
         };
         getInfoFriends();
+        let listGroup = [];
+        const getConversation = async () => {
+            try {
+                const res = await axiosCilent.get('/zola/conversation/' + user.id);
+                for (let i = 0; i < res.length; i++) {
+                    if (res[i].group) {
+                        listGroup.push(res[i]);
+                    }
+                }
+                setListGroup([...listGroup]);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getConversation();
     }, []);
 
     return (
@@ -250,7 +266,9 @@ const Contact = (props) => {
                 <div className={cx('list')}>
                     {activeId === 1
                         ? listMem.map((u, i) => <AccountItem key={i} id={u.id} ava={u.img} name={u.fullName} />)
-                        : group.map((u, i) => <AccountItem key={i} id={u.id} ava={u.ava} name={u.name} />)}
+                        : listGroup.map((u, i) => (
+                              <AccountItem key={i} id={u.id} ava={u.avatarGroup} name={u.groupName} />
+                          ))}
                 </div>
             </div>
             <div className={cx('box-3')}>

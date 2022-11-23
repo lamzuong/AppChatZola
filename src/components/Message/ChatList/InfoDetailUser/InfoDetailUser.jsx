@@ -7,7 +7,7 @@ import axiosCilent from '../../../../api/axiosClient';
 
 const cx = classNames.bind(styles);
 
-const InfoDetailUser = ({ ava, name, id }) => {
+const InfoDetailUser = ({ ava, name, id, onclick = () => {} }) => {
     const { user, dispatch } = useContext(AuthContext);
     const [awaitAceept, setAwaitAccept] = useState(false);
     const [isFriend, setIsFriend] = useState(false);
@@ -55,7 +55,6 @@ const InfoDetailUser = ({ ava, name, id }) => {
         setAwaitAccept(false);
     };
 
-    const handleChat = async () => {};
     return (
         <div className={cx('wrapper')}>
             <div className={cx('info')}>
@@ -77,7 +76,7 @@ const InfoDetailUser = ({ ava, name, id }) => {
             {isFriend && (
                 <div className={cx('btns')}>
                     <button className={cx('btn-frend')}>Bạn bè</button>
-                    <button className={cx('btn-chat')} onClick={handleChat}>
+                    <button className={cx('btn-chat')} onClick={() => onclick()}>
                         Nhắn tin
                     </button>
                 </div>

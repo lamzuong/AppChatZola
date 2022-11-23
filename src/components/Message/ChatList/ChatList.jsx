@@ -17,6 +17,7 @@ import UserItemSearch from './UserItemSearch/UserItemSerach';
 import InfoDetailUser from './InfoDetailUser/InfoDetailUser';
 import UserItemSearchGroup from './UserItemSearchGroup/UserItemSearchGroup';
 import UserItemAdded from './UserItemAdded/UserItemAdded';
+import useDebounce from '../../../Hooks/useDebounce';
 import { io } from 'socket.io-client';
 
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
@@ -48,24 +49,27 @@ const ChatList = (props) => {
     const [foc, setFoc] = useState(false);
     const [resultSearch, setResultSearch] = useState([]);
     const [name, setName] = useState('');
+    const [nameSearch, setNameSearch] = useState('');
     const [clickUser, setClickUser] = useState(false);
     const [userChoosed, setUserChoosed] = useState({});
     const [listFriendInfo, setListFriendInfo] = useState([]);
+    const [listFriendInfo2, setListFriendInfo2] = useState([]);
     const [listAddedInfo, setListAddInfo] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [modalIsOpenGroup, setModalIsOpenGroup] = useState(false);
     const [checked, setChecked] = useState([]);
     const [listUerAdded, setListUserAdded] = useState([]);
-    const [currentChat, setCurrentChat] = useState(null);
+    const [listPeople, setListPeople] = useState([]);
+    const [listGroup, setListGroup] = useState([]);
 
-    const sendData = (data) => {
-        props.parentCb(data);
-    };
+    // const sendData = (data) => {
+    //     props.parentCb(data);
+    // };
 
-    useEffect(() => {
-        let e = props.conversation.filter((c) => c.id === currentChat?.id)[0];
-        sendData(e);
-    }, [props.conversation]);
+    // useEffect(() => {
+    //     let e = props.conversation.filter((c) => c.id === currentChat?.id)[0];
+    //     sendData(e);
+    // }, [props.conversation]);
 
     const openModal = () => {
         setModalIsOpen(true);
@@ -99,6 +103,43 @@ const ChatList = (props) => {
         setUserChoosed(user);
         setClickUser(true);
     };
+    const debounced = useDebounce(text, 800);
+
+    useEffect(() => {
+        if (!debounced.trim()) {
+            setListPeople([]);
+            setListGroup([]);
+            return;
+        }
+        const handleSearch = async () => {
+            try {
+                const res = await axiosCilent.get(`/zola/users/search/${debounced}`);
+                let listNoFriend = [];
+                for (let i = 0; i < res.length; i++) {
+                    res[i].id !== user.id && listNoFriend.push(res[i]);
+                }
+                setListPeople(listNoFriend);
+                const res2 = await axiosCilent.get(`/zola/conversation/search/group/${user.id}/${debounced}`);
+                setListGroup(res2);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        handleSearch();
+    }, [debounced]);
+
+    const handleChat = async () => {
+        try {
+            const res = await axiosCilent.get(`zola/conversation/conversationId/${user.id}/${userChoosed.id}`);
+            // sendData(res);
+            navigate(`/t/${res.id}`);
+            setFoc(false);
+            setText('');
+            closeModal();
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const haddleCreateGroup = async () => {
         listAddedInfo.unshift(user);
@@ -128,18 +169,21 @@ const ChatList = (props) => {
         props.parentCb1(data);
     };
 
+    const debouncedUser = useDebounce(name, 800);
     useEffect(() => {
+        if (!debouncedUser.trim()) {
+            setResultSearch([]);
+            return;
+        }
         const search = async () => {
-            if (name.length === 0) {
-                setResultSearch([]);
-            }
-            const res = await axiosCilent.get(`/zola/users/search/` + name);
+            const res = await axiosCilent.get(`/zola/users/search/` + debouncedUser);
             let temp = [...res];
-            let list = temp.filter((u) => !user.friends.includes(u.id) && u.id !== user.id);
+            let list = temp.filter((u) => u.id !== user.id);
             setResultSearch([...list]);
         };
         search();
-    }, [name]);
+    }, [debouncedUser]);
+
     const getUsersInfo = async (user, func) => {
         let listTemp = [];
         for (let i = 0; i < user.length; i++) {
@@ -150,10 +194,25 @@ const ChatList = (props) => {
     };
     useEffect(() => {
         getUsersInfo(user.friends, setListFriendInfo);
+        setListFriendInfo2([...listFriendInfo]);
     }, [modalIsOpenGroup]);
     useEffect(() => {
         getUsersInfo(listUerAdded, setListAddInfo);
     }, [listUerAdded.length]);
+
+    useEffect(() => {
+        const list = [];
+        if (nameSearch === '') {
+            setListFriendInfo2([...listFriendInfo]);
+        } else {
+            listFriendInfo.forEach((e) => {
+                if (e.fullName.toLowerCase().includes(nameSearch.toLowerCase())) {
+                    list.push(e);
+                }
+            });
+            setListFriendInfo2([...list]);
+        }
+    }, [nameSearch]);
     const handleCheck = (id) => {
         setChecked((prev) => {
             const isChecked = checked.includes(id);
@@ -166,7 +225,6 @@ const ChatList = (props) => {
             }
         });
     };
-
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
@@ -270,7 +328,11 @@ const ChatList = (props) => {
                                                         })}
                                                     </div>
                                                 ) : (
-                                                    <div></div>
+                                                    name.length > 0 && (
+                                                        <div style={{ marginLeft: '12px' }}>
+                                                            Không tìm thấy tên phù hợp
+                                                        </div>
+                                                    )
                                                 )}
                                             </div>
                                         </div>
@@ -294,8 +356,9 @@ const ChatList = (props) => {
                                                 <label>Thêm bạn vào nhóm:</label>
                                                 <Input
                                                     type="text"
-                                                    placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
-                                                    icon={<i class="bx bxs-envelope"></i>}
+                                                    placeholder="Nhập tên"
+                                                    icon={<i className="bx bxs-user-rectangle"></i>}
+                                                    data={setNameSearch}
                                                 />
                                             </div>
                                             <div className={cx('list-friend-group')}>
@@ -304,24 +367,30 @@ const ChatList = (props) => {
                                                         Danh sách bạn bè
                                                     </span>
                                                     <ul className={cx('friends')}>
-                                                        {listFriendInfo.map((user) => (
-                                                            <li
-                                                                key={user.id}
-                                                                style={{ display: 'flex' }}
-                                                                className={cx('item-user-group')}
-                                                            >
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={checked.includes(user.id)}
-                                                                    onChange={(e) => handleCheck(user.id)}
-                                                                />
-                                                                <UserItemSearchGroup
-                                                                    name={user.fullName}
-                                                                    ava={user.img}
-                                                                    onClick={() => handleCheck(user.id)}
-                                                                />
-                                                            </li>
-                                                        ))}
+                                                        {listFriendInfo2.length > 0
+                                                            ? listFriendInfo2.map((user) => (
+                                                                  <li
+                                                                      key={user.id}
+                                                                      style={{ display: 'flex' }}
+                                                                      className={cx('item-user-group')}
+                                                                  >
+                                                                      <input
+                                                                          type="checkbox"
+                                                                          checked={checked.includes(user.id)}
+                                                                          onChange={(e) => handleCheck(user.id)}
+                                                                      />
+                                                                      <UserItemSearchGroup
+                                                                          name={user.fullName}
+                                                                          ava={user.img}
+                                                                          onClick={() => handleCheck(user.id)}
+                                                                      />
+                                                                  </li>
+                                                              ))
+                                                            : nameSearch.length > 0 && (
+                                                                  <div style={{ marginLeft: '5px' }}>
+                                                                      Không tìm thấy tên phù hợp
+                                                                  </div>
+                                                              )}
                                                     </ul>
                                                 </div>
                                                 {listUerAdded.length > 0 && (
@@ -367,7 +436,77 @@ const ChatList = (props) => {
                 </div>
             </div>
             {foc ? (
-                <div>Tìm kiếm</div>
+                <>
+                    <span>Tìm kiếm</span>
+                    <Modal isOpen={modalIsOpen} style={customStyles} onRequestClose={closeModal} ariaHideApp={false}>
+                        {clickUser && (
+                            <div className={cx('wrapper-md')}>
+                                <div className={cx('header-md')}>
+                                    <FontAwesomeIcon
+                                        icon={faChevronLeft}
+                                        className={cx('close-md')}
+                                        onClick={closeModal}
+                                    />
+                                    <span className={cx('title')}>Thông tin tài khoản</span>
+                                    <FontAwesomeIcon icon={faXmark} className={cx('close-md')} onClick={closeModal} />
+                                </div>
+                                <div className={cx('search-wrapper-md')}>
+                                    <InfoDetailUser
+                                        ava={userChoosed.img}
+                                        name={userChoosed.fullName}
+                                        id={userChoosed.id}
+                                        onclick={handleChat}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </Modal>
+                    <div className={cx('listSearch')}>
+                        {listPeople.length > 0 && (
+                            <>
+                                <div style={{ marginLeft: '20px', fontWeight: 'bold', color: 'grey' }}>Mọi người</div>
+                                <ul className={cx('listPerson')}>
+                                    {listPeople.map((user) => (
+                                        <li
+                                            onClick={() => {
+                                                handleChooseUser(user);
+                                                openModal();
+                                            }}
+                                        >
+                                            <UserItemSearch name={user.fullName} ava={user.img} />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>
+                        )}
+                        {listGroup.length > 0 && (
+                            <>
+                                <div style={{ marginLeft: '20px', fontWeight: 'bold', color: 'grey' }}>Nhóm</div>
+                                <ul className={cx('listPerson')}>
+                                    {listGroup.map((group) => (
+                                        <li
+                                            onClick={() => {
+                                                // sendData(group);
+                                                navigate(`/t/${group.id}`);
+                                                handleClose();
+                                            }}
+                                        >
+                                            <AccountItem
+                                                id={group.id}
+                                                key={group.id}
+                                                ava={group.avatarGroup}
+                                                name={group.groupName}
+                                            />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </>
+                        )}
+                        {text !== '' && listPeople.length === 0 && listGroup.length === 0 && (
+                            <div style={{ marginLeft: '25px' }}>Không tìm thấy kết quả phù hợp</div>
+                        )}
+                    </div>
+                </>
             ) : (
                 <>
                     <div className={cx('userOnl')}>
@@ -380,8 +519,7 @@ const ChatList = (props) => {
                             <div
                                 key={e.id}
                                 onClick={() => {
-                                    setCurrentChat(e);
-                                    sendData(e);
+                                    // sendData(e);
                                     navigate(`/t/${e.id}`);
                                 }}
                             >

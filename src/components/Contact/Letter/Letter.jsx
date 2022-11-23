@@ -25,27 +25,18 @@ const Letter = ({ id }) => {
     }, []);
 
     const handleAccept = async (id) => {
-        //console.log(id);
-        // const formData = new FormData();
-        // formData.append('id', user.id);
-        // formData.append('friendId', id);
-        // formData.append('listSender', user.listSender);
         const req = {
             userId: user.id,
             friendId: id,
             listReceiver: user.listReceiver,
             friends: user.friends,
         };
-        //console.log(formData)
         try {
             await axiosCilent.put('/zola/users/acceptFriend', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-            // console.log(res);
-            // const res1 = await axiosCilent.get(`/zola/users/${user.id}`);
-            // dispatch({ type: 'LOGIN_SUCCESS', payload: res1 });
-            //setAwaitAccept(true);
-            console.log('oke');
+            const members = [user.id, id];
+            await axiosCilent.post('zola/conversation', { members });
         } catch (error) {
             console.log(error);
         }

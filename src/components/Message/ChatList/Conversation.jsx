@@ -43,14 +43,24 @@ const Conversation = (props) => {
     const rs = mess[mess?.length - 1]?.sender === user.id;
     let nameShow = mess[mess.length - 1]?.infoSender.fullName.split(' ').slice(-1);
     var messLast = '';
-    if (mess[mess.length - 1]?.deleted) {
-        messLast = 'Đã thu hồi tin nhắn';
-    } else if (mess[mess.length - 1]?.mess) {
-        messLast = mess[mess.length - 1].mess;
+    if (!mess[mess.length - 1]?.removePerson.includes(user.id)) {
+        if (mess[mess.length - 1]?.deleted) {
+            messLast = 'Đã thu hồi tin nhắn';
+        } else if (mess[mess.length - 1]?.mess) {
+            messLast = mess[mess.length - 1].mess;
+        } else {
+            messLast = 'Đã gửi tệp đính kèm';
+        }
     } else {
-        messLast = 'Đã gửi tệp đính kèm';
+        if (mess[mess.length - 2]?.deleted) {
+            messLast = 'Đã thu hồi tin nhắn';
+        } else if (mess[mess.length - 2]?.mess) {
+            messLast = mess[mess.length - 2].mess;
+        } else {
+            messLast = 'Đã gửi tệp đính kèm';
+        }
     }
-    if (props.conversation.members.length > 2) {
+    if (props.conversation.group) {
         img = props.conversation.avatarGroup;
         name = props.conversation.groupName;
         nameLast = rs ? 'Bạn: ' : `${nameShow}: `;
