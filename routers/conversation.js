@@ -95,6 +95,7 @@ router.put('/addMem', (req, res) => {
     const { conversationId, user, listMember } = req.body;
     let listTempInfo = [];
     let listTempId = [];
+    const date = new Date().getTime();
     for (let i = 0; i < listMember.length; i++) {
         listTempInfo.push(listMember[i].fullName);
         listTempId.push(listMember[i].id);
@@ -104,12 +105,14 @@ router.put('/addMem', (req, res) => {
         Key: {
             id: conversationId,
         },
-        UpdateExpression: 'SET #members=list_append(#members,:members)',
+        UpdateExpression: 'SET #members=list_append(#members,:members),#date=:date',
         ExpressionAttributeNames: {
             '#members': 'members', //COLUMN NAME
+            '#date': 'date',
         },
         ExpressionAttributeValues: {
             ':members': listTempId,
+            ':date': date,
         },
     };
     docClient.update(params, (err, data) => {
@@ -128,7 +131,7 @@ router.put('/addMem', (req, res) => {
                     handleGroup: true,
                     removePerson: [],
                     img_url: '',
-                    date: new Date().getTime(),
+                    date,
                 },
             };
             docClient.put(paramMess, (err, data) => {
@@ -145,17 +148,20 @@ router.put('/addMem', (req, res) => {
 // Xóa thành viên
 router.put('/deleteMem', (req, res) => {
     const { conversationId, user, friend, members } = req.body;
+    const date = new Date().getTime();
     const params = {
         TableName: 'conversation',
         Key: {
             id: conversationId,
         },
-        UpdateExpression: 'SET #members =:members',
+        UpdateExpression: 'SET #members =:members,#date=:date',
         ExpressionAttributeNames: {
             '#members': 'members', //COLUMN NAME
+            '#date': 'date',
         },
         ExpressionAttributeValues: {
             ':members': members.filter((user) => user !== friend.id),
+            ':date': date,
         },
     };
     docClient.update(params, (err, data) => {
@@ -174,7 +180,7 @@ router.put('/deleteMem', (req, res) => {
                     handleGroup: true,
                     removePerson: [],
                     img_url: '',
-                    date: new Date().getTime(),
+                    date,
                 },
             };
             docClient.put(paramMess, (err, data) => {
@@ -191,6 +197,7 @@ router.put('/deleteMem', (req, res) => {
 // Đổi tên group
 router.put('/renameGroup', (req, res) => {
     const { conversationId, groupName, user } = req.body;
+    const date = new Date().getTime();
     const getConversation = {
         TableName: 'conversation',
         Key: {
@@ -206,12 +213,14 @@ router.put('/renameGroup', (req, res) => {
                 Key: {
                     id: conversationId,
                 },
-                UpdateExpression: 'SET #groupName =:groupName',
+                UpdateExpression: 'SET #groupName =:groupName,#date=:date',
                 ExpressionAttributeNames: {
                     '#groupName': 'groupName', //COLUMN NAME
+                    '#date': 'date',
                 },
                 ExpressionAttributeValues: {
                     ':groupName': groupName,
+                    ':date': date,
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
@@ -229,7 +238,7 @@ router.put('/renameGroup', (req, res) => {
                             handleGroup: true,
                             removePerson: [],
                             img_url: '',
-                            date: new Date().getTime(),
+                            date,
                         },
                     };
                     docClient.put(paramMess, (err, data) => {
@@ -257,7 +266,7 @@ const upload = multer({
 // Đổi avatar group
 router.put('/avaGroup', upload.single('img'), (req, res) => {
     const { conversationId, groupName, userID, userfullName } = req.body;
-    console.log(userfullName, userID);
+    const date = new Date().getTime();
     const img = req.file;
     let paramsConversation = {};
     if (typeof img == 'undefined') {
@@ -266,12 +275,14 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
             Key: {
                 id: conversationId,
             },
-            UpdateExpression: 'SET #groupName=:groupName',
+            UpdateExpression: 'SET #groupName=:groupName,#date=:date',
             ExpressionAttributeNames: {
                 '#groupName': 'groupName', //COLUMN NAME
+                '#date': 'date',
             },
             ExpressionAttributeValues: {
                 ':groupName': groupName,
+                ':date': date,
             },
         };
     } else {
@@ -294,14 +305,16 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
             Key: {
                 id: conversationId,
             },
-            UpdateExpression: 'SET #avatarGroup =:avatarGroup, #groupName=:groupName',
+            UpdateExpression: 'SET #avatarGroup =:avatarGroup, #groupName=:groupName,#date=:date',
             ExpressionAttributeNames: {
                 '#avatarGroup': 'avatarGroup', //COLUMN NAME
                 '#groupName': 'groupName',
+                '#date': 'date',
             },
             ExpressionAttributeValues: {
                 ':avatarGroup': `${CLOUD_FRONT_URL}${filePath}`,
                 ':groupName': groupName,
+                ':date': date,
             },
         };
     }
@@ -320,7 +333,7 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
                     handleGroup: true,
                     removePerson: [],
                     img_url: '',
-                    date: new Date().getTime(),
+                    date,
                 },
             };
             docClient.put(paramMess, (err, data) => {
@@ -337,6 +350,7 @@ router.put('/avaGroup', upload.single('img'), (req, res) => {
 // Đổi avatar group mobile
 router.put('/mobile/avaGroup', (req, res) => {
     const { conversationId, avatarGroup, avatarOld, user } = req.body;
+    const date = new Date().getTime();
     if (!(avatarGroup.base64 && avatarGroup.fileType)) {
     } else {
         var buffer = Buffer.from(avatarGroup.base64.replace(/^data:image\/\w+;base64,/, ''), 'base64');
@@ -370,13 +384,15 @@ router.put('/mobile/avaGroup', (req, res) => {
                 Key: {
                     id: conversationId,
                 },
-                UpdateExpression: 'SET #avatarGroup =:avatarGroup',
+                UpdateExpression: 'SET #avatarGroup =:avatarGroup,#date=:date',
                 ExpressionAttributeNames: {
                     '#avatarGroup': 'avatarGroup', //COLUMN NAME
+                    '#date': 'date',
                 },
                 ExpressionAttributeValues: {
                     ':avatarGroup':
                         avatarGroup.base64 && avatarGroup.fileType ? `${CLOUD_FRONT_URL}${filePath}` : avatarOld,
+                    ':date': date,
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
@@ -394,7 +410,7 @@ router.put('/mobile/avaGroup', (req, res) => {
                             handleGroup: true,
                             removePerson: [],
                             img_url: '',
-                            date: new Date().getTime(),
+                            date,
                         },
                     };
                     docClient.put(paramMess, (err, data) => {
@@ -412,6 +428,7 @@ router.put('/mobile/avaGroup', (req, res) => {
 // Ủy quyền trưởng nhóm
 router.put('/grantPermission', (req, res) => {
     const { conversationId, creator, user } = req.body;
+    const date = new Date().getTime();
     const getConversation = {
         TableName: 'conversation',
         Key: {
@@ -427,12 +444,14 @@ router.put('/grantPermission', (req, res) => {
                 Key: {
                     id: conversationId,
                 },
-                UpdateExpression: 'SET #creator =:creator',
+                UpdateExpression: 'SET #creator =:creator,#date=:date',
                 ExpressionAttributeNames: {
                     '#creator': 'creator', //COLUMN NAME
+                    '#date': 'date',
                 },
                 ExpressionAttributeValues: {
                     ':creator': creator.id,
+                    ':date': date,
                 },
             };
             docClient.update(paramsConversation, (err, data) => {
@@ -451,7 +470,7 @@ router.put('/grantPermission', (req, res) => {
                             handleGroup: true,
                             removePerson: [],
                             img_url: '',
-                            date: new Date().getTime(),
+                            date,
                         },
                     };
                     docClient.put(paramMess, (err, data) => {
@@ -469,17 +488,20 @@ router.put('/grantPermission', (req, res) => {
 // Rời khỏi group
 router.put('/outGroup', (req, res) => {
     const { conversationId, user, members } = req.body;
+    const date = new Date().getTime();
     const params = {
         TableName: 'conversation',
         Key: {
             id: conversationId,
         },
-        UpdateExpression: 'SET #members =:members',
+        UpdateExpression: 'SET #members =:members,#date=:date',
         ExpressionAttributeNames: {
             '#members': 'members', //COLUMN NAME
+            '#date': 'date',
         },
         ExpressionAttributeValues: {
             ':members': members.filter((u) => u !== user.id),
+            ':date': date,
         },
     };
     docClient.update(params, (err, data) => {
@@ -498,7 +520,7 @@ router.put('/outGroup', (req, res) => {
                     handleGroup: true,
                     removePerson: [],
                     img_url: '',
-                    date: new Date().getTime(),
+                    date,
                 },
             };
             docClient.put(paramMess, (err, data) => {

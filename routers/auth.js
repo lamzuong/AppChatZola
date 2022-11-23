@@ -109,7 +109,7 @@ router.post('/login', (req, res) => {
     });
 });
 // deleteUser
-router.post('/deleteUser', (req, res) => {
+router.delete('/deleteUser', (req, res) => {
     const cognito = new AWS.CognitoIdentityServiceProvider();
     cognito.adminDeleteUser(
         {
@@ -120,7 +120,34 @@ router.post('/deleteUser', (req, res) => {
             if (err) {
                 res.status(500).send('Loi: ', err.stack);
             } else {
-                res.status(200).send('Success');
+                var params = {
+                    ExpressionAttributeValues: {
+                        ':email': req.body.email,
+                    },
+                    ExpressionAttributeNames: { '#email': 'email' },
+                    FilterExpression: 'contains(#email , :email)',
+                    TableName: tableName,
+                };
+                docClient.scan(params, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        var delParams = {
+                            TableName: tableName,
+                            Key: {
+                                id: data.Items[0].id,
+                            },
+                        };
+                        docClient.delete(delParams, (err, data) => {
+                            if (err) {
+                                console.log('Loi 1' + err);
+                            } else {
+                                console.log(data);
+                            }
+                        });
+                    }
+                });
+                return res.status(200).send('Success');
             }
         },
     );
