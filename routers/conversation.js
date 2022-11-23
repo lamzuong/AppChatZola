@@ -621,6 +621,26 @@ router.get('/search/group/:id/:groupName', (req, res) => {
     });
 });
 // Search conversation id with idUser and idFriend
+// router.get('/conversationId/:idUser/:idFriend', (req, res) => {
+//     const { idUser, idFriend } = req.params;
+//     console.log(req.body);
+//     var params = {
+//         ExpressionAttributeValues: {
+//             ':idUser': idUser,
+//             ':idFriend': idFriend,
+//         },
+//         ExpressionAttributeNames: { '#members': 'members' },
+//         FilterExpression: 'contains(#members , :idUser) AND contains(#members , :idFriend)',
+//         TableName: 'conversation',
+//     };
+//     docClient.scan(params, (err, data) => {
+//         if (err) {
+//             return res.status(500).send('Loi' + err);
+//         } else {
+//             return res.status(200).json(data.Items.filter((item) => !item.group));
+//         }
+//     });
+// });
 router.get('/conversationId/:idUser/:idFriend', (req, res) => {
     const { idUser, idFriend } = req.params;
     console.log(req.body);
@@ -637,7 +657,19 @@ router.get('/conversationId/:idUser/:idFriend', (req, res) => {
         if (err) {
             return res.status(500).send('Loi' + err);
         } else {
-            return res.status(200).json(data.Items.filter((item) => !item.group));
+            const paramsConversation = {
+                TableName: 'conversation',
+                Key: {
+                    id: data.Items.filter((item) => !item.group)[0].id,
+                },
+            };
+            docClient.get(paramsConversation, (err, data) => {
+                if (err) {
+                    return res.status(500).send('Loi' + err);
+                } else {
+                    return res.send(data.Item);
+                }
+            });
         }
     });
 });
