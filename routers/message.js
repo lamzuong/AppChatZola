@@ -67,7 +67,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
             deleted: false,
             handleGroup: false,
             removePerson: [],
-            img_url: typeof img !== 'undefined' || img.length > 0 ? img_url : '',
+            img_url: typeof img == 'undefined' || img.length > 0 ? img_url : '',
             date: date,
         },
     };
@@ -79,7 +79,7 @@ router.post('/', upload.array('imgs', 20), (req, res) => {
     });
     // Luu vo images conversation
     var paramsConversation = {};
-    if (typeof img !== 'undefined' || img.length > 0) {
+    if (typeof img == 'undefined' || img.length > 0) {
         paramsConversation = {
             TableName: 'conversation',
             Key: {
