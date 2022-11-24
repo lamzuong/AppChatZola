@@ -59,6 +59,21 @@ io.on('connection', (socket) => {
     socket.on('send-to-edit', (data) => {
         io.emit('server-send-to-edit', data); //Gửi tất cả
     });
+    socket.on('delete-friend', (data) => {
+        io.emit('server-send-delete-friend', data); //Gửi tất cả
+    });
+    socket.on('cancel-request', (data) => {
+        io.emit('server-send-cancel-request', data); //Gửi tất cả
+    });
+    socket.on('send-request', (data) => {
+        io.emit('server-send-request', data); //Gửi tất cả
+    });
+    socket.on('accept-request', (data) => {
+        io.emit('server-send-accept-request', data); //Gửi tất cả
+    });
+    socket.on('deny-request', (data) => {
+        io.emit('server-send-deny-request', data); //Gửi tất cả
+    });
 
     // call video
     socket.emit('me', socket.id);
