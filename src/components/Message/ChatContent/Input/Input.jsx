@@ -1,5 +1,6 @@
 import React from 'react';
 import Tippy from '@tippyjs/react/headless';
+import Modal from 'react-modal';
 import classNames from 'classnames/bind';
 import styles from './Input.module.scss';
 import { useState } from 'react';
@@ -12,15 +13,35 @@ const emotion = () => emojiIcons['Smileys & Emotion'];
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
+const customStyles = {
+    content: {
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
 
 const Input = (props) => {
     const [chatContent, setChatContent] = useState('');
+    const [modalSizeFileOpen, setModalSizeFileOpen] = useState(false);
     const [rerender, setRerender] = useState(false);
 
     const [showEmojis, setShowEmojis] = useState(false);
 
     const [image, setImage] = useState([]);
     const [delImg, setDelImg] = useState([]);
+
+    const openModalSizeFile = () => {
+        setModalSizeFileOpen(true);
+    };
+
+    const closeModelSizeFile = () => {
+        setModalSizeFileOpen(false);
+    };
 
     const handleMultiFile = (e) => {
         setImage(e.target.files);
@@ -31,43 +52,49 @@ const Input = (props) => {
         setShowEmojis(false);
         const formData = new FormData();
         var imgTemp = [];
+        var sizeFile = 0;
         for (let i = 0; i < image.length; i++) {
             formData.append('imgs', image[i]);
             imgTemp.push(image[i]);
+            sizeFile += image[i].size;
         }
         formData.append('conversationID', props.params.id);
         formData.append('sender', props.user.id);
         formData.append('mess', chatContent ? chatContent : '');
-        if (chatContent.trim() === '' && imgTemp.length === 0) {
+        if (sizeFile > 30000000) {
+            openModalSizeFile();
         } else {
-            try {
-                await axiosCilent.post('/zola/message', formData);
-                socket.emit('send-to-server', {
-                    mess: chatContent,
-                    senderId: props.user.id,
-                    conversationID: props.params.id,
-                    dataMess: {
-                        conversationID: props.params,
-                        date: new Date().getTime(),
-                        id: 'temp',
-                        img_url: imgTemp,
-                        infoSender: {
-                            fullName: props.user.fullName,
-                            imageSender: props.user.img,
-                        },
+            if (chatContent.trim() === '' && imgTemp.length === 0) {
+            } else {
+                try {
+                    await axiosCilent.post('/zola/message', formData);
+                    socket.emit('send-to-server', {
                         mess: chatContent,
-                        sender: props.user.id,
-                    },
-                    imgs: image.length,
-                    fullName: props.user.fullName,
-                    group: props.group,
-                });
-                setChatContent('');
-                setRerender(!rerender);
-                setDelImg([]);
-                setImage([]);
-            } catch (err) {
-                console.log(err);
+                        senderId: props.user.id,
+                        conversationID: props.params.id,
+                        dataMess: {
+                            conversationID: props.params,
+                            date: new Date().getTime(),
+                            id: 'temp',
+                            img_url: imgTemp,
+                            infoSender: {
+                                fullName: props.user.fullName,
+                                imageSender: props.user.img,
+                            },
+                            mess: chatContent,
+                            sender: props.user.id,
+                        },
+                        imgs: image.length,
+                        fullName: props.user.fullName,
+                        group: props.group,
+                    });
+                    setChatContent('');
+                    setRerender(!rerender);
+                    setDelImg([]);
+                    setImage([]);
+                } catch (err) {
+                    console.log(err);
+                }
             }
         }
     };
@@ -78,11 +105,17 @@ const Input = (props) => {
         setImage([...delImg]);
     };
 
+    const handleSizeFile = () => {
+        closeModelSizeFile();
+        setDelImg([]);
+        setImage([]);
+    };
+
     useEffect(() => {
         return () => {
             image && URL.revokeObjectURL(image);
         };
-    }, [image]);
+    }, [image, delImg]);
     return (
         <div className={cx('wrapper')}>
             <form className={cx('container')} encType="multipart/form-data">
@@ -215,6 +248,23 @@ const Input = (props) => {
             <div className={cx('button')} onClick={handleSendMessage}>
                 <i className="bx bxl-telegram" style={{ color: '#0091ff' }}></i>
             </div>
+            {/* Model sizeFile */}
+            <Modal isOpen={modalSizeFileOpen} style={customStyles} onRequestClose={closeModelSizeFile}>
+                <div className={cx('wrapper-modal')}>
+                    <div className={cx('header-modal')}>
+                        <span>Thông báo</span>
+                    </div>
+                    <div className={cx('body-modal')}>
+                        <div>Chỉ có thể gửi file dưới 30mb</div>
+                        <h4>Vui lòng điều chỉnh kích thước file phù hợp!</h4>
+                    </div>
+                </div>
+                <div className={cx('footer-modal')}>
+                    <button className={cx('btn-conf')} onClick={handleSizeFile}>
+                        Xác Nhận
+                    </button>
+                </div>
+            </Modal>
         </div>
     );
 };

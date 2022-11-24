@@ -46,7 +46,7 @@
 .content {
     @include flex(unset, flex-start);
     flex-direction: column;
-    width: 18%;
+    width: 22%;
     border-right: 1px solid #ccc;
 }
 
@@ -92,6 +92,32 @@
     height: calc(100vh - 71px);
     overflow-y: auto;
     overscroll-behavior: contain;
+}
+
+.item-friend {
+    @include flex(center, space-between);
+}
+
+.btn {
+}
+
+.btn-del,
+.btn-mess {
+    height: 24px;
+    min-width: 24px;
+    padding: 0 4px;
+    color: #fff;
+    background-color: $main-color;
+    border: 1px solid $main-color;
+    font-weight: bold;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.btn-del {
+    background-color: red;
+    border: 1px solid;
 }
 
 // style modal

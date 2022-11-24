@@ -123,7 +123,7 @@ img {
     width: 100%;
     min-height: 50px;
     overflow-y: auto;
-    height: 300px;
+    // height: 300px;
     overscroll-behavior: contain;
     margin-top: 10px;
 }
@@ -132,10 +132,6 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    &:hover {
-        background-color: #eeeff2;
-    }
 }
 
 .btn-add-frend {

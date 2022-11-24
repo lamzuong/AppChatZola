@@ -115,6 +115,24 @@
     @include flex(unset, center);
 }
 
+.waitAccept {
+    position: relative;
+    flex-grow: 2;
+    background-image: url('../../assets/calling.gif');
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: center;
+    height: 70vh;
+    border-radius: 10px;
+}
+
+.userName {
+    font-size: 30px;
+    color: aliceblue;
+    width: 100%;
+    text-align: center;
+}
+
 .mic,
 .cam,
 .end {

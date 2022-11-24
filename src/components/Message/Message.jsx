@@ -20,6 +20,7 @@ import {
     faMicrophone,
     faMicrophoneSlash,
     faPhoneSlash,
+    faPhoneVolume,
     faVideo,
     faVideoSlash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -147,7 +148,7 @@ const Message = (props) => {
     const [caller, setCaller] = useState('');
     const [callerSignal, setCallerSignal] = useState();
     const [callAccepted, setCallAccepted] = useState(false);
-    const [idToCall, setIdToCall] = useState('');
+    const [userToCall, setUserToCall] = useState();
     const [callEnded, setCallEnded] = useState(false);
     const [nameVideo, setNameVideo] = useState('');
     const myVideo = useRef();
@@ -176,9 +177,9 @@ const Message = (props) => {
         setModalVideoOpen(false);
     };
 
-    let cbChild = (childData) => {
-        setCurrentChat(childData);
-    };
+    // let cbChild = (childData) => {
+    //     setCurrentChat(childData);
+    // };
 
     let cbChild1 = (childData) => {
         setRerender(childData);
@@ -194,6 +195,16 @@ const Message = (props) => {
             }
         };
         getMess();
+
+        const getCurrentChat = async () => {
+            try {
+                const res = await axiosCilent.get(`/zola/conversation/idCon/${props.params}`);
+                setCurrentChat(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        props.params !== undefined && getCurrentChat();
     }, [props.params, rerender]);
     message.sort((a, b) => a.date - b.date);
 
@@ -214,7 +225,7 @@ const Message = (props) => {
     }, [currentChat, user.id]);
     let img = '';
     let name = '';
-    if (currentChat?.members.length > 2) {
+    if (currentChat?.group) {
         img = currentChat.avatarGroup;
         name = currentChat.groupName;
     } else {
@@ -226,7 +237,7 @@ const Message = (props) => {
     }, [message, rerender]);
 
     useEffect(() => {
-        socket.off();
+        socket.off('server-send-to-client');
         socket.on('server-send-to-client', (data) => {
             let conversationIDChat;
             try {
@@ -236,6 +247,7 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('server-remove-to-client');
         socket.on('server-remove-to-client', (data) => {
             let conversationIDChat;
             try {
@@ -245,6 +257,7 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('server-send-to-out');
         socket.on('server-send-to-out', (data) => {
             try {
                 if (data.idDelete == user.id || data.conversationID === currentChat.id) {
@@ -261,17 +274,15 @@ const Message = (props) => {
                 setRerender(!rerender);
             } catch (error) {}
         });
+        socket.off('server-send-to-addMem');
         socket.on('server-send-to-addMem', (data) => {
             try {
-                if (
-                    data.idAdd.includes(user.id) ||
-                    data.conversationID === currentChat.id ||
-                    data.members.includes(user.id)
-                ) {
+                if (data.idAdd.includes(user.id) || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
         });
+        socket.off('server-send-to-addGroup');
         socket.on('server-send-to-addGroup', (data) => {
             try {
                 if (data.idAdd.includes(user.id)) {
@@ -279,6 +290,7 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('server-send-to-deleteGroup');
         socket.on('server-send-to-deleteGroup', (data) => {
             try {
                 if (data.idDelete.includes(user.id) || data.conversationID === currentChat.id) {
@@ -294,6 +306,7 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('server-send-to-authorized');
         socket.on('server-send-to-authorized', (data) => {
             try {
                 if (data.members.includes(user.id) || data.conversationID === currentChat.id) {
@@ -301,6 +314,7 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('server-send-to-edit');
         socket.on('server-send-to-edit', (data) => {
             try {
                 if (data.members.includes(user.id)) {
@@ -308,23 +322,31 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('callUser');
         socket.on('callUser', (data) => {
-            setReceivingCall(true);
-            setCaller(data.from);
-            setNameVideo(data.name);
-            setCallerSignal(data.signal);
+            if (data.userToCall.members.includes(user.id)) {
+                setReceivingCall(true);
+                setUserToCall(data.userToCall);
+                setCaller(data.from);
+                setNameVideo(data.name);
+                setCallerSignal(data.signalData);
+                openModalVideo();
+            }
         });
 
-        socket.on('callAccepted', (data) => {
-            console.log(data);
-            if (data.to === user.id) setCallAccepted(true);
+        socket.off('leaveCall');
+        socket.on('leaveCall', (data) => {
+            if (data.userToCall.members.includes(user.id)) {
+                closeModelVideo();
+                setCallAccepted(false);
+                setCallEnded(true);
+            }
         });
     });
 
     const callUser = () => {
         openModalVideo();
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            console.log(stream);
             setStream(stream);
             myVideo.current.srcObject = stream;
             const peer = new Peer({
@@ -334,7 +356,7 @@ const Message = (props) => {
             });
             peer.on('signal', (data) => {
                 socket.emit('callUser', {
-                    userToCall: currentChat.id,
+                    userToCall: currentChat,
                     signalData: data,
                     from: user.id,
                     name: user.fullName,
@@ -347,10 +369,11 @@ const Message = (props) => {
                 }
             });
 
-            socket.on('callAccepted', (signal) => {
-                console.log(signal);
+            socket.off('callAccepted');
+            socket.on('callAccepted', (data) => {
                 setCallAccepted(true);
-                peer.signal(signal);
+                setCallEnded(false);
+                peer.signal(data.signal);
             });
 
             connectionRef.current = peer;
@@ -360,8 +383,8 @@ const Message = (props) => {
     const answerCall = () => {
         openModalVideo();
         setCallAccepted(true);
+        setCallEnded(false);
         navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-            console.log(stream);
             setStream(stream);
             myVideo.current.srcObject = stream;
             const peer = new Peer({
@@ -380,9 +403,25 @@ const Message = (props) => {
         });
     };
 
+    const denyCall = () => {
+        closeModelVideo();
+        setCallAccepted(false);
+        setCallEnded(true);
+        socket.off('leaveCall');
+        socket.emit('leaveCall', {
+            userToCall: userToCall,
+        });
+        connectionRef.current.destroy();
+    };
+
     const leaveCall = () => {
         closeModelVideo();
+        setCallAccepted(false);
         setCallEnded(true);
+        socket.off('leaveCall');
+        socket.emit('leaveCall', {
+            userToCall: userToCall,
+        });
         connectionRef.current.destroy();
     };
 
@@ -396,7 +435,7 @@ const Message = (props) => {
                 conversation={conversation}
                 rerender={rerender}
                 parentCb1={cbChild1}
-                parentCb={cbChild}
+                // parentCb={cbChild}
             />
             <div className={cx('chatWrapper')}>
                 {props.params ? (
@@ -446,33 +485,47 @@ const Message = (props) => {
             <Modal isOpen={modalVideoOpen} style={customStyles} onRequestClose={closeModelVideo}>
                 <div className={cx('videoCall-parent')}>
                     <div className={cx('friend-video')}>
-                        {/* {callAccepted && !callEnded ? ( */}
-                        <video className={cx('video-f')} autoPlay playsInline ref={friendVideo}></video>
-                        {/* ) : (
-                            null || <div>{nameVideo}</div>
-                        )} */}
+                        {callAccepted && !callEnded ? (
+                            <video className={cx('video-f')} autoPlay playsInline ref={friendVideo}></video>
+                        ) : (
+                            null || (
+                                <div className={cx('waitAccept')}>
+                                    <div className={cx('userName')}>{nameVideo}</div>
+                                </div>
+                            )
+                        )}
                     </div>
                     <div className={cx('my-video')}>
                         <video className={cx('video-m')} autoPlay playsInline ref={myVideo}></video>
                     </div>
                     <div className={cx('callVideo-footer')}>
-                        <div className={cx('mic')}>
-                            <FontAwesomeIcon icon={faMicrophone} style={{ color: '#ffffff' }} />
-                            {/* <FontAwesomeIcon icon={faMicrophoneSlash} style={{ color: '#ffffff' }} /> */}
-                        </div>
-                        <div className={cx('cam')}>
-                            <FontAwesomeIcon icon={faVideo} style={{ color: '#ffffff' }} />
-                            {/* <FontAwesomeIcon icon={faVideoSlash} style={{ color: '#ffffff' }} /> */}
-                        </div>
-                        <div className={cx('end')} onClick={leaveCall}>
-                            <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
-                        </div>
+                        {receivingCall && !callAccepted ? (
+                            <>
+                                <div className={cx('mic')} onClick={answerCall}>
+                                    <FontAwesomeIcon icon={faPhoneVolume} style={{ color: '#ffffff' }} />
+                                </div>
+                                <div className={cx('end')} onClick={denyCall}>
+                                    <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className={cx('mic')}>
+                                    <FontAwesomeIcon icon={faMicrophone} style={{ color: '#ffffff' }} />
+                                    {/* <FontAwesomeIcon icon={faMicrophoneSlash} style={{ color: '#ffffff' }} /> */}
+                                </div>
+                                <div className={cx('cam')}>
+                                    <FontAwesomeIcon icon={faVideo} style={{ color: '#ffffff' }} />
+                                    {/* <FontAwesomeIcon icon={faVideoSlash} style={{ color: '#ffffff' }} /> */}
+                                </div>
+                                <div className={cx('end')} onClick={leaveCall}>
+                                    <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </Modal>
-            <div className={cx('end')} onClick={answerCall}>
-                <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#00000' }} />
-            </div>
         </div>
     );
 };

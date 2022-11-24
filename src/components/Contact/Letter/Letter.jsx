@@ -5,11 +5,14 @@ import { useEffect, useState, useContext } from 'react';
 import axiosCilent from '../../../api/axiosClient';
 import { AuthContext } from '../../../context/AuthContext';
 import React from 'react';
+import { io } from 'socket.io-client';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 const cx = classNames.bind(styles);
 
-const Letter = ({ id }) => {
+const Letter = ({ id, parentCb }) => {
     const [user0, setUser0] = useState({});
     const { user, dispatch } = useContext(AuthContext);
+    const [rerender, setRerender] = useState(false);
 
     useEffect(() => {
         const getInfoFriends = async () => {
@@ -23,29 +26,31 @@ const Letter = ({ id }) => {
 
         getInfoFriends();
     }, []);
+    const sendData = (data) => {
+        parentCb(data);
+    };
 
     const handleAccept = async (id) => {
-        //console.log(id);
-        // const formData = new FormData();
-        // formData.append('id', user.id);
-        // formData.append('friendId', id);
-        // formData.append('listSender', user.listSender);
         const req = {
             userId: user.id,
             friendId: id,
             listReceiver: user.listReceiver,
             friends: user.friends,
         };
-        //console.log(formData)
         try {
             await axiosCilent.put('/zola/users/acceptFriend', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-            // console.log(res);
-            // const res1 = await axiosCilent.get(`/zola/users/${user.id}`);
-            // dispatch({ type: 'LOGIN_SUCCESS', payload: res1 });
-            //setAwaitAccept(true);
-            console.log('oke');
+            setRerender(!rerender);
+            sendData(rerender);
+            const res1 = await axiosCilent.get(`zola/conversation/conversationId/${user.id}/${id}`);
+            if (res1.length === 0) {
+                const members = [user.id, id];
+                await axiosCilent.post('zola/conversation', { members });
+            }
+            socket.emit('request-friend', {
+                userReceive: id,
+            });
         } catch (error) {
             console.log(error);
         }
@@ -57,16 +62,15 @@ const Letter = ({ id }) => {
             friendId: id,
             listReceiver: user.listReceiver,
         };
-        //console.log(formData)
         try {
             await axiosCilent.put('/zola/users/denyFriend', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-            // console.log(res);
-            // const res1 = await axiosCilent.get(`/zola/users/${user.id}`);
-            // dispatch({ type: 'LOGIN_SUCCESS', payload: res1 });
-            //setAwaitAccept(true);
-            //.log('oke');
+            setRerender(!rerender);
+            sendData(rerender);
+            socket.emit('request-friend', {
+                userReceive: id,
+            });
         } catch (error) {
             console.log(error);
         }

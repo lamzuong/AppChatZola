@@ -7,12 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCameraRetro, faRotate, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useEffect } from 'react';
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../../context/AuthContext';
 import axiosCilent from '../../../../api/axiosClient';
 import UserItemSearchGroup from '../../ChatList/UserItemSearchGroup/UserItemSearchGroup';
 import UserItemAdded from '../../ChatList/UserItemAdded/UserItemAdded';
-
-import { useNavigate } from 'react-router-dom';
 
 import { io } from 'socket.io-client';
 const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
@@ -31,7 +30,7 @@ const customStyles = {
     },
 };
 
-const Info = ({ img, nameInfo, conversation }) => {
+const Info = ({ img, nameInfo, conversation, outGroup }) => {
     const { user, dispatch } = useContext(AuthContext);
     let listNoFriend = [];
     for (let i = 0; i < user.friends.length; i++) {
@@ -39,15 +38,19 @@ const Info = ({ img, nameInfo, conversation }) => {
         if (a === false) listNoFriend.push(user.friends[i]);
     }
     Modal.setAppElement('#root');
+    const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editName, setEditName] = useState(nameInfo);
     const [name, setName] = useState(nameInfo);
+    const [nameSearch, setNameSearch] = useState('');
+    const [adOutGroup, setAdOutGroup] = useState(false);
     const [avatar, setAvatar] = useState();
     const [modalIsOpenGroup, setModalIsOpenGroup] = useState(false);
     const [checked, setChecked] = useState([]);
     const [choose, setChoose] = useState();
     const [listUerAdded, setListUserAdded] = useState([]);
     const [listFriendInfo, setListFriendInfo] = useState([]);
+    const [listFriendInfo2, setListFriendInfo2] = useState([]);
     const [listAddedInfo, setListAddInfo] = useState([]);
     const [listMemberInfo, setListMemberInfo] = useState([]);
     const refInput = useRef();
@@ -97,6 +100,7 @@ const Info = ({ img, nameInfo, conversation }) => {
         setListUserAdded([]);
         setListAddInfo([]);
         setListFriendInfo([]);
+        setAdOutGroup(false);
         setChoose('');
     };
 
@@ -122,6 +126,7 @@ const Info = ({ img, nameInfo, conversation }) => {
     };
     useEffect(() => {
         getUsersInfo(listNoFriend, setListFriendInfo);
+        setListFriendInfo2([...listFriendInfo]);
     }, [modalIsOpenGroup]);
     useEffect(() => {
         getUsersInfo(listUerAdded, setListAddInfo);
@@ -158,7 +163,6 @@ const Info = ({ img, nameInfo, conversation }) => {
             });
             socket.emit('send-to-addMem', {
                 idAdd: listUerAdded,
-                members: conversation.members,
                 conversationID: conversation.id,
             });
 
@@ -167,6 +171,20 @@ const Info = ({ img, nameInfo, conversation }) => {
             console.log(error);
         }
     };
+
+    useEffect(() => {
+        const list = [];
+        if (nameSearch === '') {
+            setListFriendInfo2([...listFriendInfo]);
+        } else {
+            listFriendInfo.forEach((e) => {
+                if (e.fullName.toLowerCase().includes(nameSearch.toLowerCase())) {
+                    list.push(e);
+                }
+            });
+            setListFriendInfo2([...list]);
+        }
+    }, [nameSearch]);
 
     const handleAuthority = async () => {
         try {
@@ -180,10 +198,30 @@ const Info = ({ img, nameInfo, conversation }) => {
                 conversationID: conversation.id,
             });
             closeModalGroup();
+            if (outGroup === true) {
+                const req = {
+                    conversationId: conversation.id,
+                    user: user,
+                    members: conversation.members,
+                };
+                try {
+                    await axiosCilent.put('/zola/conversation/outGroup', req);
+                    navigate('/');
+                    socket.emit('send-to-server', {
+                        conversationID: conversation.id,
+                    });
+                } catch (error) {
+                    console.log(error);
+                }
+            }
         } catch (error) {
             console.log(error);
         }
     };
+
+    useEffect(() => {
+        outGroup && setAdOutGroup(true);
+    }, [outGroup]);
 
     return (
         <div className={cx('wrapper')}>
@@ -193,7 +231,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                 </div>
                 <div className={cx('info-name')}>
                     <span style={{ fontSize: 16 }}>{nameInfo}</span>
-                    {conversation?.members.length > 2 && (
+                    {conversation?.group && (
                         <div className={cx('edit')} onClick={openModal}>
                             <i className="bx bx-edit-alt"></i>
                         </div>
@@ -253,7 +291,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                 </div>
 
                 <div className={cx('ruleAdmin')}>
-                    {conversation?.members.length > 2 && (
+                    {conversation?.group && (
                         <div
                             className={cx('addMem')}
                             onClick={() => {
@@ -267,7 +305,11 @@ const Info = ({ img, nameInfo, conversation }) => {
                             <span>Thêm thành viên</span>
                         </div>
                     )}
-                    <Modal isOpen={modalIsOpenGroup} style={customStyles} onRequestClose={closeModalGroup}>
+                    <Modal
+                        isOpen={modalIsOpenGroup || adOutGroup}
+                        style={customStyles}
+                        onRequestClose={closeModalGroup}
+                    >
                         <div className={cx('wrapper-modal-group')}>
                             <div className={cx('header-modal-group')}>
                                 {isAddMem ? (
@@ -286,8 +328,9 @@ const Info = ({ img, nameInfo, conversation }) => {
                                         <label>Thêm bạn vào nhóm:</label>
                                         <Input
                                             type="text"
-                                            placeholder="Nhập tên, số điện thoại, hoặc danh sách số điện thoại"
-                                            icon={<i class="bx bxs-envelope"></i>}
+                                            placeholder="Nhập tên"
+                                            icon={<i class="bx bxs-user-rectangle"></i>}
+                                            data={setNameSearch}
                                         />
                                     </div>
                                 )}
@@ -300,24 +343,30 @@ const Info = ({ img, nameInfo, conversation }) => {
                                                     Danh sách bạn bè
                                                 </span>
                                                 <ul className={cx('friends')}>
-                                                    {listFriendInfo.map((user) => (
-                                                        <li
-                                                            key={user.id}
-                                                            style={{ display: 'flex' }}
-                                                            className={cx('item-user-group')}
-                                                        >
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={checked.includes(user.id)}
-                                                                onChange={(e) => handleCheck(user.id)}
-                                                            />
-                                                            <UserItemSearchGroup
-                                                                name={user.fullName}
-                                                                ava={user.img}
-                                                                onClick={() => handleCheck(user.id)}
-                                                            />
-                                                        </li>
-                                                    ))}
+                                                    {listFriendInfo2.length > 0
+                                                        ? listFriendInfo2.map((user) => (
+                                                              <li
+                                                                  key={user.id}
+                                                                  style={{ display: 'flex' }}
+                                                                  className={cx('item-user-group')}
+                                                              >
+                                                                  <input
+                                                                      type="checkbox"
+                                                                      checked={checked.includes(user.id)}
+                                                                      onChange={(e) => handleCheck(user.id)}
+                                                                  />
+                                                                  <UserItemSearchGroup
+                                                                      name={user.fullName}
+                                                                      ava={user.img}
+                                                                      onClick={() => handleCheck(user.id)}
+                                                                  />
+                                                              </li>
+                                                          ))
+                                                        : nameSearch.length > 0 && (
+                                                              <div style={{ marginLeft: '5px' }}>
+                                                                  Không tìm thấy tên phù hợp
+                                                              </div>
+                                                          )}
                                                 </ul>
                                             </>
                                         ) : (
@@ -391,7 +440,7 @@ const Info = ({ img, nameInfo, conversation }) => {
                             </div>
                         </div>
                     </Modal>
-                    {conversation.creator === user.id && (
+                    {conversation?.creator === user.id && conversation.members.length > 1 && (
                         <div
                             className={cx('grantMem')}
                             onClick={() => {

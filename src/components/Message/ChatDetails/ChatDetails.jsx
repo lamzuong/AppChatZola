@@ -59,6 +59,7 @@ const ChatDetails = (props) => {
     const [modalImgIsOpen, setModalImgIsOpen] = useState(false);
     const [modalOutGroupOpen, setModalOutGroupOpen] = useState(false);
     const [modalDelGroupOpen, setModalDelGroupOpen] = useState(false);
+    const [outGroup, setOutGroup] = useState(false);
 
     const openModalImg = () => {
         setModalImgIsOpen(true);
@@ -131,12 +132,12 @@ const ChatDetails = (props) => {
         };
         getUsersInfo();
     }, [props.currentChat?.members.length]);
-
     const [down, setDown] = useState(false);
 
     const handleOutGroup = async () => {
         if (props.currentChat.creator === props.user.id) {
             closeModelOutGroup();
+            setOutGroup(true);
         } else {
             const req = {
                 conversationId: props.currentChat.id,
@@ -207,7 +208,7 @@ const ChatDetails = (props) => {
                     </div>
                     <div className={cx('body-modal')}>
                         {modalOutGroupOpen === true &&
-                            (props.currentChat.creator === props.user.id ? (
+                            (props.currentChat.creator === props.user.id && props.currentChat.members.length > 1 ? (
                                 <>
                                     <span>Bạn đang là trưởng nhóm nên không thể thực hiện chức năng này</span>
                                     <br />
@@ -231,9 +232,9 @@ const ChatDetails = (props) => {
                 </div>
             </Modal>
             <div className={cx('wrapper-info')}>
-                <Info img={props.img} nameInfo={props.name} conversation={props.currentChat} />
+                <Info img={props.img} nameInfo={props.name} conversation={props.currentChat} outGroup={outGroup} />
                 <Store>
-                    {props.currentChat?.members.length > 2 && (
+                    {props.currentChat?.group && (
                         <StoreItem
                             title="Thành viên nhóm"
                             icon={<i className="bx bxs-group" style={{ fontSize: '1.6rem' }}></i>}
@@ -333,13 +334,13 @@ const ChatDetails = (props) => {
                             <ListViewItem
                                 key={i}
                                 icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                                title={f.split('-')[5]}
+                                title={f.split('/').reverse()[0]}
                             />
                         ))}
 
                         <ButtonSeeAllFile fileStore={listFile} imgStore={listImg} />
                     </StoreItem>
-                    {props.currentChat?.members.length > 2 && (
+                    {props.currentChat?.group && (
                         <>
                             <StoreItem
                                 icon={
