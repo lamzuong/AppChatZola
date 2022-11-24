@@ -455,7 +455,7 @@ router.put('/deleteFriend', (req, res) => {
                 }
             });
             // Update friendUser
-            var listFriendOfFriend = data.Item.listSender.filter((item) => item !== userId);
+            var listFriendOfFriend = data.Item.friends.filter((item) => item !== userId);
             const paramsFriend = {
                 TableName: 'user',
                 Key: {
