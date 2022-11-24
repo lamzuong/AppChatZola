@@ -94,6 +94,7 @@ const Contact = (props) => {
         getConversation();
     }, [currentUser, rerender]);
 
+    console.log(listMem);
     const handleDelFriend = async (u) => {
         await axiosCilent.put('/zola/users/deleteFriend', {
             userId: user.id,
