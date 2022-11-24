@@ -38,6 +38,7 @@ const Info = ({ img, nameInfo, conversation, outGroup }) => {
         if (a === false) listNoFriend.push(user.friends[i]);
     }
     Modal.setAppElement('#root');
+    console.log(nameInfo);
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editName, setEditName] = useState(nameInfo);
@@ -134,6 +135,9 @@ const Info = ({ img, nameInfo, conversation, outGroup }) => {
     useEffect(() => {
         getUsersInfo(conversation?.members, setListMemberInfo);
     }, [conversation?.members.length]);
+    useEffect(() => {
+        setEditName(nameInfo);
+    }, []);
     const handleCheck = (id) => {
         setChecked((prev) => {
             const isChecked = checked.includes(id);
