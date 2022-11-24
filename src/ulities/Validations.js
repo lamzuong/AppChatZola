@@ -1,39 +1,54 @@
 import axiosCilent from '../api/axiosClient';
 
-const handleEmailRepeat = async (email) => {
-    const listUser = await axiosCilent.get('/zola/users');
-    for (let i = 0; i < listUser.length; i++) {
-        if (listUser[i].email === email) {
-            return 'Email đã tồn tại!';
-        }
-    }
-    return true;
-};
+const listUser = axiosCilent.get('/zola/users');
 
-const isEmail = async (stringEmail, standard) => {
+const isEmail = (stringEmail, standard) => {
     if (stringEmail.length === 0) {
         return 'Email không được để trống!';
     } else {
         if (standard.test(stringEmail) === false) {
             return 'Email không đúng định dạng!';
         } else {
-            let result = await handleEmailRepeat(stringEmail);
-            return result;
+            //const listUser = await axiosCilent.get('/zola/users');
+            for (let i = 0; i < listUser.length; i++) {
+                if (listUser[i].email === stringEmail) {
+                    return 'Email đã tồn tại!';
+                }
+            }
         }
     }
+    return true;
+};
+
+const isEmail2 = (stringEmail, standard) => {
+    console.log(isEmail(stringEmail, standard));
+    //return isEmail(stringEmail, standard);
 };
 
 const isFullName = (stringFullName, standard) => {
     if (stringFullName.length === 0) {
         return 'Họ tên không được để trống!';
     } else {
-        if (standard.test(stringFullName) === false) {
+        if (standard.test(removeAscent(stringFullName)) === false) {
             return 'Họ và tên không bao gồm chữ số, kí tự đặc biệt và tối đa 30 kí tự';
         } else {
             return true;
         }
     }
 };
+
+function removeAscent(str) {
+    if (str === null || str === undefined) return str;
+    str = str.toLowerCase();
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, 'a');
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, 'e');
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, 'i');
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, 'o');
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, 'u');
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, 'y');
+    str = str.replace(/đ/g, 'd');
+    return str;
+}
 
 const handleUsernameRepeat = async (username) => {
     const listUser = await axiosCilent.get('/zola/users');
@@ -82,4 +97,4 @@ const isRePassword = (stringPass, standard) => {
     }
 };
 
-export { isEmail, isPassword, isUsername, isRePassword, isFullName };
+export { isEmail, isPassword, isUsername, isRePassword, isFullName, isEmail2 };

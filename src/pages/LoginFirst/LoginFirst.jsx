@@ -32,7 +32,8 @@ const LoginFirst = (props) => {
     Modal.setAppElement('#root');
 
     const { user, dispatch } = useContext(AuthContext);
-    const [birthday, setBirthday] = useState(user.birthday);
+    const [errBirthday, setErrBirthday] = useState('');
+    //const [birthday, setBirthday] = useState(user.birthday);
     const [checkedGender, setCheckedGender] = useState(false);
     const [value, onChange] = useState(new Date());
     const [dateString, setDateString] = useState(
@@ -45,6 +46,10 @@ const LoginFirst = (props) => {
     const handleChangeDate = (e) => {
         onChange(e);
         setDateString(e.getDate() + '/' + parseInt(e.getMonth() + 1) + '/' + e.getFullYear());
+        const date = new Date();
+        if (date.getFullYear() - e.getFullYear() < 16) {
+            setErrBirthday('Tuổi phải từ 16 tuổi trở lên');
+        } else setErrBirthday('');
     };
 
     useEffect(() => {
@@ -68,11 +73,12 @@ const LoginFirst = (props) => {
         formData.append('fullNameOld', user.fullName);
         formData.append('imgOld', user.img);
         try {
+            if (errBirthday.length > 0) {
+                return;
+            }
             await axiosCilent.put('/zola/users', formData);
-
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-
             navigate('/');
         } catch (err) {
             console.log(err);
@@ -86,19 +92,27 @@ const LoginFirst = (props) => {
                 <h3>Hãy cập nhật thông tin cá nhân của mình một tí nào!</h3>
                 <div className={cx('avatar')}>
                     <div className={cx('ava')}>
-                        {avatar ? (
-                            <img src={avatar.preview} alt="vuong" />
-                        ) : (
-                            <img src={user.img ? user.img : noAvatar} alt="phuc" />
-                        )}
-                        <div className={cx('iconcam-w')}>
-                            <FontAwesomeIcon
-                                icon={faCameraRetro}
-                                className={cx('icon-camera')}
-                                style={{ color: '#666', fontSize: '20' }}
-                            />
-                        </div>{' '}
-                        <label htmlFor="update-avatar"></label>
+                        <label htmlFor="update-avatar">
+                            {avatar ? (
+                                <img src={avatar.preview} alt="vuong" />
+                            ) : (
+                                <img src={user.img ? user.img : noAvatar} alt="phuc" />
+                            )}
+                            <div className={cx('iconcam-w')}>
+                                <FontAwesomeIcon
+                                    icon={faCameraRetro}
+                                    className={cx('icon-camera')}
+                                    style={{ color: '#666', fontSize: '20' }}
+                                />
+                            </div>
+                        </label>
+                        <input
+                            type="file"
+                            style={{ display: 'none' }}
+                            id="update-avatar"
+                            name="avatar"
+                            onChange={handleReviewAvatar}
+                        />
                     </div>
                 </div>
 
@@ -140,6 +154,7 @@ const LoginFirst = (props) => {
                                     selected={value}
                                 />
                             </div>
+                            <span style={{ color: 'red', fontSize: '12px' }}>{errBirthday}</span>
                         </div>
                         <div className={cx('footer-body')}>
                             <button className={cx('btn-confirm')} onClick={handleUpdate}>

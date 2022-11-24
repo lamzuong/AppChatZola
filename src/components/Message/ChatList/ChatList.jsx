@@ -178,8 +178,8 @@ const ChatList = (props) => {
         const search = async () => {
             const res = await axiosCilent.get(`/zola/users/search/` + debouncedUser);
             let temp = [...res];
-            let list = temp.filter((u) => u.id !== user.id);
-            setResultSearch([...list]);
+            let list = temp.filter((u) => !user.friends.includes(u.id) && u.id !== user.id);
+            setResultSearch([...res]);
         };
         search();
     }, [debouncedUser]);

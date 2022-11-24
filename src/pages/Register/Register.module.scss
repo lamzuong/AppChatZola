@@ -56,7 +56,6 @@
     @include flex(center, center);
     border-bottom: 1px solid #ecedf0;
     padding: 5px 0;
-    margin-bottom: 16px;
 }
 
 .btn-register {
@@ -105,4 +104,32 @@
     &:hover {
         background-color: #0184e0;
     }
+}
+
+//------------input---------------//
+
+.wrapper {
+    margin-bottom: 10px;
+}
+.ipt {
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    outline: none;
+}
+
+.form-control {
+    @include flex(center, center);
+
+    padding: 5px 0;
+    border-bottom: 1px solid #ecedf0;
+
+    &:focus-within {
+        border-bottom: 1px solid #3989ff;
+    }
+}
+
+.warning {
+    font-size: 14px;
+    color: red;
 }
