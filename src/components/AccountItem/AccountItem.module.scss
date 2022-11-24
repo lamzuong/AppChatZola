@@ -55,3 +55,19 @@
 .mess {
     color: $text-color;
 }
+
+.wrapper-more {
+    width: 100px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    li {
+        padding-left: 5px;
+        height: 40px;
+        line-height: 40px;
+        &:hover {
+            background-color: #ccc;
+            cursor: pointer;
+        }
+    }
+}

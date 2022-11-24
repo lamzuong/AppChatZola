@@ -238,3 +238,18 @@
     overflow-y: auto;
     height: 670px;
 }
+
+.wrapper-more {
+    width: 100px;
+    background-color: #fff;
+    border-radius: 4px;
+    li {
+        height: 40px;
+        line-height: 40px;
+
+        &:hover {
+            background-color: #ccc;
+            cursor: pointer;
+        }
+    }
+}
