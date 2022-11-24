@@ -37,6 +37,9 @@ export default function LogInFirst({ navigation }) {
   const [hidebtn, sethidebtn] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const [errorDOB, seterrorDOB] = useState("Lỗi");
+  const [hideErrorDOB, sethideErrorDOB] = useState(false);
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -52,9 +55,19 @@ export default function LogInFirst({ navigation }) {
       setbirthday(
         date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
       );
-      seticon("close");
-      sethidebtn(true);
-      hideDatePicker();
+      if (new Date().getFullYear() - date.getFullYear() <= 12)  {
+        seticon("close");
+        sethideErrorDOB(true);
+        seterrorDOB("Người dùng phải trên 12 tuổi!");
+        sethidebtn(false);
+        hideDatePicker();
+      }else {
+        seticon("close");
+        sethideErrorDOB(false);
+        seterrorDOB("");
+        sethidebtn(true);
+        hideDatePicker();
+      }
     }
   };
 
@@ -290,6 +303,19 @@ export default function LogInFirst({ navigation }) {
           <Ionicons name={icon} size={24} color="black" />
         </TouchableOpacity>
       </TouchableOpacity>
+      {hideErrorDOB && (
+            <Text
+              style={{
+                fontSize: 14,
+                color: "red",
+                marginLeft: 25,
+                marginRight: 25,
+                marginTop: 10,
+              }}
+            >
+              {errorDOB}
+            </Text>
+      )}
       <View style={styles.gender}>
         <Text style={[styles.text, { marginTop: 5 }]}>Giới tính:</Text>
         <View style={styles.rbnGender}>
