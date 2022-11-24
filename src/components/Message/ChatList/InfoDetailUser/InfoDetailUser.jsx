@@ -4,6 +4,8 @@ import classNames from 'classnames/bind';
 import { AuthContext } from '../../../../context/AuthContext';
 import { useContext } from 'react';
 import axiosCilent from '../../../../api/axiosClient';
+import { io } from 'socket.io-client';
+const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -32,6 +34,9 @@ const InfoDetailUser = ({ ava, name, id, onclick = () => {} }) => {
             await axiosCilent.put('/zola/users/friends', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
+            socket.emit('request-friend', {
+                userReceive: id,
+            });
             setAwaitAccept(true);
         } catch (error) {
             console.log(error);
@@ -48,6 +53,9 @@ const InfoDetailUser = ({ ava, name, id, onclick = () => {} }) => {
             await axiosCilent.put('/zola/users/cancelFriend', req);
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
+            socket.emit('request-friend', {
+                userReceive: id,
+            });
             setAwaitAccept(true);
         } catch (error) {
             console.log(error);

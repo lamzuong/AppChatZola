@@ -87,7 +87,7 @@ const Conversation = (props) => {
                 <h4 className={cx('name')}>
                     <span>{name}</span>
                 </h4>
-                <div className={cx('mess')}>{messLast?.length > 30 ? `${last.slice(0, 20)}...` : `${last}`}</div>
+                <div className={cx('mess')}>{messLast?.length > 28 ? `${last.slice(0, 25)}...` : `${last}`}</div>
             </div>
         </div>
     );
