@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext ,useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -15,6 +15,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axiosClient from "../api/axiosClient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthContext } from "../context/AuthContext";
 
 export default function SignUp({ navigation }) {
   const [email, setemail] = useState("");
@@ -41,6 +42,8 @@ export default function SignUp({ navigation }) {
 
   const [countdown, setCountdown] = useState()
   const [hideCountdown, sethideCountdown] = useState(false);
+
+  const { user , dispatch } = useContext(AuthContext);
   function conFirm() {
     const register = async () => {
       try {
@@ -80,22 +83,33 @@ export default function SignUp({ navigation }) {
       ]
     );
   }
-  async function login() {
-      try {
-        const res = await axiosClient.post("/zola/auth/login", {
-          email: email,
-          password: password,
-        });
-        setCountdown();
-        navigation.navigate("LogInFirst");
+  // async function login() {
+  //     dispatch({ type: "LOGIN_START" });
+  //     try {
+  //       const res = await axiosClient.post("/zola/auth/login", {
+  //         email: email,
+  //         password: password,
+  //       });
+  //       dispatch({ type: "LOGIN_SUCCESS", payload: res });
 
-      } catch (error) {
+  //       setCountdown();
+  //       navigation.navigate("LogInFirst");
 
-      }
-  }
+  //     } catch (error) {
+  //       dispatch({ type: "LOGIN_FAILURE" });
+  //     }
+  // }
 
   useEffect(() => {
+    const deleteUser = async (email) => {
+      const account = email.split('@');
+      const req = {username: account[0], email: email}
+      await axiosClient.delete('/zola/auth/deleteUser', {
+        data: req,
+      })
+    };
     if(countdown==0){
+      deleteUser(email);
       Alert.alert("Cảnh báo", "Vui lòng đăng ký lại!", [
         {
           text: "Xác nhận",
@@ -106,10 +120,25 @@ export default function SignUp({ navigation }) {
           }
         },
       ]);
-      
       return;
     }
     const timerId = setInterval(() => {
+      async function login() {
+        dispatch({ type: "LOGIN_START" });
+        try {
+          const res = await axiosClient.post("/zola/auth/login", {
+            email: email,
+            password: password,
+          });
+          dispatch({ type: "LOGIN_SUCCESS", payload: res });
+          clearInterval(timerId);
+          // setCountdown();
+          navigation.navigate("LogInFirst");
+  
+        } catch (error) {
+          dispatch({ type: "LOGIN_FAILURE" });
+        }
+    }
       login();
       setCountdown((prev) => prev -1);
     },1000);

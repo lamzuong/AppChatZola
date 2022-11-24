@@ -26,7 +26,7 @@ import * as ImagePicker from "expo-image-picker";
 
 export default function LogInFirst({ navigation }) {
   const { user, dispatch } = React.useContext(AuthContext);
-
+  console.log(user);
   const [birthday, setbirthday] = useState("1/1/2000");
   const [checked, setChecked] = useState(true);
   const [avatar, setavatar] = useState(
