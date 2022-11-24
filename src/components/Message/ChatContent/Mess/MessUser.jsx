@@ -65,6 +65,14 @@ const MessUser = (props) => {
         }
         return '';
     }
+    function convertName(name) {
+        let a = name.split('-');
+        let temp = '';
+        for (let i = 5; i < a.length; i++)
+            if (i == a.length - 1) temp += a[i];
+            else temp += a[i] + '-';
+        return temp;
+    }
     return (
         <>
             {props.mess.handleGroup ? (
@@ -148,6 +156,7 @@ const MessUser = (props) => {
                                                             fontWeight: '600',
                                                             wordBreak: 'break-word',
                                                             maxWidth: '500px',
+                                                            width: 'fit-content',
                                                         }}
                                                     >
                                                         <a
@@ -160,7 +169,7 @@ const MessUser = (props) => {
                                                                 className="bx bx-file"
                                                                 style={{ marginRight: '4px', fontSize: '24px' }}
                                                             ></i>
-                                                            {img.split('/').reverse()[0]}
+                                                            {convertName(img.split('/').reverse()[0])}
                                                         </a>
                                                     </div>
                                                 )}

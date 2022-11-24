@@ -11,8 +11,6 @@ import { faCameraRetro } from '@fortawesome/free-solid-svg-icons';
 import DatePicker from 'react-date-picker';
 import axiosCilent from '../../api/axiosClient';
 import { useNavigate } from 'react-router-dom';
-import { flexbox } from '@mui/system';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 const customStyles = {

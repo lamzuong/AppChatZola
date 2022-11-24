@@ -160,38 +160,6 @@ const Contact = (props) => {
                                       u={u}
                                       tippy
                                   />
-                                  {/* <div className={cx('btn')}>
-                                      <Tippy
-                                          placement="right-end"
-                                          visible={showOption}
-                                          interactive={true}
-                                          render={(attrs) => (
-                                              <ul className={cx('wrapper-more')} tabIndex="-1" {...attrs}>
-                                                  <li>Nhắn tin</li>
-                                                  <li>Xóa</li>
-                                              </ul>
-                                          )}
-                                      >
-                                          <div onClick={() => setShowOption(!showOption)}>
-                                              <FontAwesomeIcon
-                                                  icon={faEllipsisVertical}
-                                                  className={cx('icon-more')}
-                                                  style={{
-                                                      color: '#ccc',
-                                                      fontSize: '25',
-                                                      margin: '0 10',
-                                                      cursor: 'pointer',
-                                                  }}
-                                              />
-                                          </div>
-                                      </Tippy>
-                                  </div> */}
-                                  {/* <button className={cx('btn-del')} onClick={() => handleDelFriend(u)}>
-                                          Xóa
-                                      </button>
-                                      <button className={cx('btn-mess')} onClick={() => handleChat(u)}>
-                                          Nhắn tin
-                                      </button> */}
                               </div>
                           ))
                         : listGroup.map((u, i) => (

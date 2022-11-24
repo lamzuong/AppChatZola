@@ -41,7 +41,6 @@ const ChatList = (props) => {
     const conversation = props.conversation;
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
-    const mess = props.data;
     const active = conversation.findIndex((e) => e.id === path);
     const [rerender, setRerender] = useState(false);
     const [text, setText] = useState('');
@@ -509,11 +508,6 @@ const ChatList = (props) => {
                 </>
             ) : (
                 <>
-                    <div className={cx('userOnl')}>
-                        {mess.map((e, i) => (
-                            <AccountItem key={i} none={true} id={e.id} ava={e.ava} />
-                        ))}
-                    </div>
                     <ul className={cx('chatList')}>
                         {conversation.map((e, i) => (
                             <div
