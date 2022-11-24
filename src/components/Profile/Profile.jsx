@@ -263,7 +263,7 @@ const Profile = (props) => {
         setTxtReNewPassword('');
         setTxtNewPassword('');
     };
-
+    //Đổi mật khẩu
     return (
         <div className={cx('wrapper')}>
             <div className={cx('infor')}>

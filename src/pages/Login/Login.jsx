@@ -32,7 +32,14 @@ const Login = (props) => {
             setErrorUsername('Không được để trống username!');
             flag = false;
         } else {
-            setErrorUsername('');
+            const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+            if (reg.test(email) === false) {
+                setErrorUsername('Email không đúng định dạng!');
+                flag = false;
+            } else {
+                setErrorUsername('');
+            }
         }
         if (password.length === 0) {
             setErrorPassword('Không được để trống mật khẩu!');
@@ -84,7 +91,7 @@ const Login = (props) => {
                         <div className={cx('form-signin')}>
                             <Input
                                 type="text"
-                                placeholder="Email hoặc username"
+                                placeholder="Email"
                                 icon={<i className="bx bxs-envelope"></i>}
                                 data={setEmail}
                                 onEnter={handleLogin}
