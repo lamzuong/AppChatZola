@@ -26,7 +26,7 @@ const UserItemSearch = ({ name, ava, con, mess, button = false }) => {
     }, [con?.members, user]);
     let img = '';
     let ten = '';
-    if (con?.members.length > 2) {
+    if (con?.group) {
         img = con.avatarGroup;
         ten = con.groupName;
     } else {
