@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext ,useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -12,8 +12,11 @@ import { RadioButton } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CognitoUser, CognitoUserPool } from "amazon-cognito-identity-js";
 import { Ionicons } from "@expo/vector-icons";
-
+import axiosClient from "../api/axiosClient";
+import { AuthContext } from "../context/AuthContext";
 export default function ForgetPassword({ navigation }) {
+  const { user, dispatch } = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
   const [stage, setStage] = useState(1);
   const [code, setCode] = useState("");
@@ -34,6 +37,7 @@ export default function ForgetPassword({ navigation }) {
   const [errorRepassword, seterrorRepassword] = useState("Lỗi");
   const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
   const [hidebtn, sethidebtn] = useState(true);
+
   const validateEmail = (email) => {
     var re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
     return re.test(email);
@@ -98,6 +102,21 @@ export default function ForgetPassword({ navigation }) {
       },
     });
   };
+  async function login() {
+    dispatch({ type: "LOGIN_START" });
+    try {
+      const res = await axiosClient.post("/zola/auth/login", {
+        email: email,
+        password: password,
+      });
+      dispatch({ type: "LOGIN_SUCCESS", payload: res });
+      navigation.navigate("Home");
+
+    } catch (error) {
+      dispatch({ type: "LOGIN_FAILURE" });
+      console.log(error);
+    }
+}
 
   const resetPassword = (event) => {
     // event.preventDefault();
@@ -127,7 +146,7 @@ export default function ForgetPassword({ navigation }) {
           {
             text: "Xác nhận",
             onPress: () => {
-              navigation.navigate("Login");
+              login();
             },
           },
         ]);

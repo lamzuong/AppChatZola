@@ -43,7 +43,6 @@ export default function ChatRoom({ route }) {
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
   const [friendDeleted, setFriendDeleted] = useState(false);
-  const [outSize, setOutSize] = useState(false);
   useEffect(() => {
     if (route.params.rerenderTemp != null) {
       setRerender(rerenderTemp);
@@ -134,6 +133,11 @@ export default function ChatRoom({ route }) {
           setNameInChat(data.nameGroup);
         }
       } catch (error) {}
+    });
+    socket.on("server-send-request-friend", (data) => {
+      if (data.userReceive == user.id) {
+        setRerender(!rerender);
+      }
     });
   });
   const navigation = useNavigation();

@@ -17,8 +17,8 @@ import { AuthContext } from "../context/AuthContext";
 import axiosCilent from "../api/axiosClient";
 
 export default function Login({ navigation }) {
-  const [email, setemail] = useState("lamzuong");
-  const [password, setpassword] = useState("L@mzuong2001");
+  const [email, setemail] = useState("bui.fngyn@gmail.com");
+  const [password, setpassword] = useState("Password1!");
   const [icon, seticon] = useState("eye-outline");
   const [hide, sethide] = React.useState(true);
   const [hidebtn, sethidebtn] = useState(false);
@@ -88,6 +88,11 @@ export default function Login({ navigation }) {
     }
   };
 
+  const validateEmail = (email) => {
+    var re = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6})*$/;
+    return re.test(email);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -105,27 +110,33 @@ export default function Login({ navigation }) {
       </View>
       <StatusBar animated={true} backgroundColor="rgb(13,120,202)" />
       <Text style={styles.login}>
-        Vui lòng nhập username và mật khẩu để đăng nhập.
+        Vui lòng nhập Email và mật khẩu để đăng nhập.
       </Text>
 
       <View style={styles.input}>
         <TextInput
           style={{ fontSize: 18, color: "black", width: "90%" }}
           value={email}
-          placeholder="Nhập Username hoặc Email"
+          placeholder="Nhập Email"
           placeholderTextColor="gray"
           onChangeText={(text) => {
             if (isEmpty(text)) {
               sethideErrorUsername(true);
-              seterrorUsername("Username không được rỗng.");
+              seterrorUsername("Email không được rỗng.");
               sethidebtn(false);
             } else {
-              seterrorUsername("");
-              sethideErrorUsername(false);
-              if (!hideBtnLogin(email, password)) {
-                sethidebtn(true);
-              } else {
+              if (!validateEmail(text)) {
+                sethideErrorUsername(true);
+                seterrorUsername("Địa chỉ email không hợp lệ.");
                 sethidebtn(false);
+              } else {
+                seterrorUsername("");
+                sethideErrorUsername(false);
+                if (!hideBtnLogin(email, password)) {
+                  sethidebtn(true);
+                } else {
+                  sethidebtn(false);
+                }
               }
             }
             setemail(text);

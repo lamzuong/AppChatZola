@@ -35,6 +35,14 @@ export default function InviteAddFrReceive() {
     };
     getInfoUser();
   }, [renderUser, isFocused]);
+  useEffect(() => {
+    socket.off();
+    socket.on("server-send-request-friend", (data) => {
+      if (data.userReceive == user.id) {
+        setRenderUser(!renderUser);
+      }
+    });
+  });
   //========================
   var listReceive = [];
   const [listMem, setListMem] = useState([]);
@@ -96,14 +104,14 @@ export default function InviteAddFrReceive() {
       const res3 = await axiosCilent.get(
         `/zola/conversation/conversationId/${user.id}/${id}`
       );
-      socket.emit("accept-request", {
-        userReceive: id,
-      });
       if (res3.length == 0) {
         await axiosCilent.post("/zola/conversation", {
           members: [user.id, id],
         });
       }
+      socket.emit("request-friend", {
+        userReceive: id,
+      });
     } catch (err) {
       console.log(err);
     }

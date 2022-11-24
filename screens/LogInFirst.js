@@ -26,7 +26,6 @@ import * as ImagePicker from "expo-image-picker";
 
 export default function LogInFirst({ navigation }) {
   const { user, dispatch } = React.useContext(AuthContext);
-
   const [birthday, setbirthday] = useState("1/1/2000");
   const [checked, setChecked] = useState(true);
   const [avatar, setavatar] = useState(
@@ -219,7 +218,7 @@ export default function LogInFirst({ navigation }) {
           <TouchableOpacity
             style={styles.iconBack}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate("Welcome");
             }}
           >
             <Ionicons name="md-arrow-back-sharp" size={30} color="white" />

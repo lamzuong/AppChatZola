@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -6,12 +6,15 @@ import {
   TouchableOpacity,
   TextInput,
   BackHandler,
+  Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { AuthContext } from "../../context/AuthContext";
+import axiosCilent from "../../api/axiosClient";
 export default function ResetPassword({ navigation }) {
   const [oldpassword, setoldpassword] = useState("");
-  const [password, setpassword] = useState("");
+  const [passwordchange, setpasswordchange] = useState("");
   const [passwordagain, setpasswordagain] = useState("");
   const [icon, seticon] = useState("eye-outline");
   const [icon1, seticon1] = useState("eye-outline");
@@ -19,6 +22,59 @@ export default function ResetPassword({ navigation }) {
   const [hide, sethide] = React.useState(true);
   const [hide1, sethide1] = React.useState(true);
   const [hide2, sethide2] = React.useState(true);
+
+  const [errorPassword, seterrorPassword] = useState("Lỗi");
+  const [hideErrorPassword, sethideErrorPassword] = useState(false);
+  const [errorRepassword, seterrorRepassword] = useState("Lỗi");
+  const [hideErrorRepassword, sethideErrorRepassword] = useState(false);
+  const [hidebtn, sethidebtn] = useState(false);
+
+  const { user,dispatch } = useContext(AuthContext);
+
+  //==========
+  async function ResetPassword() {
+    // console.log(user);
+      try {
+        const email = user.email;
+
+        const password = oldpassword;
+        const res = await axiosCilent.post("/zola/auth/login", {
+          email: email,
+          password: password,
+        });
+
+        repassword();
+
+      } catch (error) {
+        console.log(error);
+        Alert.alert("Cảnh báo", "Nhập mật khẩu hiện tại không đúng!", [
+          {
+            text: "Xác nhận",
+            style: "cancel",
+          },
+        ]);
+        }
+  }
+  const repassword = async () => {
+    try {
+      console.log('123');
+      const password = passwordchange;
+      const username = user.email;
+      await axiosCilent.post("/zola/auth/changePassword", {
+        password: password,
+        username: username,
+      });
+      Alert.alert("Thông báo", "Đổi mật khẩu thành công!", [
+        {
+          text: "Xác nhận",
+          style: "cancel",
+        },
+      ]);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   //======Button Back=======
   useEffect(() => {
     const backAction = () => {
@@ -31,6 +87,40 @@ export default function ResetPassword({ navigation }) {
     );
     return () => backHandler.remove();
   }, []);
+  //==========
+  const validatePassword = (password) => {
+    var re =
+      /(?=(.*[0-9]))(?=.*[\!@#$%^&*()\\[\]{}\-_+=~`|:;"'<>,./?])(?=.*[a-z])(?=(.*[A-Z]))(?=(.*)).{8,}/;
+    return re.test(password);
+  };
+
+  const isEmpty = (str) => {
+    if (str.trim().length === 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateRepassword = (password, repassword) => {
+    if (password === repassword) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const hideBtnSignup = (oldpassword, password, repassword) => {
+    if (
+      isEmpty(oldpassword) ||
+      isEmpty(password) ||
+      isEmpty(repassword)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
   //==========
   return (
     <View style={styles.container}>
@@ -81,15 +171,59 @@ export default function ResetPassword({ navigation }) {
       <View style={styles.input}>
         <TextInput
           style={{ fontSize: 18, color: "black", width: "80%" }}
-          value={password}
+          value={passwordchange}
           placeholder="Nhập mật khẩu mới"
           placeholderTextColor="gray"
           onChangeText={(text) => {
-            setpassword(text);
+            if (isEmpty(text)) {
+              sethideErrorPassword(true);
+              seterrorPassword("Mật khẩu không được rỗng.");
+              sethidebtn(false);
+            } else {
+              if (!validatePassword(text)) {
+                sethideErrorPassword(true);
+                seterrorPassword(
+                  "Mật khẩu phải bao gồm cả chữ hoa, chữ thường, số, ký tự đặc biệt và ít nhất 8 ký tự."
+                );
+                sethidebtn(false);
+              } else {
+                if (oldpassword === text) {
+                  sethidebtn(false);
+                  sethideErrorPassword(true);
+                  seterrorPassword(
+                    "Mật khẩu cũ và mật khẩu mới phải khác nhau."
+                  );
+                } else {
+                  seterrorPassword("");
+                  sethideErrorPassword(false);
+                  if (
+                    !hideBtnSignup(
+                      oldpassword,
+                      passwordchange,
+                      passwordagain
+                    )
+                  ) {
+                    if (!validateRepassword(text, passwordagain)) {
+                      sethidebtn(false);
+                      sethideErrorPassword(true);
+                      seterrorPassword(
+                        "Mật khẩu và mật khẩu nhập lại phải giống nhau."
+                      );
+                    } else {
+                      sethidebtn(true);
+                    }
+                  } else {
+                    sethidebtn(false);
+                  }
+                }
+
+              }
+            }
+            setpasswordchange(text);
           }}
           secureTextEntry={hide}
         />
-        {password && (
+        {passwordchange && (
           <TouchableOpacity
             style={{ marginTop: 15, marginRight: 10 }}
             onPress={() => {
@@ -105,11 +239,11 @@ export default function ResetPassword({ navigation }) {
             <Ionicons name={icon} size={24} color="black" style={styles.cam} />
           </TouchableOpacity>
         )}
-        {password && (
+        {passwordchange && (
           <TouchableOpacity
             style={{ marginTop: 15 }}
             onPress={() => {
-              setpassword("");
+              setpasswordchange("");
               sethide(true);
               seticon("eye-outline");
             }}
@@ -118,7 +252,19 @@ export default function ResetPassword({ navigation }) {
           </TouchableOpacity>
         )}
       </View>
-
+      {hideErrorPassword && (
+        <Text
+          style={{
+            fontSize: 14,
+            color: "red",
+            marginLeft: 25,
+            marginRight: 25,
+            marginTop: 10,
+          }}
+        >
+          {errorPassword}
+        </Text>
+      )}
       <View style={styles.input}>
         <TextInput
           style={{ fontSize: 18, color: "black", width: "80%" }}
@@ -126,6 +272,33 @@ export default function ResetPassword({ navigation }) {
           placeholder="Nhập lại mật khẩu mới"
           placeholderTextColor="gray"
           onChangeText={(text) => {
+            if (isEmpty(text)) {
+              sethideErrorRepassword(true);
+              seterrorRepassword("Nhập lại mật khẩu không được rỗng.");
+              sethidebtn(false);
+            } else {
+              if (!validateRepassword(passwordchange, text)) {
+                sethideErrorRepassword(true);
+                seterrorRepassword("Nhập lại mật khẩu không đúng.");
+                sethidebtn(false);
+              } else {
+                seterrorRepassword("");
+                sethideErrorRepassword(false);
+                if (
+                  !hideBtnSignup(
+                    oldpassword,
+                    passwordchange,
+                    passwordagain
+                  )
+                ) {
+                  sethideErrorPassword(false);
+                  sethideErrorPassword("");
+                  sethidebtn(true);
+                } else {
+                  sethidebtn(false);
+                }
+              }
+            }
             setpasswordagain(text);
           }}
           secureTextEntry={hide1}
@@ -159,10 +332,26 @@ export default function ResetPassword({ navigation }) {
           </TouchableOpacity>
         )}
       </View>
-
-      <TouchableOpacity style={styles.button}>
+      {hideErrorRepassword && (
+        <Text
+          style={{
+            fontSize: 14,
+            color: "red",
+            marginLeft: 25,
+            marginRight: 25,
+            marginTop: 10,
+          }}
+        >
+          {errorRepassword}
+        </Text>
+      )}
+      <TouchableOpacity
+        style={hidebtn ? styles.button : styles.hidebutton}
+        disabled={!hidebtn}
+        onPress={ResetPassword}
+      >
         <Text style={{ fontSize: 20, color: "white", fontWeight: "bold" }}>
-          Cập nhật
+          Đổi mật khẩu
         </Text>
       </TouchableOpacity>
     </View>
@@ -199,6 +388,19 @@ const styles = StyleSheet.create({
     color: "white",
     alignItems: "center",
     backgroundColor: "#0091ff",
+    height: 50,
+    width: 200,
+    fontSize: 25,
+    borderColor: "#0091ff",
+    marginTop: 30,
+    borderRadius: 100,
+    alignSelf: "center",
+  },
+  hidebutton: {
+    paddingTop: 9,
+    color: "white",
+    alignItems: "center",
+    backgroundColor: "#7EC0EE",
     height: 50,
     width: 200,
     fontSize: 25,

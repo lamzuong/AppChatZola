@@ -37,6 +37,14 @@ export default function Directory({ navigation }) {
     };
     getInfoUser();
   }, [renderUser, isFocused]);
+  useEffect(() => {
+    socket.off();
+    socket.on("server-send-request-friend", (data) => {
+      if (data.userReceive == user.id) {
+        setRenderUser(!renderUser);
+      }
+    });
+  });
   //========================
   // useEffect(() => {
   //   const unsubscribe = navigation.addListener("tabPress", (e) => {
