@@ -136,7 +136,7 @@ const ChatList = (props) => {
             const res = await axiosCilent.get(`/zola/users/search/` + name);
             let temp = [...res];
             let list = temp.filter((u) => !user.friends.includes(u.id) && u.id !== user.id);
-            setResultSearch([...list]);
+            setResultSearch([...res]);
         };
         search();
     }, [name]);
