@@ -193,6 +193,14 @@ const Files = (props) => {
   async function downloadFile(url) {
     await Linking.openURL(url);
   }
+  function convertName(name) {
+    let a = name.split("-");
+    let temp = "";
+    for (let i = 5; i < a.length; i++)
+      if (i == a.length - 1) temp += a[i];
+      else temp += a[i] + "-";
+    return temp;
+  }
   return (
     <View>
       <TouchableOpacity
@@ -203,7 +211,7 @@ const Files = (props) => {
       >
         <AntDesign name="filetext1" size={24} color="black" />
         <Text style={styles.fileName}>
-          {props.name.split("/").reverse()[0]}
+          {convertName(props.name.split("/").reverse()[0])}
         </Text>
       </TouchableOpacity>
     </View>

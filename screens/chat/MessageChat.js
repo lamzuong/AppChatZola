@@ -133,6 +133,15 @@ export default function MessageChat(props) {
       await Linking.openURL(url);
     }
     // console.log(props);
+    function convertName(name) {
+      let a = name.split("-");
+      let temp = "";
+      for (let i = 5; i < a.length; i++)
+        if (i == a.length - 1) temp += a[i];
+        else temp += a[i] + "-";
+      return temp;
+    }
+
     return (
       <TouchableOpacity
         style={styles.viewFile}
@@ -151,7 +160,8 @@ export default function MessageChat(props) {
           style={styles.iconFile}
         />
         <Text style={[styles.txtMess, { fontWeight: "bold" }]}>
-          {props.e.split("/").reverse()[0]}
+          {/* {props.e.split("/").reverse()[0]} */}
+          {convertName(props.e.split("/").reverse()[0])}
         </Text>
       </TouchableOpacity>
     );

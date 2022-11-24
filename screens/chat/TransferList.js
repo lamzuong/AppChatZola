@@ -69,7 +69,7 @@ export default function TransferList(props) {
           conversationID: conversation.id,
           imgs: img_url.length,
           fullName: user.fullName,
-          group: conversation.members.length > 2,
+          group: conversation.group,
         });
         setSend(true);
         ToastAndroid.show("Gửi thành công", ToastAndroid.SHORT);
