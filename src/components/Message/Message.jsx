@@ -45,7 +45,7 @@ const customStyles = {
 const Message = (props) => {
     const [conversation, setConversation] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
-    const [rerender, setRerender] = useState(null);
+    const [rerender, setRerender] = useState(false);
     const [modalVideoOpen, setModalVideoOpen] = useState(false);
     const [message, setMessage] = useState([]);
     const { user } = useContext(AuthContext);
@@ -149,7 +149,7 @@ const Message = (props) => {
             let conversationIDChat;
             try {
                 conversationIDChat = currentChat.id;
-                if (data.conversationID === conversationIDChat) {
+                if (data.conversationID === conversationIDChat || data.senderId === user.id) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
@@ -250,6 +250,7 @@ const Message = (props) => {
             }
         });
     });
+    console.log(rerender);
 
     const callUser = () => {
         openModalVideo();

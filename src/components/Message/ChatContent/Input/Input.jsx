@@ -71,7 +71,7 @@ const Input = (props) => {
                     socket.emit('send-to-server', {
                         mess: chatContent,
                         senderId: props.user.id,
-                        conversationID: props.params.id,
+                        conversationID: props.params,
                         dataMess: {
                             conversationID: props.params,
                             date: new Date().getTime(),

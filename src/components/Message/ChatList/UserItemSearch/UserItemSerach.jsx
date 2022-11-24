@@ -39,22 +39,12 @@ const UserItemSearch = ({ name, ava, con, mess, button = false }) => {
         try {
             await axiosCilent.post('/zola/message', message);
             socket.emit('send-to-server', {
+                mess: mess,
                 senderId: user.id,
                 conversationID: con.id,
-                dataMess: {
-                    conversationID: con.id,
-                    date: new Date().getTime(),
-                    id: 'temp',
-                    img_url: mess.img_url,
-                    infoSender: {
-                        fullName: user.fullName,
-                        imageSender: user.img,
-                    },
-                    mess: mess.mess,
-                    sender: user.id,
-                },
                 imgs: mess.img_url.length,
                 fullName: user.fullName,
+                group: con.group,
             });
         } catch (err) {
             console.log(err);

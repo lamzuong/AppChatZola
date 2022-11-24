@@ -38,7 +38,6 @@ const Info = ({ img, nameInfo, conversation, outGroup }) => {
         if (a === false) listNoFriend.push(user.friends[i]);
     }
     Modal.setAppElement('#root');
-    console.log(nameInfo);
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editName, setEditName] = useState(nameInfo);
