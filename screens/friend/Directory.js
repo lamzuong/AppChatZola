@@ -14,7 +14,12 @@ import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function Directory({ navigation }) {
   const isFocused = useIsFocused();
   const { user } = useContext(AuthContext);
@@ -136,13 +141,13 @@ export default function Directory({ navigation }) {
         const res = await axiosCilent.get(
           `/zola/conversation/conversationId/${user.id}/${id}`
         );
-        const res2 = await axiosCilent.get(
-          "/zola/conversation/idCon/" + res[0].id
-        );
+        // const res2 = await axiosCilent.get(
+        //   "/zola/conversation/idCon/" + res[0].id
+        // );
         navigation.navigate("ChatRoom", {
           nickname: name,
           avatar: ava,
-          conversation: res2,
+          conversation: res,
         });
       } catch (error) {}
     };
@@ -153,6 +158,9 @@ export default function Directory({ navigation }) {
         friends: user.friends,
       });
       setRenderUser(!renderUser);
+      socket.emit("request-friend", {
+        userReceive: id,
+      });
     };
     return (
       <>

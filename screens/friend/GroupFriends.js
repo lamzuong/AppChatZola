@@ -10,7 +10,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import axiosCilent from "../../api/axiosClient";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function GroupFriends() {
   const { user } = useContext(AuthContext);
   const [conversation, setConversation] = useState([]);

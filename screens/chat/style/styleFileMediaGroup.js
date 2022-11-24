@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
   fileItem: {
     padding: 20,
     flexDirection: "row",
-    paddingLeft: 40,
     marginTop: 10,
     marginHorizontal: 10,
     borderRadius: 20,
@@ -49,6 +48,7 @@ const styles = StyleSheet.create({
   fileName: {
     fontSize: 17,
     marginLeft: 10,
+    maxWidth: "90%",
   },
   centeredView: {
     flex: 1,

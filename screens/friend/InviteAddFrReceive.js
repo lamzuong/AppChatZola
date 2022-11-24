@@ -11,7 +11,12 @@ import { AntDesign } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
 import { useIsFocused } from "@react-navigation/native";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function InviteAddFrReceive() {
   const { user, dispatch } = useContext(AuthContext);
   const [renderUser, setRenderUser] = useState(false);
@@ -68,6 +73,9 @@ export default function InviteAddFrReceive() {
       dispatch({ type: "LOGIN_SUCCESS", payload: res });
       const res2 = await axiosCilent.get("/zola/users/" + user.id);
       setListInvite(res2.listReceiver);
+      socket.emit("request-friend", {
+        userReceive: id,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -88,7 +96,9 @@ export default function InviteAddFrReceive() {
       const res3 = await axiosCilent.get(
         `/zola/conversation/conversationId/${user.id}/${id}`
       );
-      console.log(res3);
+      socket.emit("accept-request", {
+        userReceive: id,
+      });
       if (res3.length == 0) {
         await axiosCilent.post("/zola/conversation", {
           members: [user.id, id],

@@ -10,6 +10,7 @@ import {
   Modal,
   Pressable,
   StatusBar,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,88 +19,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import styleModal from "./style/styleModalImage";
 import { AuthContext } from "../../context/AuthContext";
 import axiosCilent from "../../api/axiosClient";
-
-// const listImg = [
-//   {
-//     id: 1,
-//     img: "https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg",
-//   },
-//   {
-//     id: 2,
-//     img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
-//   },
-//   {
-//     id: 3,
-//     img: "https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg",
-//   },
-//   {
-//     id: 4,
-//     img: "https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg",
-//   },
-//   {
-//     id: 5,
-//     img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-//   },
-//   {
-//     id: 6,
-//     img: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-//   },
-//   {
-//     id: 7,
-//     img: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-//   },
-//   {
-//     id: 8,
-//     img: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-//   },
-//   {
-//     id: 9,
-//     img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-//   },
-//   {
-//     id: 10,
-//     img: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-//   },
-//   {
-//     id: 11,
-//     img: "https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg",
-//   },
-//   {
-//     id: 12,
-//     img: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-//   },
-//   {
-//     id: 13,
-//     img: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-//   },
-//   {
-//     id: 14,
-//     img: "https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg",
-//   },
-//   {
-//     id: 15,
-//     img: "https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg",
-//   },
-//   {
-//     id: 16,
-//     img: "https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg",
-//   },
-//   {
-//     id: 17,
-//     img: "https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg",
-//   },
-// ];
-// const listFile = [
-//   { id: 1, file: "nhom5.doc" },
-//   { id: 2, file: "nhom5.doc" },
-//   { id: 3, file: "nhom5.doc" },
-//   { id: 4, file: "nhom5.doc" },
-//   { id: 5, file: "nhom5.doc" },
-//   { id: 6, file: "nhom5.doc" },
-//   { id: 7, file: "nhom5.doc" },
-//   { id: 8, file: "nhom5.doc" },
-//   { id: 9, file: "nhom5.doc" },
-// ];
+import { Video, AVPlaybackStatus } from "expo-av";
 
 export default function ChatInfo({ navigation, route }) {
   const { name, ava, conversation } = route.params;
@@ -121,7 +41,8 @@ export default function ChatInfo({ navigation, route }) {
             type == "jpg" ||
             type == "jpeg" ||
             type == "jfif" ||
-            type == "gif"
+            type == "gif" ||
+            type == "mp4"
           ) {
             listI.push(e);
           } else listF.push(e);
@@ -222,6 +143,9 @@ function ChooseTab(props) {
 const GridView = ({ name }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showCloseBtn, setShowCloseBtn] = useState(false);
+  const [status, setStatus] = useState({});
+  var fileType = name.split(".").reverse()[0];
+  // console.log(fileType);
   return (
     <View>
       <Modal
@@ -250,32 +174,70 @@ const GridView = ({ name }) => {
             ) : (
               <View style={{ height: 40 }}></View>
             )}
-            <Image
-              source={{
-                uri: name,
-              }}
-              style={styleModal.imageShow}
-            />
+            {fileType == "mp4" ? (
+              <Video
+                style={styleModal.imageShow}
+                source={{
+                  uri: name,
+                }}
+                useNativeControls
+                resizeMode="contain"
+                onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: name,
+                }}
+                style={styleModal.imageShow}
+              />
+            )}
           </View>
         </Pressable>
       </Modal>
-      <Pressable onPress={() => setModalVisible(!modalVisible)}>
-        <Image
-          source={{
-            uri: name,
-          }}
-          style={styles.imageItem}
-        />
+      <Pressable
+        onPress={() => {
+          console.log(fileType);
+          setModalVisible(!modalVisible);
+        }}
+      >
+        {fileType == "mp4" ? (
+          <Video
+            style={styles.imageItem}
+            source={{
+              uri: name,
+            }}
+            useNativeControls
+            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+          />
+        ) : (
+          <Image
+            source={{
+              uri: name,
+            }}
+            style={styles.imageItem}
+          />
+        )}
       </Pressable>
     </View>
   );
 };
 const Files = (props) => {
+  async function downloadFile(url) {
+    await Linking.openURL(url);
+  }
   return (
     <View>
-      <TouchableOpacity style={styles.fileItem}>
+      <TouchableOpacity
+        style={styles.fileItem}
+        onPress={() => {
+          downloadFile(props.name);
+        }}
+      >
         <AntDesign name="filetext1" size={24} color="black" />
-        <Text style={styles.fileName}>{props.name}</Text>
+        <Text style={styles.fileName}>
+          {props.name.split("/").reverse()[0]}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -318,16 +280,17 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width / 3,
   },
   fileItem: {
-    padding: 20,
+    padding: 15,
     flexDirection: "row",
-    paddingLeft: 40,
     marginTop: 10,
     marginHorizontal: 10,
     borderRadius: 20,
     backgroundColor: "#f2f2f2",
+    alignItems: "center",
   },
   fileName: {
     fontSize: 17,
     marginLeft: 10,
+    maxWidth: "90%",
   },
 });

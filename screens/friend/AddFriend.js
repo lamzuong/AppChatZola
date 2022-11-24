@@ -19,8 +19,12 @@ import { EvilIcons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axiosCilent from "../../api/axiosClient";
 import { AuthContext } from "../../context/AuthContext";
-// import SearchBar from "../chat/SearchBar";
+import { io } from "socket.io-client";
+import apiConfig from "../../api/apiConfig";
 
+const socket = io.connect(apiConfig.baseUrl, {
+  transports: ["websocket"],
+});
 export default function AddFriend({ navigation }, props) {
   //======Button Back=======
   useEffect(() => {
@@ -74,7 +78,6 @@ export default function AddFriend({ navigation }, props) {
         setListSender(res.listSender);
         setListReceive(res.listReceiver);
         setListFriends(res.friends);
-        // console.log(res);
       } catch (error) {
         console.log(error);
       }
@@ -89,6 +92,9 @@ export default function AddFriend({ navigation }, props) {
         friendId: id,
         listSender: currentUser.listSender,
       });
+      socket.emit("request-friend", {
+        userReceive: id,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -99,6 +105,9 @@ export default function AddFriend({ navigation }, props) {
         userId: currentUser.id,
         friendId: id,
         listSender: currentUser.listSender,
+      });
+      socket.emit("request-friend", {
+        userReceive: id,
       });
     } catch (err) {
       console.log(err);
@@ -111,6 +120,9 @@ export default function AddFriend({ navigation }, props) {
         friendId: id,
         listReceiver: currentUser.listReceiver,
       });
+      socket.emit("request-friend", {
+        userReceive: id,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -122,6 +134,9 @@ export default function AddFriend({ navigation }, props) {
         friendId: id,
         listReceiver: currentUser.listReceiver,
         friends: currentUser.friends,
+      });
+      socket.emit("request-friend", {
+        userReceive: id,
       });
     } catch (err) {
       console.log(err);
@@ -175,13 +190,13 @@ export default function AddFriend({ navigation }, props) {
       const res = await axiosCilent.get(
         `/zola/conversation/conversationId/${user.id}/${id}`
       );
-      const res2 = await axiosCilent.get(
-        "/zola/conversation/idCon/" + res[0].id
-      );
+      // const res2 = await axiosCilent.get(
+      //   "/zola/conversation/idCon/" + res[0].id
+      // );
       navigation.navigate("ChatRoom", {
         nickname: name,
         avatar: ava,
-        conversation: res2,
+        conversation: res,
       });
     } catch (error) {}
   };

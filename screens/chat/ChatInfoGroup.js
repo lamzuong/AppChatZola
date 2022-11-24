@@ -136,7 +136,8 @@ export default function ChatInfoGroup({ navigation, route }) {
             type == "jpg" ||
             type == "jpeg" ||
             type == "jfif" ||
-            type == "gif"
+            type == "gif" ||
+            type == "mp4"
           ) {
             listI.push(e);
           } else listF.push(e);

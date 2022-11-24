@@ -8,12 +8,14 @@ import {
   Image,
   ScrollView,
   BackHandler,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./style/styleFileMediaGroup";
+import { Video, AVPlaybackStatus } from "expo-av";
 
 export default function FileMediaGroup({ navigation, route }) {
   //======Button Back=======
@@ -109,6 +111,8 @@ function ChooseTab(props) {
 const GridView = ({ name }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showCloseBtn, setShowCloseBtn] = useState(false);
+  const [status, setStatus] = useState({});
+  var fileType = name.split(".").reverse()[0];
   return (
     <View>
       <Modal
@@ -137,33 +141,70 @@ const GridView = ({ name }) => {
             ) : (
               <View style={{ height: 40 }}></View>
             )}
-            <Image
-              source={{
-                uri: name,
-              }}
-              style={styles.imageShow}
-            />
+            {fileType == "mp4" ? (
+              <Video
+                style={styles.imageShow}
+                source={{
+                  uri: name,
+                }}
+                useNativeControls
+                resizeMode="contain"
+                onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: name,
+                }}
+                style={styles.imageShow}
+              />
+            )}
           </View>
         </Pressable>
       </Modal>
 
-      <Pressable onPress={() => setModalVisible(!modalVisible)}>
-        <Image
-          source={{
-            uri: name,
-          }}
-          style={styles.imageItem}
-        />
+      <Pressable
+        onPress={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        {fileType == "mp4" ? (
+          <Video
+            style={styles.imageItem}
+            source={{
+              uri: name,
+            }}
+            useNativeControls
+            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+          />
+        ) : (
+          <Image
+            source={{
+              uri: name,
+            }}
+            style={styles.imageItem}
+          />
+        )}
       </Pressable>
     </View>
   );
 };
 const Files = (props) => {
+  async function downloadFile(url) {
+    await Linking.openURL(url);
+  }
   return (
     <View>
-      <TouchableOpacity style={styles.fileItem}>
+      <TouchableOpacity
+        style={styles.fileItem}
+        onPress={() => {
+          downloadFile(props.name);
+        }}
+      >
         <AntDesign name="filetext1" size={24} color="black" />
-        <Text style={styles.fileName}>{props.name.split("-")[5]}</Text>
+        <Text style={styles.fileName}>
+          {props.name.split("/").reverse()[0]}
+        </Text>
       </TouchableOpacity>
     </View>
   );

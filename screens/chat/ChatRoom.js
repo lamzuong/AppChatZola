@@ -32,6 +32,7 @@ import emotion from "../../data/emotion";
 import { RNS3 } from "react-native-aws3";
 import * as DocumentPicker from "expo-document-picker";
 import uuid from "react-native-uuid";
+import * as FileSystem from "expo-file-system";
 
 const socket = io.connect(apiConfig.baseUrl, {
   transports: ["websocket"],
@@ -42,6 +43,7 @@ export default function ChatRoom({ route }) {
   const [nameRender, setNameRerender] = useState(nickname);
   const [avaRender, setAvaRerender] = useState(avatar);
   const [friendDeleted, setFriendDeleted] = useState(false);
+  const [outSize, setOutSize] = useState(false);
   useEffect(() => {
     if (route.params.rerenderTemp != null) {
       setRerender(rerenderTemp);
@@ -181,15 +183,41 @@ export default function ChatRoom({ route }) {
       const arr = result.selected;
       for (let i = 0; i < arr.length; i++) {
         arrShowImages.push(arr[i]);
+        //=========
+        const fileInfo = await FileSystem.getInfoAsync(arr[i].uri);
+        // console.log(fileInfo);
+        if (fileInfo.size > 30000000) {
+          Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
+            {},
+            {
+              text: "OK",
+              onPress: () => {
+                setImagesSelected([]);
+              },
+            },
+          ]);
+          break;
+        }
       }
       setImagesSelected(arrShowImages);
-      // console.log(arrShowImages);
     } else if (result.cancelled) {
     } else if (!result.selected) {
       // Chọn 1 ảnh
       arrShowImages.push(result);
       setImagesSelected(arrShowImages);
-      // console.log(result);
+
+      const fileInfo = await FileSystem.getInfoAsync(result.uri);
+      if (fileInfo.size > 30000000) {
+        Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
+          {},
+          {
+            text: "OK",
+            onPress: () => {
+              setImagesSelected([]);
+            },
+          },
+        ]);
+      }
     }
   };
   const openCamera = async () => {
@@ -204,7 +232,18 @@ export default function ChatRoom({ route }) {
     if (!result.cancelled) {
       const arr = [result];
       setImagesSelected(arr);
-      // console.log(arr);
+      const fileInfo = await FileSystem.getInfoAsync(result.uri);
+      if (fileInfo.size > 30000000) {
+        Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
+          {},
+          {
+            text: "OK",
+            onPress: () => {
+              setImagesSelected([]);
+            },
+          },
+        ]);
+      }
     }
   };
   const PickDocument = async () => {
@@ -213,6 +252,17 @@ export default function ChatRoom({ route }) {
     });
     if (result.type != "cancel") {
       setImagesSelected([result]);
+      if (result.size > 30000000) {
+        Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
+          {},
+          {
+            text: "OK",
+            onPress: () => {
+              setImagesSelected([]);
+            },
+          },
+        ]);
+      }
     }
   };
   //======getConversation=======
@@ -245,32 +295,30 @@ export default function ChatRoom({ route }) {
         let listImg = [];
         if (imagesSelected.length !== 0) {
           imagesSelected.forEach((e) => {
-            // console.log(e);
+            console.log(e);
             const image = e.uri.split(".");
             const fileType = image[image.length - 1];
             if (fileType == "mp4") {
-              RNS3.put(
-                {
-                  uri: e.uri,
-                  name: e.uri.split("/").reverse()[0],
-                  type: e.type + "/" + e.uri.split(".").reverse()[0],
-                },
-                {
-                  keyPrefix: "",
-                  bucket: "zola-chat",
-                  region: "ap-southeast-1",
-                  accessKey: "AKIA34KECLYEL2WGGHN2",
-                  secretKey: "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",
-                  successActionStatus: 201,
-                }
-              )
+              const file = {
+                uri: e.uri,
+                name: uuid.v4() + "-" + e.uri.split("/").reverse()[0],
+                type: e.type + "/" + e.uri.split(".").reverse()[0],
+              };
+              RNS3.put(file, {
+                keyPrefix: "",
+                bucket: "zola-chat",
+                region: "ap-southeast-1",
+                accessKey: "AKIA34KECLYEL2WGGHN2",
+                secretKey: "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",
+                successActionStatus: 201,
+              })
                 .then((response) => {
                   if (response.status !== 201)
                     throw new Error("Failed to upload image to S3");
                   console.log(response.body);
                 })
                 .catch((error) => console.log(error));
-              listImg.push(e.uri.split("/").reverse()[0]);
+              listImg.push(file.name);
             } else if (
               fileType == "docx" ||
               fileType == "doc" ||
@@ -282,28 +330,26 @@ export default function ChatRoom({ route }) {
               fileType == "pdf" ||
               fileType == "txt"
             ) {
-              RNS3.put(
-                {
-                  uri: e.uri,
-                  name: uuid.v4() + "-" + e.name,
-                  type: "application/" + fileType,
-                },
-                {
-                  keyPrefix: "",
-                  bucket: "zola-chat",
-                  region: "ap-southeast-1",
-                  accessKey: "AKIA34KECLYEL2WGGHN2",
-                  secretKey: "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",
-                  successActionStatus: 201,
-                }
-              )
+              const file = {
+                uri: e.uri,
+                name: uuid.v4() + "-" + e.name,
+                type: "application/" + fileType,
+              };
+              RNS3.put(file, {
+                keyPrefix: "",
+                bucket: "zola-chat",
+                region: "ap-southeast-1",
+                accessKey: "AKIA34KECLYEL2WGGHN2",
+                secretKey: "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",
+                successActionStatus: 201,
+              })
                 .then((response) => {
                   if (response.status !== 201)
                     throw new Error("Failed to upload image to S3");
                   console.log(response.body);
                 })
                 .catch((error) => console.log(error));
-              listImg.push(e.name);
+              listImg.push(file.name);
             } else {
               var obj = {
                 base64: `data:image/jpeg;base64,${e.base64}`,
@@ -474,17 +520,6 @@ export default function ChatRoom({ route }) {
         keyExtractor={(item, index) => index + item}
         ref={flatlistRef}
       />
-      {/* <ScrollView ref={flatlistRef}>
-        {message.map((e, i) => (
-          <View key={i}>
-            <MessageChat
-              time={e.date}
-              group={conversation.members.length > 2}
-              item={e}
-            />
-          </View>
-        ))}
-      </ScrollView> */}
       {/* Xem trước ảnh */}
       <View>
         {imagesSelected[0]?.type == "success" ? (
