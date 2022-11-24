@@ -614,19 +614,23 @@ router.get('/conversationId/:idUser/:idFriend', (req, res) => {
         if (err) {
             return res.status(500).send('Loi' + err);
         } else {
-            const paramsConversation = {
-                TableName: 'conversation',
-                Key: {
-                    id: data.Items.filter((item) => !item.group)[0].id,
-                },
-            };
-            docClient.get(paramsConversation, (err, data) => {
-                if (err) {
-                    return res.status(500).send('Loi' + err);
-                } else {
-                    return res.send(data.Item);
-                }
-            });
+            if (data.Items.length <= 0) {
+                return res.send(data.Items);
+            } else {
+                const paramsConversation = {
+                    TableName: 'conversation',
+                    Key: {
+                        id: data.Items.filter((item) => !item.group)[0].id,
+                    },
+                };
+                docClient.get(paramsConversation, (err, data) => {
+                    if (err) {
+                        return res.status(500).send('Loi' + err);
+                    } else {
+                        return res.send(data.Item);
+                    }
+                });
+            }
         }
     });
 });
