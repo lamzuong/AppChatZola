@@ -170,12 +170,13 @@ const Message = (props) => {
                 if (data.idDelete == user.id || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                     if (data.idDelete == user.id) {
+                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
+                        console.log(123);
+                        setRerender(!rerender);
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
                             setRerender(!rerender);
                         }
-                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
-                        setRerender(!rerender);
                     }
                 }
                 setRerender(!rerender);
@@ -250,7 +251,6 @@ const Message = (props) => {
             }
         });
     });
-    console.log(rerender);
 
     const callUser = () => {
         openModalVideo();

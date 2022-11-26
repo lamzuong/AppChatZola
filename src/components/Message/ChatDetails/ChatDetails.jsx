@@ -271,7 +271,7 @@ const ChatDetails = (props) => {
                                                     {props.currentChat.creator === user.id && user.id !== userItem.id && (
                                                         <button
                                                             className={cx('btn-add-frend')}
-                                                            onClick={() => handleDeleteMemGroup(user)}
+                                                            onClick={() => handleDeleteMemGroup(userItem)}
                                                         >
                                                             Xóa
                                                         </button>

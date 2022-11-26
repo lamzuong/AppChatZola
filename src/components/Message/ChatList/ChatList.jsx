@@ -154,7 +154,7 @@ const ChatList = (props) => {
                 id: user.id,
             });
             socket.emit('send-to-addGroup', {
-                idAdd: listUerAdded,
+                idAdd: [...listUerAdded, user.id],
             });
             setModalIsOpenGroup(false);
             setRerender(!rerender);
@@ -509,25 +509,31 @@ const ChatList = (props) => {
             ) : (
                 <>
                     <ul className={cx('chatList')}>
-                        {conversation.map((e, i) => (
-                            <div
-                                key={e.id}
-                                onClick={() => {
-                                    // sendData(e);
-                                    navigate(`/t/${e.id}`);
-                                }}
-                            >
-                                <li key={e.id} className={cx(i === active ? 'active' : '')}>
-                                    <Conversation
-                                        key={e.id}
-                                        id={e.id}
-                                        rerender={props.rerender}
-                                        conversation={e}
-                                        currentUser={user}
-                                    />
-                                </li>
+                        {conversation.length > 0 ? (
+                            conversation.map((e, i) => (
+                                <div
+                                    key={e.id}
+                                    onClick={() => {
+                                        // sendData(e);
+                                        navigate(`/t/${e.id}`);
+                                    }}
+                                >
+                                    <li key={e.id} className={cx(i === active ? 'active' : '')}>
+                                        <Conversation
+                                            key={e.id}
+                                            id={e.id}
+                                            rerender={props.rerender}
+                                            conversation={e}
+                                            currentUser={user}
+                                        />
+                                    </li>
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{ fontSize: '1.5rem', marginLeft: '10px', fontWeight: 'bold' }}>
+                                Hãy kết bạn với nhiều người hơn để trò chuyện cùng họ!
                             </div>
-                        ))}
+                        )}
                     </ul>
                 </>
             )}
