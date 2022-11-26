@@ -175,6 +175,7 @@ const Register = (props) => {
                 const user = { email: txtMail, password: txtPassword, fullName: txtFullname };
                 setLoading(true);
                 await axiosClient.post('/zola/auth/register', user);
+                //dispatch({ type: 'LOGIN_SUCCESS', payload: res });
                 setLoading(false);
                 return true;
             } else {
@@ -198,8 +199,10 @@ const Register = (props) => {
                         setLoading(true);
                         const res = await axiosClient.post('/zola/auth/login', userCredential);
                         dispatch({ type: 'LOGIN_SUCCESS', payload: res });
-                        clearInterval(timerId.current);
-                        navigate('/');
+                        if (res !== null) {
+                            clearInterval(timerId.current);
+                            navigate('/');
+                        }
                     } catch (error) {
                         dispatch({ type: 'LOGIN_FAILURE' });
                     }

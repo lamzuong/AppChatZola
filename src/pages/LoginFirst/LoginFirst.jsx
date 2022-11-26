@@ -73,6 +73,11 @@ const LoginFirst = (props) => {
         formData.append('fullNameOld', user.fullName);
         formData.append('imgOld', user.img);
         try {
+            const date = new Date();
+            if (value.getFullYear() >= date.getFullYear()) {
+                setErrBirthday('Tuổi > 13');
+                return;
+            }
             if (errBirthday.length > 0) {
                 return;
             }

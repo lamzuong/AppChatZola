@@ -154,6 +154,7 @@ const Profile = (props) => {
             formData.append('id', user.id);
             formData.append('gender', checkGender);
             formData.append('birthdate', dateString);
+            formData.append('fullName', nameDisplay);
             formData.append('fullNameOld', user.fullName);
             formData.append('imgOld', user.img);
             try {
