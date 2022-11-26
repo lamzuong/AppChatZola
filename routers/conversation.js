@@ -614,8 +614,8 @@ router.get('/conversationId/:idUser/:idFriend', (req, res) => {
         if (err) {
             return res.status(500).send('Loi' + err);
         } else {
-            if (data.Items.length <= 0) {
-                return res.send(data.Items);
+            if (data.Items.filter((item) => !item.group).length <= 0) {
+                return res.send(data.Items.filter((item) => !item.group));
             } else {
                 const paramsConversation = {
                     TableName: 'conversation',
