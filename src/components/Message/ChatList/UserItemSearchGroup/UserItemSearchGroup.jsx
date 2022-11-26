@@ -4,7 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import style from './UserItemSearchGroup.module.scss';
 import { io } from 'socket.io-client';
 import classNames from 'classnames/bind';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(style);
 
