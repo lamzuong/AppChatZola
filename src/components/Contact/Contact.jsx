@@ -44,10 +44,14 @@ const Contact = (props) => {
     const [listGroup, setListGroup] = useState([]);
     const [showOption, setShowOption] = useState(false);
 
+    let cbChild = (childData) => {
+        setRerender(childData);
+    };
+
     useEffect(() => {
         socket.off('server-send-request-friend');
         socket.on('server-send-request-friend', (data) => {
-            if (data.userReceive == user.id) {
+            if (data.listUser.includes(user.id)) {
                 setRerender(!rerender);
             }
         });
@@ -61,10 +65,6 @@ const Contact = (props) => {
         };
         renderUser();
     }, [rerender]);
-
-    let cbChild = (childData) => {
-        setRerender(childData);
-    };
 
     useEffect(() => {
         let listFriend = [];
@@ -100,7 +100,6 @@ const Contact = (props) => {
         getConversation();
     }, [currentUser, rerender]);
 
-    console.log(listMem);
     const handleDelFriend = async (u) => {
         await axiosCilent.put('/zola/users/deleteFriend', {
             userId: user.id,
@@ -109,7 +108,7 @@ const Contact = (props) => {
         });
         setRerender(!rerender);
         socket.emit('request-friend', {
-            userReceive: u.id,
+            listUser: [user.id, u.id],
         });
     };
 

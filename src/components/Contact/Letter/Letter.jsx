@@ -52,7 +52,7 @@ const Letter = ({ id, parentCb }) => {
                 await axiosCilent.post('zola/conversation', { members });
             }
             socket.emit('request-friend', {
-                userReceive: id,
+                listUser: [user.id, id],
             });
         } catch (error) {
             console.log(error);
@@ -72,7 +72,7 @@ const Letter = ({ id, parentCb }) => {
             setRerender(!rerender);
             sendData(rerender);
             socket.emit('request-friend', {
-                userReceive: id,
+                listUser: [user.id, id],
             });
         } catch (error) {
             console.log(error);

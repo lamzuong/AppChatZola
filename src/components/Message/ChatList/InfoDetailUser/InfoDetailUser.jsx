@@ -36,7 +36,7 @@ const InfoDetailUser = ({ ava, name, id, onclick = () => {} }) => {
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
             socket.emit('request-friend', {
-                userReceive: id,
+                listUser: [user.id, id],
             });
             setAwaitAccept(true);
         } catch (error) {
@@ -55,7 +55,7 @@ const InfoDetailUser = ({ ava, name, id, onclick = () => {} }) => {
             const res = await axiosCilent.get(`/zola/users/${user.id}`);
             dispatch({ type: 'LOGIN_SUCCESS', payload: res });
             socket.emit('request-friend', {
-                userReceive: id,
+                listUser: [user.id, id],
             });
             setAwaitAccept(true);
         } catch (error) {
