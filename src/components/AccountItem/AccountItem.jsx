@@ -7,6 +7,7 @@ import classNames from 'classnames/bind';
 import styles from './AccountItem.module.scss';
 import Tippy from '@tippyjs/react/headless';
 import { useState } from 'react';
+import Modal from 'react-modal';
 
 const cx = classNames.bind(styles);
 
@@ -29,7 +30,6 @@ const AccountItem = (props) => {
                     <span className={cx('mess')}>{props.mess}</span>
                 </div>
             </Link>
-
             {props.tippy && (
                 <div className={cx('btn')}>
                     <Tippy
@@ -39,7 +39,17 @@ const AccountItem = (props) => {
                         render={(attrs) => (
                             <ul className={cx('wrapper-more')} tabIndex="-1" {...attrs}>
                                 <li onClick={() => props.handleChat(props.u)}>Nhắn tin</li>
-                                <li onClick={() => props.handleDelFriend(props.u)}>Xóa</li>
+                                {/* <li onClick={() => props.handleDelFriend(props.u)}>Xóa</li> */}
+                                <li
+                                    onClick={() => {
+                                        props.setModalConfirmDelete(true);
+                                        setShowOption(false);
+                                        props.setNameDel(props.name);
+                                        props.setUserIsCaceled(props.u);
+                                    }}
+                                >
+                                    Hủy kết bạn
+                                </li>
                             </ul>
                         )}
                     >

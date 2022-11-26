@@ -20,6 +20,18 @@ const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(style);
 
+const customStyles = {
+    content: {
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
+
 const category = [
     {
         id: 1,
@@ -43,7 +55,9 @@ const Contact = (props) => {
     const [listMem, setListMem] = useState([]);
     const [listGroup, setListGroup] = useState([]);
     const [showOption, setShowOption] = useState(false);
-
+    const [modalConfirmDelete, setModalConfirmDelete] = useState(false);
+    const [nameDel, setNameDel] = useState('');
+    const [userIsCaceled, setUserIsCaceled] = useState({});
     let cbChild = (childData) => {
         setRerender(childData);
     };
@@ -160,6 +174,9 @@ const Contact = (props) => {
                                       handleChat={handleChat}
                                       u={u}
                                       tippy
+                                      setModalConfirmDelete={setModalConfirmDelete}
+                                      setNameDel={setNameDel}
+                                      setUserIsCaceled={setUserIsCaceled}
                                   />
                               </div>
                           ))
@@ -181,6 +198,32 @@ const Contact = (props) => {
                     })}
                 </div>
             </div>
+
+            <Modal isOpen={modalConfirmDelete} style={customStyles} ariaHideApp={false}>
+                <div className={cx('wrapper-modal')}>
+                    <div className={cx('content-modal')}>
+                        <div className={cx('text-confirm')}>{`Bạn có chắc chắn hủy kêt bạn với ${nameDel}`}</div>
+                    </div>
+                    {/* <button className={cx('btn-confirm-mail')} onClick={handleConfirm}>
+                        Xác nhận
+                    </button> */}
+
+                    <div className={cx('btns')}>
+                        <button className={cx('btnCal', 'btn')} onClick={() => setModalConfirmDelete(false)}>
+                            Thoát
+                        </button>
+                        <button
+                            className={cx('btnConf', 'btn')}
+                            onClick={() => {
+                                handleDelFriend(userIsCaceled);
+                                setModalConfirmDelete(false);
+                            }}
+                        >
+                            Xác nhận
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };

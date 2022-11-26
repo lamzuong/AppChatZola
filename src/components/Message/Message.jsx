@@ -43,6 +43,18 @@ const customStyles = {
         zIndex: '100',
     },
 };
+
+const customStylesMisdel = {
+    content: {
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
 const Message = (props) => {
     const [conversation, setConversation] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
@@ -62,6 +74,8 @@ const Message = (props) => {
     const myVideo = useRef();
     const friendVideo = useRef();
     const connectionRef = useRef();
+    const [modalIsDeleteGroup, setModalIsDeleteGroup] = useState(false);
+    const [nameGroupMeIsDelete, setNameGroupMeIsDelete] = useState('');
 
     const navigate = useNavigate();
     const scrollRef = useRef();
@@ -168,9 +182,11 @@ const Message = (props) => {
         socket.off('server-send-to-out');
         socket.on('server-send-to-out', (data) => {
             try {
-                if (data.idDelete == user.id || data.conversationID === currentChat.id) {
+                if (data.idDelete === user.id || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
-                    if (data.idDelete == user.id) {
+                    if (data.idDelete === user.id) {
+                        // setModalIsDeleteGroup(true);
+                        // setNameGroupMeIsDelete(data.nameGroup);
                         alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
                         console.log(123);
                         setRerender(!rerender);
@@ -338,103 +354,123 @@ const Message = (props) => {
     // console.log(currentChat);
     conversation.sort((a, b) => b.date - a.date);
     return (
-        <div className={cx('wrapper')}>
-            <ChatList
-                conversation={conversation}
-                rerender={rerender}
-                parentCb1={cbChild1}
-                // parentCb={cbChild}
-            />
-            <div className={cx('chatWrapper')}>
-                {props.params ? (
-                    <>
-                        {/* chatHeader */}
-                        <div className={cx('headermessWrapper')}>
-                            <div className={cx('headermessInfo')}>
-                                <div className={cx('headermessAvatar')}>
-                                    <img src={img} alt="" />
-                                </div>
-                                <div className={cx('headermessName')}>{name}</div>
-                            </div>
-                            <div className={cx('headermessNav')}>
-                                <i className="bx bxs-phone"></i>
-                                <i className="bx bxs-video" onClick={callUser}></i>
-                            </div>
-                        </div>
-                        {/* chatContent */}
-                        <div className={cx('chatBox')}>
-                            {message.map((m) => (
-                                <div key={m.id} ref={scrollRef}>
-                                    <MessUser
-                                        own={m.sender === user.id}
-                                        mess={m}
-                                        user={user}
-                                        sender={m.infoSender}
-                                        conversation={conversation}
-                                        group={currentChat?.members.length > 2}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                        <Input
-                            user={user}
-                            params={currentChat}
-                            parentCb={cbChild1}
-                            group={currentChat?.members.length > 2}
-                        />
-                    </>
-                ) : (
-                    <h1 style={{ display: 'flex', justifyContent: 'center', marginTop: '30%', color: '#646e74' }}>
-                        Chọn người bạn muốn chat!
-                    </h1>
-                )}
-            </div>
-            {props.params ? <ChatDetails user={user} img={img} name={name} currentChat={currentChat} /> : null}
-            <Modal isOpen={modalVideoOpen} style={customStyles} onRequestClose={closeModelVideo}>
-                <div className={cx('videoCall-parent')}>
-                    <div className={cx('friend-video')}>
-                        {callAccepted && !callEnded ? (
-                            <video className={cx('video-f')} autoPlay playsInline ref={friendVideo}></video>
-                        ) : (
-                            null || (
-                                <div className={cx('waitAccept')}>
-                                    <div className={cx('userName')}>{nameVideo}</div>
-                                </div>
-                            )
-                        )}
+        <>
+            <Modal isOpen={modalIsDeleteGroup} style={customStylesMisdel} ariaHideApp={false}>
+                <div className={cx('wrapper-modal-isdel')}>
+                    <div className={cx('content-modal')}>
+                        <div className={cx('text-confirm')}>{`Bạn bị kick khỏi nhóm ${nameGroupMeIsDelete}`}</div>
                     </div>
-                    <div className={cx('my-video')}>
-                        <video className={cx('video-m')} autoPlay playsInline ref={myVideo}></video>
-                    </div>
-                    <div className={cx('callVideo-footer')}>
-                        {receivingCall && !callAccepted ? (
-                            <>
-                                <div className={cx('mic')} onClick={answerCall}>
-                                    <FontAwesomeIcon icon={faPhoneVolume} style={{ color: '#ffffff' }} />
-                                </div>
-                                <div className={cx('end')} onClick={denyCall}>
-                                    <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className={cx('mic')}>
-                                    <FontAwesomeIcon icon={faMicrophone} style={{ color: '#ffffff' }} />
-                                    {/* <FontAwesomeIcon icon={faMicrophoneSlash} style={{ color: '#ffffff' }} /> */}
-                                </div>
-                                <div className={cx('cam')}>
-                                    <FontAwesomeIcon icon={faVideo} style={{ color: '#ffffff' }} />
-                                    {/* <FontAwesomeIcon icon={faVideoSlash} style={{ color: '#ffffff' }} /> */}
-                                </div>
-                                <div className={cx('end')} onClick={leaveCall}>
-                                    <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
-                                </div>
-                            </>
-                        )}
+
+                    <div className={cx('btns')}>
+                        <button
+                            className={cx('btnConf', 'btn')}
+                            onClick={() => {
+                                setModalIsDeleteGroup(false);
+                            }}
+                        >
+                            Xác nhận
+                        </button>
                     </div>
                 </div>
             </Modal>
-        </div>
+            <div className={cx('wrapper')}>
+                <ChatList
+                    conversation={conversation}
+                    rerender={rerender}
+                    parentCb1={cbChild1}
+                    // parentCb={cbChild}
+                />
+                <div className={cx('chatWrapper')}>
+                    {props.params ? (
+                        <>
+                            {/* chatHeader */}
+                            <div className={cx('headermessWrapper')}>
+                                <div className={cx('headermessInfo')}>
+                                    <div className={cx('headermessAvatar')}>
+                                        <img src={img} alt="" />
+                                    </div>
+                                    <div className={cx('headermessName')}>{name}</div>
+                                </div>
+                                <div className={cx('headermessNav')}>
+                                    <i className="bx bxs-phone"></i>
+                                    <i className="bx bxs-video" onClick={callUser}></i>
+                                </div>
+                            </div>
+                            {/* chatContent */}
+                            <div className={cx('chatBox')}>
+                                {message.map((m) => (
+                                    <div key={m.id} ref={scrollRef}>
+                                        <MessUser
+                                            own={m.sender === user.id}
+                                            mess={m}
+                                            user={user}
+                                            sender={m.infoSender}
+                                            conversation={conversation}
+                                            group={currentChat?.members.length > 2}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <Input
+                                user={user}
+                                params={currentChat}
+                                parentCb={cbChild1}
+                                group={currentChat?.members.length > 2}
+                            />
+                        </>
+                    ) : (
+                        <h1 style={{ display: 'flex', justifyContent: 'center', marginTop: '30%', color: '#646e74' }}>
+                            Chọn người bạn muốn chat!
+                        </h1>
+                    )}
+                </div>
+                {props.params ? <ChatDetails user={user} img={img} name={name} currentChat={currentChat} /> : null}
+                <Modal isOpen={modalVideoOpen} style={customStyles} onRequestClose={closeModelVideo}>
+                    <div className={cx('videoCall-parent')}>
+                        <div className={cx('friend-video')}>
+                            {callAccepted && !callEnded ? (
+                                <video className={cx('video-f')} autoPlay playsInline ref={friendVideo}></video>
+                            ) : (
+                                null || (
+                                    <div className={cx('waitAccept')}>
+                                        <div className={cx('userName')}>{nameVideo}</div>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                        <div className={cx('my-video')}>
+                            <video className={cx('video-m')} autoPlay playsInline ref={myVideo}></video>
+                        </div>
+                        <div className={cx('callVideo-footer')}>
+                            {receivingCall && !callAccepted ? (
+                                <>
+                                    <div className={cx('mic')} onClick={answerCall}>
+                                        <FontAwesomeIcon icon={faPhoneVolume} style={{ color: '#ffffff' }} />
+                                    </div>
+                                    <div className={cx('end')} onClick={denyCall}>
+                                        <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className={cx('mic')}>
+                                        <FontAwesomeIcon icon={faMicrophone} style={{ color: '#ffffff' }} />
+                                        {/* <FontAwesomeIcon icon={faMicrophoneSlash} style={{ color: '#ffffff' }} /> */}
+                                    </div>
+                                    <div className={cx('cam')}>
+                                        <FontAwesomeIcon icon={faVideo} style={{ color: '#ffffff' }} />
+                                        {/* <FontAwesomeIcon icon={faVideoSlash} style={{ color: '#ffffff' }} /> */}
+                                    </div>
+                                    <div className={cx('end')} onClick={leaveCall}>
+                                        <FontAwesomeIcon icon={faPhoneSlash} style={{ color: '#ffffff' }} />
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </Modal>
+            </div>
+        </>
     );
 };
 
