@@ -25,102 +25,10 @@ import {
     faVideoSlash,
 } from '@fortawesome/free-solid-svg-icons';
 
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
-
-const mess = [
-    {
-        id: '1',
-        ava: 'https://i.pinimg.com/736x/18/b7/c8/18b7c8278caef0e29e6ec1c01bade8f2.jpg',
-        name: 'Hoang Phuc',
-        message: 'gutboiz',
-    },
-    {
-        id: '2',
-        ava: 'https://i.pinimg.com/736x/6d/cd/c7/6dcdc7081a209999450d6abe0b3d84a7.jpg',
-        name: 'Phuc Nguyen',
-        message: 'facboi',
-    },
-    {
-        id: '3',
-        ava: 'https://i.pinimg.com/736x/92/ff/1a/92ff1ac6f54786b4baeca8412934a7ca.jpg',
-        name: 'Minh Vuong M4U',
-        message: 'ka xy',
-    },
-    {
-        id: '4',
-        ava: 'https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg',
-        name: 'Nam Zuong',
-        message: 'mo i lo ep',
-    },
-    {
-        id: '5',
-        ava: 'https://i.pinimg.com/280x280_RS/43/cd/7c/43cd7c65d590d2f41c05a23f3dfe82d4.jpg',
-        name: 'Ban Nuoc',
-        message: 'Ziet Cong',
-    },
-    {
-        id: '6',
-        ava: 'https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg',
-        name: 'Nam',
-        message: 'dcm',
-    },
-    {
-        id: '7',
-        ava: 'https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg',
-        name: 'Phuc',
-        message: 'dcm',
-    },
-    {
-        id: '8',
-        ava: 'https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg',
-        name: 'Nguyen',
-        message: 'dcm',
-    },
-    {
-        id: '9',
-        ava: 'https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg',
-        name: 'Quoc',
-        message: 'dcm',
-    },
-    {
-        id: '10',
-        ava: 'https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg',
-        name: 'Vuong',
-        message: 'dcm',
-    },
-    {
-        id: '11',
-        ava: 'https://i.pinimg.com/736x/b5/13/02/b513025f923ab9f85c7900f58f871d19.jpg',
-        name: 'Nam',
-        message: 'dcm',
-    },
-    {
-        id: '12',
-        ava: 'https://i.pinimg.com/originals/24/c8/03/24c803872ffa8700bc0f0e236c57c91c.jpg',
-        name: 'Phuc',
-        message: 'dcm',
-    },
-    {
-        id: '13',
-        ava: 'https://i.pinimg.com/736x/ff/fc/f5/fffcf54386998aaee1f366b47b4d2fdb.jpg',
-        name: 'Nguyen',
-        message: 'dcm',
-    },
-    {
-        id: '14',
-        ava: 'https://i.pinimg.com/736x/23/ee/9a/23ee9a788c3388c86379989d1a8cee1d.jpg',
-        name: 'Quoc',
-        message: 'dcm',
-    },
-    {
-        id: '15',
-        ava: 'https://i.pinimg.com/736x/c0/ee/2e/c0ee2e67d78d49755f896cb7b6450cdf.jpg',
-        name: 'Vuong',
-        message: 'dcm',
-    },
-];
 
 const customStyles = {
     content: {
@@ -138,7 +46,7 @@ const customStyles = {
 const Message = (props) => {
     const [conversation, setConversation] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
-    const [rerender, setRerender] = useState(null);
+    const [rerender, setRerender] = useState(false);
     const [modalVideoOpen, setModalVideoOpen] = useState(false);
     const [message, setMessage] = useState([]);
     const { user } = useContext(AuthContext);
@@ -242,7 +150,7 @@ const Message = (props) => {
             let conversationIDChat;
             try {
                 conversationIDChat = currentChat.id;
-                if (data.conversationID === conversationIDChat) {
+                if (data.conversationID === conversationIDChat || data.senderId === user.id) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
@@ -263,12 +171,13 @@ const Message = (props) => {
                 if (data.idDelete == user.id || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                     if (data.idDelete == user.id) {
+                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
+                        console.log(123);
+                        setRerender(!rerender);
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
                             setRerender(!rerender);
                         }
-                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
-                        setRerender(!rerender);
                     }
                 }
                 setRerender(!rerender);
@@ -431,7 +340,6 @@ const Message = (props) => {
     return (
         <div className={cx('wrapper')}>
             <ChatList
-                data={mess}
                 conversation={conversation}
                 rerender={rerender}
                 parentCb1={cbChild1}

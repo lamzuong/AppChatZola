@@ -6,7 +6,10 @@ import axiosCilent from '../../../api/axiosClient';
 import { AuthContext } from '../../../context/AuthContext';
 import React from 'react';
 import { io } from 'socket.io-client';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+
+import apiConfig from '../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
+
 const cx = classNames.bind(styles);
 
 const Letter = ({ id, parentCb }) => {
@@ -49,7 +52,7 @@ const Letter = ({ id, parentCb }) => {
                 await axiosCilent.post('zola/conversation', { members });
             }
             socket.emit('request-friend', {
-                userReceive: id,
+                listUser: [user.id, id],
             });
         } catch (error) {
             console.log(error);
@@ -69,7 +72,7 @@ const Letter = ({ id, parentCb }) => {
             setRerender(!rerender);
             sendData(rerender);
             socket.emit('request-friend', {
-                userReceive: id,
+                listUser: [user.id, id],
             });
         } catch (error) {
             console.log(error);

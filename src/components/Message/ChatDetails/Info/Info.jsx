@@ -14,7 +14,8 @@ import UserItemSearchGroup from '../../ChatList/UserItemSearchGroup/UserItemSear
 import UserItemAdded from '../../ChatList/UserItemAdded/UserItemAdded';
 
 import { io } from 'socket.io-client';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -38,7 +39,6 @@ const Info = ({ img, nameInfo, conversation, outGroup }) => {
         if (a === false) listNoFriend.push(user.friends[i]);
     }
     Modal.setAppElement('#root');
-    console.log(nameInfo);
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editName, setEditName] = useState(nameInfo);

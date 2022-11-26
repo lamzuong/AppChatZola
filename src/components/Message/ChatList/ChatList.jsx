@@ -20,7 +20,8 @@ import UserItemAdded from './UserItemAdded/UserItemAdded';
 import useDebounce from '../../../Hooks/useDebounce';
 import { io } from 'socket.io-client';
 
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -41,7 +42,6 @@ const ChatList = (props) => {
     const conversation = props.conversation;
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
-    const mess = props.data;
     const active = conversation.findIndex((e) => e.id === path);
     const [rerender, setRerender] = useState(false);
     const [text, setText] = useState('');
@@ -155,7 +155,7 @@ const ChatList = (props) => {
                 id: user.id,
             });
             socket.emit('send-to-addGroup', {
-                idAdd: listUerAdded,
+                idAdd: [...listUerAdded, user.id],
             });
             setModalIsOpenGroup(false);
             setRerender(!rerender);
@@ -509,31 +509,32 @@ const ChatList = (props) => {
                 </>
             ) : (
                 <>
-                    <div className={cx('userOnl')}>
-                        {mess.map((e, i) => (
-                            <AccountItem key={i} none={true} id={e.id} ava={e.ava} />
-                        ))}
-                    </div>
                     <ul className={cx('chatList')}>
-                        {conversation.map((e, i) => (
-                            <div
-                                key={e.id}
-                                onClick={() => {
-                                    // sendData(e);
-                                    navigate(`/t/${e.id}`);
-                                }}
-                            >
-                                <li key={e.id} className={cx(i === active ? 'active' : '')}>
-                                    <Conversation
-                                        key={e.id}
-                                        id={e.id}
-                                        rerender={props.rerender}
-                                        conversation={e}
-                                        currentUser={user}
-                                    />
-                                </li>
+                        {conversation.length > 0 ? (
+                            conversation.map((e, i) => (
+                                <div
+                                    key={e.id}
+                                    onClick={() => {
+                                        // sendData(e);
+                                        navigate(`/t/${e.id}`);
+                                    }}
+                                >
+                                    <li key={e.id} className={cx(i === active ? 'active' : '')}>
+                                        <Conversation
+                                            key={e.id}
+                                            id={e.id}
+                                            rerender={props.rerender}
+                                            conversation={e}
+                                            currentUser={user}
+                                        />
+                                    </li>
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{ fontSize: '1.5rem', marginLeft: '10px', fontWeight: 'bold' }}>
+                                Hãy kết bạn với nhiều người hơn để trò chuyện cùng họ!
                             </div>
-                        ))}
+                        )}
                     </ul>
                 </>
             )}

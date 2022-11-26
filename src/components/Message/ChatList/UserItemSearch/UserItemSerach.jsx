@@ -4,7 +4,8 @@ import { useContext, useEffect, useState } from 'react';
 import style from './UserItemSearch.module.scss';
 import { io } from 'socket.io-client';
 import classNames from 'classnames/bind';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(style);
 
@@ -26,7 +27,7 @@ const UserItemSearch = ({ name, ava, con, mess, button = false }) => {
     }, [con?.members, user]);
     let img = '';
     let ten = '';
-    if (con?.members.length > 2) {
+    if (con?.group) {
         img = con.avatarGroup;
         ten = con.groupName;
     } else {
@@ -39,22 +40,12 @@ const UserItemSearch = ({ name, ava, con, mess, button = false }) => {
         try {
             await axiosCilent.post('/zola/message', message);
             socket.emit('send-to-server', {
+                mess: mess,
                 senderId: user.id,
                 conversationID: con.id,
-                dataMess: {
-                    conversationID: con.id,
-                    date: new Date().getTime(),
-                    id: 'temp',
-                    img_url: mess.img_url,
-                    infoSender: {
-                        fullName: user.fullName,
-                        imageSender: user.img,
-                    },
-                    mess: mess.mess,
-                    sender: user.id,
-                },
                 imgs: mess.img_url.length,
                 fullName: user.fullName,
+                group: con.group,
             });
         } catch (err) {
             console.log(err);

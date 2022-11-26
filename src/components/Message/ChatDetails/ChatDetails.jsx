@@ -20,7 +20,8 @@ import { AuthContext } from '../../../context/AuthContext';
 
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
@@ -60,6 +61,7 @@ const ChatDetails = (props) => {
     const [modalOutGroupOpen, setModalOutGroupOpen] = useState(false);
     const [modalDelGroupOpen, setModalDelGroupOpen] = useState(false);
     const [outGroup, setOutGroup] = useState(false);
+    const [down, setDown] = useState(false);
 
     const openModalImg = () => {
         setModalImgIsOpen(true);
@@ -118,7 +120,7 @@ const ChatDetails = (props) => {
             for (let i = 0; i < props.currentChat?.members.length; i++) {
                 const res = await axiosCilent.get(`/zola/users/` + props.currentChat.members[i]);
                 if (
-                    props.currentChat.members[i] === user.id &&
+                    props.currentChat.members[i] === user?.id &&
                     props.currentChat.members[i] !== props.currentChat.creator
                 ) {
                     listTemp.unshift(res);
@@ -131,11 +133,10 @@ const ChatDetails = (props) => {
             setListMemberInfo([creator, ...listTemp]);
         };
         getUsersInfo();
-    }, [props.currentChat?.members.length]);
-    const [down, setDown] = useState(false);
-
+        setDown(false);
+    }, [props.currentChat?.members]);
     const handleOutGroup = async () => {
-        if (props.currentChat.creator === props.user.id) {
+        if (props.currentChat.creator === user.id) {
             closeModelOutGroup();
             setOutGroup(true);
         } else {
@@ -194,6 +195,14 @@ const ChatDetails = (props) => {
             console.log(error);
         }
     };
+    function convertName(name) {
+        let a = name.split('-');
+        let temp = '';
+        for (let i = 5; i < a.length; i++)
+            if (i == a.length - 1) temp += a[i];
+            else temp += a[i] + '-';
+        return temp;
+    }
     return (
         <div className={cx('wrapper')}>
             <Header title="Thông tin hội thoại" className={cx('customHeader')} />
@@ -208,7 +217,7 @@ const ChatDetails = (props) => {
                     </div>
                     <div className={cx('body-modal')}>
                         {modalOutGroupOpen === true &&
-                            (props.currentChat.creator === props.user.id && props.currentChat.members.length > 1 ? (
+                            (props.currentChat.creator === user.id && props.currentChat.members.length > 1 ? (
                                 <>
                                     <span>Bạn đang là trưởng nhóm nên không thể thực hiện chức năng này</span>
                                     <br />
@@ -248,28 +257,27 @@ const ChatDetails = (props) => {
                                     <i className="bx bxs-down-arrow" onClick={() => setDown(false)}></i>
                                     <div className={cx('listMember')}>
                                         <ul>
-                                            {listMemberInfo.map((user) => (
-                                                <li key={user.id} className={cx('item-mem')}>
+                                            {listMemberInfo.map((userItem) => (
+                                                <li key={userItem?.id} className={cx('item-mem')}>
                                                     <AccountItem
                                                         name={
-                                                            user.id === props.user.id
-                                                                ? `${user.fullName} (Tôi)`
-                                                                : user.fullName
+                                                            userItem?.id === user.id
+                                                                ? `${userItem?.fullName} (Tôi)`
+                                                                : userItem?.fullName
                                                         }
-                                                        ava={user.img}
+                                                        ava={userItem?.img}
                                                         none
                                                     />
 
-                                                    {props.currentChat.creator === props.user.id &&
-                                                        user.id !== props.user.id && (
-                                                            <button
-                                                                className={cx('btn-add-frend')}
-                                                                onClick={() => handleDeleteMemGroup(user)}
-                                                            >
-                                                                Xóa
-                                                            </button>
-                                                        )}
-                                                    {props.currentChat.creator === user.id && (
+                                                    {props.currentChat.creator === user.id && user.id !== userItem.id && (
+                                                        <button
+                                                            className={cx('btn-add-frend')}
+                                                            onClick={() => handleDeleteMemGroup(userItem)}
+                                                        >
+                                                            Xóa
+                                                        </button>
+                                                    )}
+                                                    {props.currentChat.creator === userItem?.id && (
                                                         <FontAwesomeIcon
                                                             icon={faKey}
                                                             className={cx('icon-key')}
@@ -334,7 +342,7 @@ const ChatDetails = (props) => {
                             <ListViewItem
                                 key={i}
                                 icon={<i className="bx bx-file" style={{ marginRight: '4px', fontSize: '24px' }}></i>}
-                                title={f.split('/').reverse()[0]}
+                                title={convertName(f.split('/').reverse()[0])}
                             />
                         ))}
 

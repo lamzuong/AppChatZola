@@ -15,18 +15,11 @@
     border: 1px solid #ccc;
 }
 
-.userOnl {
-    height: 115%;
-    margin: 10px 2px;
-    width: 100%;
-    @include flex(center, space-between);
-    overflow-x: scroll;
-}
-
 .chatList {
     width: 100%;
     min-height: 50px;
-    height: calc(100vh - 164px);
+    margin-top: 4px;
+    height: calc(100vh - 88px);
     overflow-y: auto;
     overscroll-behavior: contain;
 }
