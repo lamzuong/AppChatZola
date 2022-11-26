@@ -241,7 +241,13 @@ const ChatDetails = (props) => {
                 </div>
             </Modal>
             <div className={cx('wrapper-info')}>
-                <Info img={props.img} nameInfo={props.name} conversation={props.currentChat} outGroup={outGroup} />
+                <Info
+                    params={props.params}
+                    img={props.img}
+                    nameInfo={props.name}
+                    conversation={props.currentChat}
+                    outGroup={outGroup}
+                />
                 <Store>
                     {props.currentChat?.group && (
                         <StoreItem

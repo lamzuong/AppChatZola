@@ -43,11 +43,24 @@ const customStyles = {
         zIndex: '100',
     },
 };
+
+const customStylesKick = {
+    content: {
+        padding: '0',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+};
 const Message = (props) => {
     const [conversation, setConversation] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [rerender, setRerender] = useState(false);
     const [modalVideoOpen, setModalVideoOpen] = useState(false);
+    const [modalKickOpen, setModalKickOpen] = useState(false);
     const [message, setMessage] = useState([]);
     const { user } = useContext(AuthContext);
 
@@ -59,6 +72,7 @@ const Message = (props) => {
     const [userToCall, setUserToCall] = useState();
     const [callEnded, setCallEnded] = useState(false);
     const [nameVideo, setNameVideo] = useState('');
+    const [nameKick, setNameKick] = useState('');
     const myVideo = useRef();
     const friendVideo = useRef();
     const connectionRef = useRef();
@@ -83,6 +97,14 @@ const Message = (props) => {
 
     const closeModelVideo = () => {
         setModalVideoOpen(false);
+    };
+
+    const openModalKick = () => {
+        setModalKickOpen(true);
+    };
+
+    const closeModelKick = () => {
+        setModalKickOpen(false);
     };
 
     // let cbChild = (childData) => {
@@ -171,8 +193,8 @@ const Message = (props) => {
                 if (data.idDelete == user.id || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                     if (data.idDelete == user.id) {
-                        alert(`Bạn bị kick khỏi nhóm ${data.nameGroup}`);
-                        console.log(123);
+                        setNameKick(data.nameGroup);
+                        openModalKick();
                         setRerender(!rerender);
                         if (data.conversationID === currentChat.id) {
                             navigate('/');
@@ -389,7 +411,9 @@ const Message = (props) => {
                     </h1>
                 )}
             </div>
-            {props.params ? <ChatDetails user={user} img={img} name={name} currentChat={currentChat} /> : null}
+            {props.params ? (
+                <ChatDetails params={props.params} user={user} img={img} name={name} currentChat={currentChat} />
+            ) : null}
             <Modal isOpen={modalVideoOpen} style={customStyles} onRequestClose={closeModelVideo}>
                 <div className={cx('videoCall-parent')}>
                     <div className={cx('friend-video')}>
@@ -432,6 +456,22 @@ const Message = (props) => {
                             </>
                         )}
                     </div>
+                </div>
+            </Modal>
+            {/* Model sizeFile */}
+            <Modal isOpen={modalKickOpen} style={customStylesKick} onRequestClose={closeModelKick}>
+                <div className={cx('wrapper-modal')}>
+                    <div className={cx('header-modal')}>
+                        <span>Thông báo</span>
+                    </div>
+                    <div className={cx('body-modal')}>
+                        <h4>Bạn đã bị mời khỏi nhóm {nameKick}!</h4>
+                    </div>
+                </div>
+                <div className={cx('footer-modal')}>
+                    <button className={cx('btn-conf')} onClick={closeModelKick}>
+                        Xác Nhận
+                    </button>
                 </div>
             </Modal>
         </div>
