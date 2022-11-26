@@ -20,7 +20,8 @@ import { AuthContext } from '../../../context/AuthContext';
 
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 

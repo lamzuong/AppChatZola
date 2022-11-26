@@ -14,7 +14,8 @@ import UserItemSearchGroup from '../../ChatList/UserItemSearchGroup/UserItemSear
 import UserItemAdded from '../../ChatList/UserItemAdded/UserItemAdded';
 
 import { io } from 'socket.io-client';
-const socket = io.connect('http://localhost:8000', { transports: ['websocket'] });
+import apiConfig from '../../../../api/apiConfig';
+const socket = io.connect(apiConfig.baseUrl, { transports: ['websocket'] });
 
 const cx = classNames.bind(styles);
 
