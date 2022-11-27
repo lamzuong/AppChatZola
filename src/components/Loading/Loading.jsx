@@ -11,7 +11,7 @@ import axiosCilent from '../../api/axiosClient';
 const cx = classNames.bind(styles);
 
 const Loading = (props) => {
-    const [countdown, setCountdown] = useState(20);
+    const [countdown, setCountdown] = useState(120);
 
     const refdiv = useRef();
     const ref = useRef(props.state);

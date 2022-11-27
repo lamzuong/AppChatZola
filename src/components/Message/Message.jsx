@@ -174,7 +174,11 @@ const Message = (props) => {
             let conversationIDChat;
             try {
                 conversationIDChat = currentChat.id;
-                if (data.conversationID === conversationIDChat || data.senderId === user.id) {
+                if (
+                    data.conversationID === conversationIDChat ||
+                    data.senderId != user.id ||
+                    data.senderId == user.id
+                ) {
                     setRerender(!rerender);
                 }
             } catch (error) {}
