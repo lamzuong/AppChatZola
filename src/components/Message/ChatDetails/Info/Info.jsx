@@ -31,13 +31,8 @@ const customStyles = {
     },
 };
 
-const Info = ({ img, nameInfo, conversation, outGroup }) => {
+const Info = ({ params, img, nameInfo, conversation, outGroup }) => {
     const { user, dispatch } = useContext(AuthContext);
-    let listNoFriend = [];
-    for (let i = 0; i < user.friends.length; i++) {
-        let a = conversation?.members.includes(user.friends[i]);
-        if (a === false) listNoFriend.push(user.friends[i]);
-    }
     Modal.setAppElement('#root');
     const navigate = useNavigate();
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -126,18 +121,28 @@ const Info = ({ img, nameInfo, conversation, outGroup }) => {
         func([...listTemp]);
     };
     useEffect(() => {
-        getUsersInfo(listNoFriend, setListFriendInfo);
-        setListFriendInfo2([...listFriendInfo]);
-    }, [modalIsOpenGroup]);
+        setEditName(nameInfo);
+    }, []);
     useEffect(() => {
         getUsersInfo(listUerAdded, setListAddInfo);
     }, [listUerAdded.length]);
     useEffect(() => {
-        getUsersInfo(conversation?.members, setListMemberInfo);
+        const list = conversation?.members.reduce((acc, cur) => {
+            return user.friends.filter((f) => f.id !== cur);
+        }, []);
+        getUsersInfo(list, setListFriendInfo);
+        setListFriendInfo2([...listFriendInfo]);
+        console.log(123);
+        conversation?.members && getUsersInfo(conversation?.members, setListMemberInfo);
     }, [conversation?.members.length]);
     useEffect(() => {
-        setEditName(nameInfo);
-    }, []);
+        const list = conversation?.members.reduce((acc, cur) => {
+            return user.friends.filter((f) => f.id !== cur);
+        }, []);
+        getUsersInfo(list, setListFriendInfo);
+        setListFriendInfo2([...listFriendInfo]);
+    }, [modalIsOpenGroup]);
+
     const handleCheck = (id) => {
         setChecked((prev) => {
             const isChecked = checked.includes(id);
@@ -348,7 +353,7 @@ const Info = ({ img, nameInfo, conversation, outGroup }) => {
                                                 </span>
                                                 <ul className={cx('friends')}>
                                                     {listFriendInfo2.length > 0
-                                                        ? listFriendInfo2.map((user) => (
+                                                        ? listFriendInfo.map((user) => (
                                                               <li
                                                                   key={user.id}
                                                                   style={{ display: 'flex' }}
