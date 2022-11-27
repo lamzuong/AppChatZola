@@ -357,7 +357,7 @@ export default function ChatRoom({ route }) {
               imgs: imagesSelected.length,
               fullName: user.fullName,
               group: conversation.group,
-              member: conversation.members,
+              members: conversation.members,
             });
             setValueInput("");
             setImagesSelected([]);
