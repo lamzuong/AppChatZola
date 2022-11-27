@@ -47,8 +47,8 @@ const LoginFirst = (props) => {
         onChange(e);
         setDateString(e.getDate() + '/' + parseInt(e.getMonth() + 1) + '/' + e.getFullYear());
         const date = new Date();
-        if (date.getFullYear() - e.getFullYear() < 16) {
-            setErrBirthday('Tuổi phải từ 16 tuổi trở lên');
+        if (date.getFullYear() - e.getFullYear() < 13) {
+            setErrBirthday('Tuổi phải từ 13 tuổi trở lên');
         } else setErrBirthday('');
     };
 

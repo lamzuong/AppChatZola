@@ -177,7 +177,8 @@ const Message = (props) => {
                 if (
                     data.conversationID === conversationIDChat ||
                     data.senderId != user.id ||
-                    data.senderId == user.id
+                    data.senderId == user.id ||
+                    data.members.includes(user.id)
                 ) {
                     setRerender(!rerender);
                 }
@@ -252,10 +253,16 @@ const Message = (props) => {
                 }
             } catch (error) {}
         });
+        socket.off('server-send-request-friend');
+        socket.on('server-send-request-friend', (data) => {
+            if (data.listUser.includes(user.id)) {
+                setRerender(!rerender);
+            }
+        });
         socket.off('server-send-to-edit');
         socket.on('server-send-to-edit', (data) => {
             try {
-                if (data.members.includes(user.id)) {
+                if (data.members.includes(user.id) || data.conversationID === currentChat.id) {
                     setRerender(!rerender);
                 }
             } catch (error) {}

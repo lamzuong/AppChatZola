@@ -122,7 +122,7 @@ const Info = ({ params, img, nameInfo, conversation, outGroup }) => {
     };
     useEffect(() => {
         setEditName(nameInfo);
-    }, []);
+    }, [nameInfo]);
     useEffect(() => {
         getUsersInfo(listUerAdded, setListAddInfo);
     }, [listUerAdded.length]);

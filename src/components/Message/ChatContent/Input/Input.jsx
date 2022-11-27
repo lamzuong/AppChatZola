@@ -75,6 +75,7 @@ const Input = (props) => {
                         mess: chatContent,
                         senderId: props.user.id,
                         conversationID: props.params,
+                        members: props.params.members,
                         dataMess: {
                             conversationID: props.params,
                             date: new Date().getTime(),
