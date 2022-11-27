@@ -355,24 +355,6 @@ const Message = (props) => {
     conversation.sort((a, b) => b.date - a.date);
     return (
         <>
-            <Modal isOpen={modalIsDeleteGroup} style={customStylesMisdel} ariaHideApp={false}>
-                <div className={cx('wrapper-modal-isdel')}>
-                    <div className={cx('content-modal')}>
-                        <div className={cx('text-confirm')}>{`Bạn bị kick khỏi nhóm ${nameGroupMeIsDelete}`}</div>
-                    </div>
-
-                    <div className={cx('btns')}>
-                        <button
-                            className={cx('btnConf', 'btn')}
-                            onClick={() => {
-                                setModalIsDeleteGroup(false);
-                            }}
-                        >
-                            Xác nhận
-                        </button>
-                    </div>
-                </div>
-            </Modal>
             <div className={cx('wrapper')}>
                 <ChatList
                     conversation={conversation}
