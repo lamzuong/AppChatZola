@@ -36,6 +36,13 @@ const Loading = (props) => {
     }, [countdown > 0]);
 
     const handleCancel = () => {
+        const deleteUser = async () => {
+            const req = { username: props.usernameReg, email: props.mailReg };
+            await axiosCilent.delete('/zola/auth/deleteUser', {
+                data: req,
+            });
+        };
+        deleteUser();
         props.state(false);
     };
     return (
