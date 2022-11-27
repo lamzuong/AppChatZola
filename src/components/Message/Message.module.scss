@@ -192,3 +192,42 @@
     color: #fff;
     cursor: pointer;
 }
+
+//modal is delete
+// style modal
+.wrapper-modal-idel {
+    min-width: 300px;
+}
+
+.content-modal-idel {
+    margin-top: 15px;
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 5px;
+}
+
+.btns {
+    padding: 10px 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.btnConf {
+    background-color: #0190f3;
+}
+
+.btnCal {
+    background-color: red;
+}
