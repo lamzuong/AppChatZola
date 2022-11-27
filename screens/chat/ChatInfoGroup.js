@@ -301,13 +301,9 @@ export default function ChatInfoGroup({ navigation, route }) {
           avatarOld: avaRender,
           user: user,
         });
-        var list = [];
-        itemChoose.forEach((e) => {
-          list.push(e.id);
-        });
         socket.emit("send-to-edit", {
           conversationID: conversation.id,
-          members: list,
+          members: conversationRender.members,
         });
       } catch (err) {
         console.log(err);

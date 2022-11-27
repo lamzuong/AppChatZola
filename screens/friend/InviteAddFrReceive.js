@@ -110,7 +110,7 @@ export default function InviteAddFrReceive() {
         });
       }
       socket.emit("request-friend", {
-        userReceive: id,
+        listUser: [user.id, id],
       });
     } catch (err) {
       console.log(err);

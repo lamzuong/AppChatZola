@@ -92,7 +92,8 @@ export default function ChatRoom({ route }) {
 
         if (
           data.conversationID === conversationIDChat ||
-          data.senderId != user.id
+          data.senderId != user.id ||
+          data.members.includes(user.id)
         ) {
           setRerender(!rerender);
         }
@@ -356,6 +357,7 @@ export default function ChatRoom({ route }) {
               imgs: imagesSelected.length,
               fullName: user.fullName,
               group: conversation.group,
+              member: conversation.members,
             });
             setValueInput("");
             setImagesSelected([]);

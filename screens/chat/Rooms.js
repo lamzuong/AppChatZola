@@ -111,7 +111,10 @@ export default function Rooms({ navigation, route }) {
       } catch (error) {}
     });
     socket.on("server-send-to-client", (data) => {
-      if (conversation.some((conv) => conv.id === data.conversationID)) {
+      if (
+        conversation.some((conv) => conv.id === data.conversationID) ||
+        data.members.includes(user.id)
+      ) {
         setRerender(!rerender);
       }
     });
