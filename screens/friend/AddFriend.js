@@ -93,7 +93,7 @@ export default function AddFriend({ navigation }, props) {
         listSender: currentUser.listSender,
       });
       socket.emit("request-friend", {
-        userReceive: id,
+        listUser: [user.id, id],
       });
     } catch (err) {
       console.log(err);
@@ -107,7 +107,7 @@ export default function AddFriend({ navigation }, props) {
         listSender: currentUser.listSender,
       });
       socket.emit("request-friend", {
-        userReceive: id,
+        listUser: [user.id, id],
       });
     } catch (err) {
       console.log(err);
@@ -121,7 +121,7 @@ export default function AddFriend({ navigation }, props) {
         listReceiver: currentUser.listReceiver,
       });
       socket.emit("request-friend", {
-        userReceive: id,
+        listUser: [user.id, id],
       });
     } catch (err) {
       console.log(err);
@@ -136,7 +136,7 @@ export default function AddFriend({ navigation }, props) {
         friends: currentUser.friends,
       });
       socket.emit("request-friend", {
-        userReceive: id,
+        listUser: [user.id, id],
       });
     } catch (err) {
       console.log(err);

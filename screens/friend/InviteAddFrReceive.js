@@ -38,7 +38,7 @@ export default function InviteAddFrReceive() {
   useEffect(() => {
     socket.off();
     socket.on("server-send-request-friend", (data) => {
-      if (data.userReceive == user.id) {
+      if (data.listUser.includes(user.id)) {
         setRenderUser(!renderUser);
       }
     });

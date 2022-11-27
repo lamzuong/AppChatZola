@@ -11,6 +11,7 @@ import {
   Pressable,
   StatusBar,
   Linking,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,6 +27,18 @@ export default function ChatInfo({ navigation, route }) {
   const [select, setSelected] = useState("image");
   const [listImg, setListImg] = useState([]);
   const [listFile, setListFile] = useState([]);
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, []);
+  //================
   useEffect(() => {
     const getConversation = async () => {
       try {

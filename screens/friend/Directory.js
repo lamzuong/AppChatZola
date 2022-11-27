@@ -40,7 +40,7 @@ export default function Directory({ navigation }) {
   useEffect(() => {
     socket.off();
     socket.on("server-send-request-friend", (data) => {
-      if (data.userReceive == user.id) {
+      if (data.listUser.includes(user.id)) {
         setRenderUser(!renderUser);
       }
     });
@@ -167,7 +167,7 @@ export default function Directory({ navigation }) {
       });
       setRenderUser(!renderUser);
       socket.emit("request-friend", {
-        userReceive: id,
+        listUser: [user.id, id],
       });
     };
     return (

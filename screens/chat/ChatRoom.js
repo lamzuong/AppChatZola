@@ -89,8 +89,9 @@ export default function ChatRoom({ route }) {
       let conversationIDChat;
       try {
         conversationIDChat = conversation.id;
+
         if (
-          data.conversationID == conversationIDChat &&
+          data.conversationID === conversationIDChat ||
           data.senderId != user.id
         ) {
           setRerender(!rerender);
@@ -102,7 +103,6 @@ export default function ChatRoom({ route }) {
       try {
         conversationIDChat = conversation.id;
         if (data.conversationID == conversationIDChat) {
-          // setMessage([]);
           setRerender(!rerender);
         }
       } catch (error) {}
@@ -187,21 +187,6 @@ export default function ChatRoom({ route }) {
       const arr = result.selected;
       for (let i = 0; i < arr.length; i++) {
         arrShowImages.push(arr[i]);
-        //=========
-        const fileInfo = await FileSystem.getInfoAsync(arr[i].uri);
-        // console.log(fileInfo);
-        if (fileInfo.size > 30000000) {
-          Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
-            {},
-            {
-              text: "OK",
-              onPress: () => {
-                setImagesSelected([]);
-              },
-            },
-          ]);
-          break;
-        }
       }
       setImagesSelected(arrShowImages);
     } else if (result.cancelled) {
@@ -209,19 +194,6 @@ export default function ChatRoom({ route }) {
       // Chọn 1 ảnh
       arrShowImages.push(result);
       setImagesSelected(arrShowImages);
-
-      const fileInfo = await FileSystem.getInfoAsync(result.uri);
-      if (fileInfo.size > 30000000) {
-        Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
-          {},
-          {
-            text: "OK",
-            onPress: () => {
-              setImagesSelected([]);
-            },
-          },
-        ]);
-      }
     }
   };
   const openCamera = async () => {
@@ -236,18 +208,6 @@ export default function ChatRoom({ route }) {
     if (!result.cancelled) {
       const arr = [result];
       setImagesSelected(arr);
-      const fileInfo = await FileSystem.getInfoAsync(result.uri);
-      if (fileInfo.size > 30000000) {
-        Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
-          {},
-          {
-            text: "OK",
-            onPress: () => {
-              setImagesSelected([]);
-            },
-          },
-        ]);
-      }
     }
   };
   const PickDocument = async () => {
@@ -295,98 +255,117 @@ export default function ChatRoom({ route }) {
     } else {
       if (valueInput.trim() === "" && imagesSelected.length == 0) {
       } else {
-        e.preventDefault();
-        let listImg = [];
-        if (imagesSelected.length !== 0) {
-          imagesSelected.forEach((e) => {
-            console.log(e);
-            const image = e.uri.split(".");
-            const fileType = image[image.length - 1];
-            if (fileType == "mp4") {
-              const file = {
-                uri: e.uri,
-                name: uuid.v4() + "-" + e.uri.split("/").reverse()[0],
-                type: e.type + "/" + e.uri.split(".").reverse()[0],
-              };
-              RNS3.put(file, {
-                keyPrefix: "",
-                bucket: "zola-chat",
-                region: "ap-southeast-1",
-                accessKey: "AKIA34KECLYEL2WGGHN2",
-                secretKey: "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",
-                successActionStatus: 201,
-              })
-                .then((response) => {
-                  if (response.status !== 201)
-                    throw new Error("Failed to upload image to S3");
-                  console.log(response.body);
-                })
-                .catch((error) => console.log(error));
-              listImg.push(file.name);
-            } else if (
-              fileType == "docx" ||
-              fileType == "doc" ||
-              fileType == "xlsx" ||
-              fileType == "xls" ||
-              fileType == "csv" ||
-              fileType == "pptx" ||
-              fileType == "ppt" ||
-              fileType == "pdf" ||
-              fileType == "txt"
-            ) {
-              const file = {
-                uri: e.uri,
-                name: uuid.v4() + "-" + e.name,
-                type: "application/" + fileType,
-              };
-              RNS3.put(file, {
-                keyPrefix: "",
-                bucket: "zola-chat",
-                region: "ap-southeast-1",
-                accessKey: "AKIA34KECLYEL2WGGHN2",
-                secretKey: "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",
-                successActionStatus: 201,
-              })
-                .then((response) => {
-                  if (response.status !== 201)
-                    throw new Error("Failed to upload image to S3");
-                  console.log(response.body);
-                })
-                .catch((error) => console.log(error));
-              listImg.push(file.name);
-            } else {
-              var obj = {
-                base64: `data:image/jpeg;base64,${e.base64}`,
-                fileType: fileType,
-                name: e.uri.split("/").slice(-1),
-              };
-              listImg.push(obj);
-            }
-          });
+        var temp = false;
+        for (let i = 0; i < imagesSelected.length; i++) {
+          const e = imagesSelected[i];
+          const fileInfo = await FileSystem.getInfoAsync(e.uri);
+          if (fileInfo.size > 30000000) {
+            temp = true;
+            break;
+          }
         }
-        const message1 = {
-          conversationID: conversation.id,
-          sender: user.id,
-          mess: valueInput,
-          listImg: listImg,
-        };
-        try {
-          await axiosCilent.post("/zola/message/mobile", message1);
-          socket.emit("send-to-server", {
-            mess: valueInput,
-            senderId: user.id,
+        if (temp == true) {
+          Alert.alert("Thông báo", "Không được gửi file vượt quá 30MB", [
+            {},
+            {
+              text: "OK",
+              onPress: () => {},
+            },
+          ]);
+        }
+        if (temp == false) {
+          let listImg = [];
+          if (imagesSelected.length !== 0) {
+            imagesSelected.forEach((e) => {
+              const image = e.uri.split(".");
+              const fileType = image[image.length - 1];
+              if (fileType == "mp4") {
+                const file = {
+                  uri: e.uri,
+                  name: uuid.v4() + "-" + e.uri.split("/").reverse()[0],
+                  type: e.type + "/" + e.uri.split(".").reverse()[0],
+                };
+                RNS3.put(file, {
+                  keyPrefix: "",
+                  bucket: "zola-chat",
+                  region: "ap-southeast-1",
+                  accessKey: "AKIA34KECLYEL2WGGHN2",
+                  secretKey: "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",
+                  successActionStatus: 201,
+                })
+                  .then((response) => {
+                    if (response.status !== 201)
+                      throw new Error("Failed to upload image to S3");
+                    console.log(response.body);
+                  })
+                  .catch((error) => console.log(error));
+                listImg.push(file.name);
+              } else if (
+                fileType == "docx" ||
+                fileType == "doc" ||
+                fileType == "xlsx" ||
+                fileType == "xls" ||
+                fileType == "csv" ||
+                fileType == "pptx" ||
+                fileType == "ppt" ||
+                fileType == "pdf" ||
+                fileType == "txt"
+              ) {
+                const file = {
+                  uri: e.uri,
+                  name: uuid.v4() + "-" + e.name,
+                  type: "application/" + fileType,
+                };
+                RNS3.put(file, {
+                  keyPrefix: "",
+                  bucket: "zola-chat",
+                  region: "ap-southeast-1",
+                  accessKey: "AKIA34KECLYEL2WGGHN2",
+                  secretKey: "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",
+                  successActionStatus: 201,
+                })
+                  .then((response) => {
+                    if (response.status !== 201)
+                      throw new Error("Failed to upload image to S3");
+                    console.log(response.body);
+                  })
+                  .catch((error) => console.log(error));
+                listImg.push(file.name);
+              } else {
+                var obj = {
+                  base64: `data:image/jpeg;base64,${e.base64}`,
+                  fileType: fileType,
+                  name: e.uri.split("/").slice(-1),
+                };
+                listImg.push(obj);
+              }
+            });
+          }
+          const message1 = {
             conversationID: conversation.id,
-            imgs: imagesSelected.length,
-            fullName: user.fullName,
-            group: conversation.group,
-          });
-          setValueInput("");
-          setImagesSelected([]);
-          setRerender(!rerender);
-          setRender2(!render2);
-        } catch (err) {
-          console.log(err);
+            sender: user.id,
+            mess: valueInput,
+            listImg: listImg,
+          };
+          try {
+            await axiosCilent.post("/zola/message/mobile", message1);
+            socket.emit("send-to-server", {
+              mess: valueInput,
+              senderId: user.id,
+              conversationID: conversation.id,
+              imgs: imagesSelected.length,
+              fullName: user.fullName,
+              group: conversation.group,
+            });
+            setValueInput("");
+            setImagesSelected([]);
+            setRerender(!rerender);
+            setRender2(!render2);
+          } catch (err) {
+            console.log(err);
+          }
         }
+        temp = false;
       }
     }
   };
@@ -462,7 +441,7 @@ export default function ChatRoom({ route }) {
   //===================
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { marginBottom: 10 }]}>
+      <View style={[styles.header, { paddingBottom: 10 }]}>
         <View style={{ width: "10%" }}>
           <TouchableOpacity
             style={styles.iconBack}
@@ -523,6 +502,7 @@ export default function ChatRoom({ route }) {
         )}
         keyExtractor={(item, index) => index + item}
         ref={flatlistRef}
+        // style={{ paddingTop: 10 }}
       />
       {/* Xem trước ảnh */}
       <View>
